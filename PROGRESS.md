@@ -4,17 +4,21 @@
 อัปเดตล่าสุด: 2026-07-19
 
 ## ทำถึงไหน
-Bootstrap + เชื่อม DB เสร็จ (Milestone 0) — scaffold Next.js 16 (App Router + TS + Tailwind v4 + `src/`) + Prisma 7 + Supabase + เอกสารมาตรฐาน repo
-- `prisma/schema.prisma` = 24 models + 15 enums (ground บน product doc §5-8) · `prisma validate` + `npm run build` ผ่าน
-- **DB เชื่อม Supabase แล้ว** — `.env` มี key จริงครบ (gitignored) · `prisma db push` สร้าง **24 ตาราง**บน Supabase สำเร็จ · verify: app ต่อผ่าน pooler 6543 + query ตารางครบ 24 (2026-07-19)
-- push ขึ้น GitHub แล้ว (`LOSTXKER/anajak-car`, public)
+Bootstrap + DB + seed เสร็จ (Milestone 0-1) — โครงพร้อม + มีข้อมูลจริงใน DB
+- scaffold Next.js 16 + Prisma 7 + Supabase · `prisma/schema.prisma` = 24 models/15 enums · build ผ่าน
+- DB เชื่อม Supabase — 24 ตาราง (db push ผ่าน pooler session 5432 · runtime pooler 6543)
+- **seed เสร็จ** (`prisma/seed.ts` · `npm run db:seed` · idempotent) — Toyota 5 nameplate ครอบ 3 ประเภท:
+  Corolla Altis (ICE/HEV), Yaris Ativ (eco), Hilux Revo (กระบะ), Fortuner (PPV), bZ4X (BEV)
+  → **14 VariantRevision + 14 ราคา + 5 ChangeEvent** · verify query จริง: 0 orphan (ทุกราคา/change มี evidence)
+  → ⚠️ ข้อมูล **seed demo** (EvidenceSource EDITORIAL, confidence LOW) — ราคา/สเปกโดยประมาณ ยังไม่ verify กับ price list ทางการ
+- push GitHub `LOSTXKER/anajak-car` (public)
 
 ## ค้าง / ติดอะไร
-- **ยังไม่ seed** — ยังไม่มีข้อมูลรถจริงใน DB (ตาราง 24 ตัวว่าง)
-- **ยังไม่มีหน้าเว็บจริง** — มีแค่ default Next.js page (ยังไม่เริ่ม UI)
-- ⚠️ **migrate ต้องใช้ `DIRECT_URL` (pooler session 5432)** — direct `db.xxx:5432` เป็น IPv6-only ต่อไม่ได้ · คำสั่ง: `npx prisma db push --url "$DIRECT_URL"` (prototype ใช้ db push · ยังไม่ทำ migration file)
+- **ยังไม่มีหน้าเว็บจริง** — มีแค่ default Next.js page (ยังไม่ดึงข้อมูลจาก DB มาโชว์)
+- ข้อมูล seed = demo ยังไม่ verify (ถ้าจะ production ต้อง re-verify ราคา/สเปกทีละรุ่นกับแหล่งทางการ)
+- migrate/seed ต้องใช้ `DIRECT_URL` (pooler session 5432) — direct `db.xxx:5432` IPv6-only ต่อไม่ได้
 
 ## ▶ NEXT (ทำต่อทันที)
-1. เขียน `prisma/seed.ts` — 1 แบรนด์ + 3–5 Nameplate (ครอบ ICE / กระบะ-PPV / EV ตาม doc §10.1) + ราคามือหนึ่ง + change event + evidence
-2. เริ่มหน้าแรก: Car Market Database หรือ Brand/Nameplate Hub (ดู `PLAN.md` + `DESIGN.md`)
-3. ต่อ query จริงผ่าน `src/lib/prisma.ts` (RSC) แสดงข้อมูลจาก DB
+1. หน้าแรก **Car Market Database** (ค้น/ลิสต์รถ) หรือ **Nameplate Hub** — ดึงจาก DB จริง (RSC ผ่าน `src/lib/prisma.ts`) ตามธีม `DESIGN.md`
+2. แสดง Source/Confidence/Freshness เป็น first-class UI (หัวใจ evidence-first — ดู DESIGN.md)
+3. (ภายหลัง) verify ราคา/สเปกจริง + เพิ่ม nameplate coverage · seed ข้อมูลมือสอง
