@@ -1,0 +1,732 @@
+// CARMETA — Prisma schema
+// ฐานข้อมูลรถยนต์ไทย + ระบบติดตามราคา/ตลาดรถ
+// โครงสร้าง ground บน CARMETA_PRODUCT_OVERVIEW-3.md (section 5-8)
+//
+// หลักการที่ฝังในสคีมา:
+//  - Versioned / append-only: entity ที่เปลี่ยนตามเวลาใช้ effectiveFrom/effectiveTo · observation (ราคา/ประกาศ) = เพิ่มแถวใหม่ ไม่เขียนทับ
+//  - Evidence-first: fact สำคัญ (ราคา/การเปลี่ยนแปลง) ต้องผูก EvidenceSource
+//  - known/unknown/not_applicable: ค่าที่อาจไม่มีข้อมูลใช้ DataStatus แทนการใช้ 0 = ไม่มีข้อมูล
+//  - Exact entity: Brand → Nameplate → Generation → Derivative → Phase → Trim → VariantRevision
+//  - No false precision: ตัวเลขต้องมาพร้อม Sample/Confidence/Cohort (MarketStatisticSnapshot)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // DATABASE_URL ถูกจ่ายผ่าน prisma.config.ts (process.env.DATABASE_URL) — ต่อ Supabase Postgres
+}
+
+// ─────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────
+
+// สถานะข้อมูล — กันการใช้ 0/null แทน "ไม่มีข้อมูล" (doc section 5 line 141)
+enum DataStatus {
+  known
+  unknown
+  not_applicable
+}
+
+// ความเชื่อมั่นของข้อมูล/หลักฐาน
+enum Confidence {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+// วงจรชีวิตของรุ่น/เจเนอเรชัน (doc 7.2 — ปัจจุบัน/ยุติจำหน่าย/เปลี่ยนผ่าน)
+enum LifecycleStatus {
+  UPCOMING
+  CURRENT
+  TRANSITION
+  DISCONTINUED
+}
+
+// เซกเมนต์ตลาดไทย (ใช้ประกอบ ไม่ใช่การจัดอันดับ)
+enum Segment {
+  ECO_CAR
+  SUBCOMPACT
+  COMPACT
+  MIDSIZE
+  FULLSIZE
+  LUXURY
+  SPORTS
+  SUV_SUBCOMPACT
+  SUV_COMPACT
+  SUV_MIDSIZE
+  SUV_FULLSIZE
+  PPV
+  PICKUP
+  MPV
+  VAN
+  OTHER
+}
+
+// ประเภทตัวถัง (doc 5 — Derivative/Body)
+enum BodyType {
+  SEDAN
+  HATCHBACK
+  WAGON
+  SUV
+  PPV
+  PICKUP
+  COUPE
+  CONVERTIBLE
+  MPV
+  VAN
+  OTHER
+}
+
+// ระบบขับเคลื่อนพลังงาน (doc 5/10 — ICE/HEV/PHEV/BEV)
+enum PowertrainType {
+  ICE
+  MHEV
+  HEV
+  PHEV
+  BEV
+  FCEV
+}
+
+// ประเภท Phase (doc 5 — เปิดตัว/facelift/เปลี่ยนโครงสร้างชุดใหญ่)
+enum PhaseType {
+  INITIAL
+  FACELIFT
+  MAJOR_UPDATE
+}
+
+// ชนิดราคา (doc section 8.1) — ห้ามปะปนราคาต่างชนิด
+enum PriceType {
+  OFFICIAL_LIST_PRICE // ราคาป้ายมือหนึ่ง
+  ANNOUNCED_PROMOTION // ราคาโปรที่ประกาศ
+  USED_LISTING_MEDIAN // ค่ามัธยฐานราคาประกาศมือสอง
+  USED_LISTING_RANGE // ช่วงราคาประกาศมือสอง (percentile)
+  ACTUAL_TRANSACTION // ราคาซื้อขายจริง (ต้องมีสิทธิ์)
+  ESTIMATED_RANGE // ช่วงราคาประเมิน (แบบจำลอง)
+}
+
+// ประเภทการเปลี่ยนแปลง (doc section 8/6 — Change Event)
+enum ChangeType {
+  LAUNCH // เปิดตัว
+  FACELIFT // ไมเนอร์เชนจ์
+  SPEC_CHANGE // เปลี่ยนสเปก
+  TRIM_ADDED // เพิ่มรุ่นย่อย
+  TRIM_REMOVED // ตัดรุ่นย่อย
+  PRICE_CHANGE // ปรับราคา
+  RECALL // เรียกคืน
+  DISCONTINUED // เลิกขาย
+}
+
+// ประเภทเกียร์
+enum TransmissionType {
+  MANUAL
+  AUTOMATIC
+  CVT
+  DCT
+  AMT
+  SINGLE_SPEED // EV
+  OTHER
+}
+
+// ประเภทระบบขับเคลื่อน (ล้อ)
+enum DrivetrainType {
+  FWD
+  RWD
+  AWD
+  FOUR_WD
+}
+
+// ประเภทแหล่งข้อมูล/หลักฐาน (doc section 8.5)
+enum EvidenceSourceType {
+  MANUFACTURER_OFFICIAL // ผู้ผลิต/ผู้นำเข้า (เว็บ/โบรชัวร์/price list)
+  GOVERNMENT // หน่วยงานรัฐ/recall/ผลทดสอบ
+  MARKETPLACE_LICENSED // marketplace/inventory ที่มีสิทธิ์
+  PARTNER // dealer/auction/finance/partner
+  USER_REPORTED // ผู้ใช้ที่ให้ความยินยอม
+  EDITORIAL // ทีมข้อมูลตรวจทานเอง
+}
+
+// ประเภทผู้ขาย (doc 8.3 — cohort)
+enum SellerType {
+  PRIVATE
+  DEALER
+  AUCTION
+  FINANCE
+  PARTNER
+  UNKNOWN
+}
+
+// สถานะประกาศมือสอง (doc 8.4 — dedupe/quarantine/unmatched)
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  EXPIRED
+  RELISTED
+  QUARANTINED // ราคาเหยื่อ/outlier
+  UNMATCHED // จับคู่รุ่นย่อยไม่ได้
+}
+
+// ความเพียงพอของสถิติราคา (doc 10.3 — sample threshold)
+enum StatisticStatus {
+  INSUFFICIENT // < 5 รายการ — ยังไม่สรุปราคา
+  LIMITED // 5-19 รายการ — ข้อมูลจำกัด
+  SUFFICIENT // >= 20 รายการผ่านเกณฑ์
+}
+
+// ─────────────────────────────────────────────────────────────
+// Core taxonomy (doc section 5) — parent → child
+// ─────────────────────────────────────────────────────────────
+
+/// Brand — ยี่ห้อทางการค้าระดับ Global
+model Brand {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  officialName  String?
+  countryOrigin String?
+  parentCompany String?
+  logoUrl       String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  modelFamilies   GlobalModelFamily[]
+  marketPresences MarketPresence[]
+  changeEvents    ChangeEvent[]
+}
+
+/// GlobalModelFamily — ตระกูลรุ่นระดับ Global (ใช้ผูก Nameplate ไทยกับตลาดอื่น · optional)
+model GlobalModelFamily {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  brandId   String
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  brand      Brand       @relation(fields: [brandId], references: [id])
+  nameplates Nameplate[]
+
+  @@index([brandId])
+}
+
+/// MarketPresence — การดำเนินงานของแบรนด์ในตลาดหนึ่ง (โฟกัสไทย: ผู้นำเข้า/ผู้ผลิต/ช่องทาง)
+model MarketPresence {
+  id              String    @id @default(cuid())
+  brandId         String
+  market          String    @default("TH")
+  importerName    String?
+  distributorName String?
+  channel         String?
+  operationFrom   DateTime?
+  operationTo     DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  brand      Brand       @relation(fields: [brandId], references: [id])
+  nameplates Nameplate[]
+
+  @@index([brandId])
+}
+
+/// Nameplate — ชื่อรุ่นที่ขายในไทย = Canonical grain (แกนของทั้งระบบ)
+model Nameplate {
+  id                  String          @id @default(cuid())
+  slug                String          @unique
+  name                String
+  marketPresenceId    String
+  globalModelFamilyId String?
+  segment             Segment?
+  segmentStatus       DataStatus      @default(unknown)
+  lifecycleStatus     LifecycleStatus @default(CURRENT)
+  salesFrom           DateTime?
+  salesTo             DateTime?
+  summary             String?
+  notes               String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  marketPresence        MarketPresence            @relation(fields: [marketPresenceId], references: [id])
+  globalModelFamily     GlobalModelFamily?        @relation(fields: [globalModelFamilyId], references: [id])
+  generations           Generation[]
+  promotionObservations PromotionObservation[]
+  changeEvents          ChangeEvent[]
+  listings              Listing[]
+  marketStatSnapshots   MarketStatisticSnapshot[]
+
+  @@index([marketPresenceId])
+  @@index([lifecycleStatus])
+}
+
+/// Generation — การเปลี่ยนโครงสร้างหลักของรุ่น
+model Generation {
+  id              String          @id @default(cuid())
+  nameplateId     String
+  code            String? // รหัสเจเนอเรชัน เช่น "MK7"
+  name            String?
+  launchYear      Int?
+  generationFrom  DateTime?
+  generationTo    DateTime?
+  lifecycleStatus LifecycleStatus @default(CURRENT)
+  summary         String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  nameplate           Nameplate                 @relation(fields: [nameplateId], references: [id])
+  derivatives         Derivative[]
+  changeEvents        ChangeEvent[]
+  marketStatSnapshots MarketStatisticSnapshot[]
+
+  @@index([nameplateId])
+}
+
+/// Derivative / Body — ตัวถังหรืออนุพันธ์ (อาจ facelift คนละเวลากัน)
+model Derivative {
+  id             String    @id @default(cuid())
+  generationId   String
+  bodyType       BodyType
+  name           String?
+  doors          Int?
+  wheelbaseMm    Int?
+  derivativeFrom DateTime?
+  derivativeTo   DateTime?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  generation Generation @relation(fields: [generationId], references: [id])
+  phases     Phase[]
+
+  @@index([generationId])
+}
+
+/// Phase — Pre-facelift / Facelift / เปลี่ยนโครงสร้างชุดใหญ่
+model Phase {
+  id            String    @id @default(cuid())
+  derivativeId  String
+  phaseType     PhaseType @default(INITIAL)
+  name          String?
+  sequence      Int? // ลำดับ phase ภายใน derivative
+  changeSummary String?
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  derivative   Derivative    @relation(fields: [derivativeId], references: [id])
+  trims        Trim[]
+  changeEvents ChangeEvent[]
+
+  @@index([derivativeId])
+}
+
+/// Trim — เกรดการขายภายใน Phase
+model Trim {
+  id            String    @id @default(cuid())
+  phaseId       String
+  name          String
+  standardName  String? // ชื่อมาตรฐานหลัง normalize
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  phase            Phase             @relation(fields: [phaseId], references: [id])
+  variantRevisions VariantRevision[]
+
+  @@index([phaseId])
+}
+
+/// VariantRevision — รถหนึ่งแบบที่ซื้อได้จริง ณ ช่วงหนึ่ง (grain ล่างสุดของ exact matching)
+model VariantRevision {
+  id              String         @id @default(cuid())
+  trimId          String
+  name            String?
+  powertrainType  PowertrainType
+  modelYear       Int?
+  modelYearStatus DataStatus     @default(unknown)
+  seatCount       Int?
+  seatCountStatus DataStatus     @default(unknown)
+  effectiveFrom   DateTime?
+  effectiveTo     DateTime?
+  notes           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Powertrain แบบ versioned ที่อ้างอิง (ไม่ใช่ชั้นบังคับ · dual-motor/หลายระบบ = ต่อยอดภายหลัง)
+  engineId       String?
+  motorId        String?
+  batteryId      String?
+  transmissionId String?
+  drivetrainId   String?
+
+  trim         Trim          @relation(fields: [trimId], references: [id])
+  engine       Engine?       @relation(fields: [engineId], references: [id])
+  motor        Motor?        @relation(fields: [motorId], references: [id])
+  battery      Battery?      @relation(fields: [batteryId], references: [id])
+  transmission Transmission? @relation(fields: [transmissionId], references: [id])
+  drivetrain   Drivetrain?   @relation(fields: [drivetrainId], references: [id])
+
+  officialPriceObservations OfficialPriceObservation[]
+  promotionObservations     PromotionObservation[]
+  changeEvents              ChangeEvent[]
+  listings                  Listing[]
+  marketStatSnapshots       MarketStatisticSnapshot[]
+  physicalVehicles          PhysicalVehicle[]
+
+  @@index([trimId])
+  @@index([powertrainType])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Powertrain (versioned entities ที่ VariantRevision อ้างอิง)
+// ─────────────────────────────────────────────────────────────
+
+/// Engine — เครื่องยนต์สันดาป (versioned)
+model Engine {
+  id             String     @id @default(cuid())
+  code           String?
+  name           String?
+  displacementCc Int?
+  cylinders      Int?
+  aspiration     String? // NA / Turbo / Twin-turbo
+  fuelType       String? // Petrol / Diesel
+  maxPowerHp     Int?
+  maxTorqueNm    Int?
+  powerStatus    DataStatus @default(unknown)
+  effectiveFrom  DateTime?
+  effectiveTo    DateTime?
+  notes          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  variantRevisions VariantRevision[]
+}
+
+/// Motor — มอเตอร์ไฟฟ้า (versioned)
+model Motor {
+  id            String     @id @default(cuid())
+  code          String?
+  name          String?
+  count         Int? // จำนวนมอเตอร์
+  maxPowerKw    Float?
+  maxTorqueNm   Int?
+  location      String? // front / rear / dual
+  powerStatus   DataStatus @default(unknown)
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  notes         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  variantRevisions VariantRevision[]
+}
+
+/// Battery — แบตเตอรี่ขับเคลื่อน (versioned)
+model Battery {
+  id             String     @id @default(cuid())
+  code           String?
+  chemistry      String? // NMC / LFP
+  capacityKwh    Float?
+  usableKwh      Float?
+  voltage        Int?
+  capacityStatus DataStatus @default(unknown)
+  effectiveFrom  DateTime?
+  effectiveTo    DateTime?
+  notes          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  variantRevisions VariantRevision[]
+}
+
+/// Transmission — ระบบเกียร์ (versioned)
+model Transmission {
+  id            String           @id @default(cuid())
+  code          String?
+  type          TransmissionType
+  gears         Int?
+  name          String?
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  notes         String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  variantRevisions VariantRevision[]
+}
+
+/// Drivetrain — ระบบขับเคลื่อนล้อ (versioned)
+model Drivetrain {
+  id            String         @id @default(cuid())
+  type          DrivetrainType
+  name          String?
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  notes         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  variantRevisions VariantRevision[]
+}
+
+// ─────────────────────────────────────────────────────────────
+// Supporting entities (doc section 5 "Entity สนับสนุน" + section 8)
+// ─────────────────────────────────────────────────────────────
+
+/// AliasMapping — จับชื่อรุ่นจากเอกสาร/ประกาศ → รหัสกลาง (generic pointer ทุก entity)
+model AliasMapping {
+  id              String      @id @default(cuid())
+  alias           String
+  normalizedAlias String?
+  language        String? // th / en
+  sourceContext   String? // มาจากเอกสาร/ประกาศแบบไหน
+  entityType      String // "Brand" | "Nameplate" | "Trim" | ...
+  entityId        String
+  confidence      Confidence?
+  note            String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([entityType, entityId])
+  @@index([normalizedAlias])
+}
+
+/// EvidenceSource — Evidence Ledger: ผู้เผยแพร่ เอกสาร วันที่ สิทธิ์ ผู้ตรวจ (doc 5/7.9/9)
+model EvidenceSource {
+  id            String             @id @default(cuid())
+  sourceType    EvidenceSourceType
+  publisher     String?
+  title         String?
+  url           String?
+  documentRef   String?
+  publishedDate DateTime?
+  checkedDate   DateTime?
+  checkedBy     String?
+  license       String?
+  rights        String? // ขอบเขตสิทธิ์การเก็บ/แสดง
+  confidence    Confidence         @default(MEDIUM)
+  notes         String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  evidenceLinks             EvidenceLink[]
+  officialPriceObservations OfficialPriceObservation[]
+  promotionObservations     PromotionObservation[]
+  changeEvents              ChangeEvent[]
+  listings                  Listing[]
+  listingSnapshots          ListingSnapshot[]
+  marketStatSnapshots       MarketStatisticSnapshot[]
+}
+
+/// EvidenceLink — เชื่อม EvidenceSource เข้ากับ entity ใดๆ (สำหรับ reference data + หลักฐานเสริม)
+model EvidenceLink {
+  id               String   @id @default(cuid())
+  entityType       String
+  entityId         String
+  field            String? // field/ข้อเท็จจริงที่หลักฐานนี้รองรับ
+  note             String?
+  evidenceSourceId String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  evidenceSource EvidenceSource @relation(fields: [evidenceSourceId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([evidenceSourceId])
+}
+
+/// OfficialPriceObservation — ราคาป้าย/ปรับราคา (append-only · evidence-first: ต้องมี source)
+model OfficialPriceObservation {
+  id                String     @id @default(cuid())
+  variantRevisionId String
+  priceType         PriceType  @default(OFFICIAL_LIST_PRICE)
+  currency          String     @default("THB")
+  amount            Decimal?   @db.Decimal(12, 2)
+  amountStatus      DataStatus @default(known)
+  observedDate      DateTime
+  effectiveFrom     DateTime?
+  effectiveTo       DateTime?
+  notes             String?
+  evidenceSourceId  String // required — ราคาต้องมีหลักฐาน (doc 10.3 quality gate)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  variantRevision VariantRevision @relation(fields: [variantRevisionId], references: [id])
+  evidenceSource  EvidenceSource  @relation(fields: [evidenceSourceId], references: [id])
+
+  @@index([variantRevisionId, observedDate])
+}
+
+/// PromotionObservation — โปรโมชันพร้อมเงื่อนไข (append-only)
+model PromotionObservation {
+  id                String    @id @default(cuid())
+  nameplateId       String
+  variantRevisionId String?
+  title             String
+  description       String?
+  discountType      String? // เงินสด / ของแถม / ดอกเบี้ย
+  discountAmount    Decimal?  @db.Decimal(12, 2)
+  conditions        String?
+  priceType         PriceType @default(ANNOUNCED_PROMOTION)
+  startDate         DateTime?
+  endDate           DateTime?
+  observedDate      DateTime
+  evidenceSourceId  String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  nameplate       Nameplate        @relation(fields: [nameplateId], references: [id])
+  variantRevision VariantRevision? @relation(fields: [variantRevisionId], references: [id])
+  evidenceSource  EvidenceSource?  @relation(fields: [evidenceSourceId], references: [id])
+
+  @@index([nameplateId])
+}
+
+/// ChangeEvent — เปิดตัว/facelift/เปลี่ยนสเปก/ปรับราคา/recall/เลิกขาย (doc 7.6 · evidence-first)
+model ChangeEvent {
+  id                String     @id @default(cuid())
+  changeType        ChangeType
+  title             String
+  summary           String?
+  beforeValue       String?
+  afterValue        String?
+  announcedDate     DateTime?
+  effectiveDate     DateTime?
+  // เชื่อมกับระดับ entity ที่ได้รับผล (อย่างน้อยหนึ่งระดับ)
+  brandId           String?
+  nameplateId       String?
+  generationId      String?
+  phaseId           String?
+  variantRevisionId String?
+  evidenceSourceId  String // required — การเปลี่ยนแปลงต้องมีหลักฐาน
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  brand           Brand?           @relation(fields: [brandId], references: [id])
+  nameplate       Nameplate?       @relation(fields: [nameplateId], references: [id])
+  generation      Generation?      @relation(fields: [generationId], references: [id])
+  phase           Phase?           @relation(fields: [phaseId], references: [id])
+  variantRevision VariantRevision? @relation(fields: [variantRevisionId], references: [id])
+  evidenceSource  EvidenceSource   @relation(fields: [evidenceSourceId], references: [id])
+
+  @@index([nameplateId])
+  @@index([effectiveDate])
+  @@index([changeType])
+}
+
+/// PhysicalVehicle — รถจริงแต่ละคัน · POST-MVP (VIN/ทะเบียน/ความยินยอม/เชื่อมหลาย Listing)
+model PhysicalVehicle {
+  id                String    @id @default(cuid())
+  vin               String?   @unique
+  registrationPlate String?
+  variantRevisionId String?
+  firstRegisteredAt DateTime?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  variantRevision VariantRevision? @relation(fields: [variantRevisionId], references: [id])
+  listings        Listing[]
+}
+
+// ─────────────────────────────────────────────────────────────
+// Market data — มือสอง (doc section 8) · โครงพร้อม · MVP focus ที่ official price
+// ─────────────────────────────────────────────────────────────
+
+/// Listing — ตัวตนของประกาศมือสองหนึ่งรายการหลัง dedupe (จับคู่ variant ได้/unmatched ได้)
+model Listing {
+  id                String        @id @default(cuid())
+  variantRevisionId String? // null = ยังจับคู่ไม่ได้ (unmatched)
+  nameplateId       String?
+  physicalVehicleId String?
+  externalId        String? // id จากแหล่งต้นทาง
+  sourceName        String?
+  sellerType        SellerType    @default(UNKNOWN)
+  region            String?
+  registrationYear  Int?
+  modelYear         Int?
+  firstSeenDate     DateTime?
+  status            ListingStatus @default(ACTIVE)
+  evidenceSourceId  String?
+  notes             String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  variantRevision VariantRevision?  @relation(fields: [variantRevisionId], references: [id])
+  nameplate       Nameplate?        @relation(fields: [nameplateId], references: [id])
+  physicalVehicle PhysicalVehicle?  @relation(fields: [physicalVehicleId], references: [id])
+  evidenceSource  EvidenceSource?   @relation(fields: [evidenceSourceId], references: [id])
+  snapshots       ListingSnapshot[]
+
+  @@index([variantRevisionId])
+  @@index([status])
+}
+
+/// ListingSnapshot — ราคา/ไมล์/สถานะของ Listing ณ วันที่สังเกต (append-only → Supply/Days on market)
+model ListingSnapshot {
+  id               String        @id @default(cuid())
+  listingId        String
+  observedDate     DateTime
+  askingPrice      Decimal?      @db.Decimal(12, 2)
+  priceStatus      DataStatus    @default(known)
+  mileageKm        Int?
+  mileageStatus    DataStatus    @default(unknown)
+  status           ListingStatus @default(ACTIVE)
+  daysOnMarket     Int?
+  evidenceSourceId String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  listing        Listing         @relation(fields: [listingId], references: [id])
+  evidenceSource EvidenceSource? @relation(fields: [evidenceSourceId], references: [id])
+
+  @@index([listingId, observedDate])
+}
+
+/// MarketStatisticSnapshot — Median/ช่วง/Sample/นิยาม Cohort ณ วันคำนวณ (derived · append-only)
+model MarketStatisticSnapshot {
+  id                     String          @id @default(cuid())
+  // ขอบเขต (scope) ของสถิติ — เชื่อมกับระดับ entity
+  scopeNameplateId       String?
+  scopeGenerationId      String?
+  scopeVariantRevisionId String?
+  priceType              PriceType       @default(USED_LISTING_MEDIAN)
+  currency               String          @default("THB")
+  // นิยาม Cohort (doc 8.3) — ห้ามรวมรถคนละ cohort
+  cohortDefinition       String? // JSON เต็มของนิยาม cohort
+  powertrainType         PowertrainType?
+  ageMinYears            Int?
+  ageMaxYears            Int?
+  mileageMinKm           Int?
+  mileageMaxKm           Int?
+  region                 String?
+  // ค่าสถิติ
+  median                 Decimal?        @db.Decimal(12, 2)
+  p25                    Decimal?        @db.Decimal(12, 2)
+  p75                    Decimal?        @db.Decimal(12, 2)
+  minPrice               Decimal?        @db.Decimal(12, 2)
+  maxPrice               Decimal?        @db.Decimal(12, 2)
+  sampleSize             Int             @default(0)
+  statisticStatus        StatisticStatus @default(INSUFFICIENT)
+  confidence             Confidence      @default(LOW)
+  formulaVersion         String?
+  calculatedDate         DateTime
+  notes                  String?
+  evidenceSourceId       String?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+
+  scopeNameplate       Nameplate?       @relation(fields: [scopeNameplateId], references: [id])
+  scopeGeneration      Generation?      @relation(fields: [scopeGenerationId], references: [id])
+  scopeVariantRevision VariantRevision? @relation(fields: [scopeVariantRevisionId], references: [id])
+  evidenceSource       EvidenceSource?  @relation(fields: [evidenceSourceId], references: [id])
+
+  @@index([scopeVariantRevisionId, calculatedDate])
+  @@index([scopeNameplateId, calculatedDate])
+}
