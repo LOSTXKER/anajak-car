@@ -5,9 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { NameplateRow, VariantIndexRow } from "@/lib/queries";
-import { BODY_TYPE_LABEL, SEGMENT_LABEL } from "@/lib/labels";
+import { BODY_TYPE_LABEL, LIFECYCLE_LABEL, SEGMENT_LABEL } from "@/lib/labels";
 import { formatDateTH, formatTHB } from "@/lib/format";
-import { nameplateImage } from "@/lib/images";
+import { BRAND_LOGO_DARK, brandLogo, nameplateImage } from "@/lib/images";
 
 type SortKey = "name" | "price";
 type StatusFilter = "all" | "CURRENT" | "DISCONTINUED";
@@ -87,6 +87,42 @@ function CarThumb({ slug }: { slug: string }) {
       height={32}
       className="h-8 w-14 shrink-0 rounded-lg bg-surface-muted object-contain transition-transform duration-300 group-hover:scale-110"
     />
+  );
+}
+
+// โลโก้แบรนด์เล็กหน้าชื่อรุ่น (เบสสั่ง 2026-07-20) — dark variant เฉพาะแบรนด์ที่โลโก้จมพื้นมืด (ดู images.ts)
+function BrandMark({ slug, name }: { slug: string; name: string }) {
+  const logo = brandLogo(slug);
+  if (!logo) return null;
+  const dark = BRAND_LOGO_DARK[slug];
+  if (!dark) {
+    return (
+      <Image src={logo} alt={name} width={44} height={18} className="h-[18px] w-auto max-w-11 shrink-0 object-contain" />
+    );
+  }
+  return (
+    <>
+      <Image src={logo} alt={name} width={44} height={18} className="theme-logo-light h-[18px] w-auto max-w-11 shrink-0 object-contain" />
+      <Image src={dark} alt="" aria-hidden width={44} height={18} className="theme-logo-dark h-[18px] w-auto max-w-11 shrink-0 object-contain" />
+    </>
+  );
+}
+
+// ป้ายสถานะการขาย (เบสสั่ง 2026-07-20) — ขายอยู่/เลิกจำหน่าย ท้ายชื่อรุ่น
+const LIFECYCLE_BADGE_CLASS: Record<string, string> = {
+  CURRENT: "bg-success-soft text-success",
+  DISCONTINUED: "bg-surface-muted text-faint",
+  TRANSITION: "bg-warning-soft text-warning",
+  UPCOMING: "bg-accent-soft text-accent",
+};
+
+function LifecycleBadge({ status }: { status: string }) {
+  return (
+    <span
+      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${LIFECYCLE_BADGE_CLASS[status] ?? "bg-surface-muted text-faint"}`}
+    >
+      {LIFECYCLE_LABEL[status] ?? status}
+    </span>
   );
 }
 
@@ -413,6 +449,7 @@ export function CarDatabaseExplorer({
                 </th>
                 <th scope="col" className="px-3 py-2 font-medium">ประเภท</th>
                 <th scope="col" className="px-3 py-2 font-medium">ขุมพลัง</th>
+                <th scope="col" className="px-3 py-2 text-right font-medium">ปี</th>
                 <th scope="col" className="py-2 pr-3 pl-3 text-right font-medium">รุ่นย่อย</th>
               </tr>
             </thead>
@@ -425,6 +462,7 @@ export function CarDatabaseExplorer({
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-3">
                       <CarThumb slug={row.slug} />
+                      <BrandMark slug={row.brandSlug} name={row.brand} />
                       <Link
                         href={`/cars/${row.slug}`}
                         className="text-[15px] font-semibold text-foreground group-hover:text-accent"
@@ -432,6 +470,7 @@ export function CarDatabaseExplorer({
                       >
                         {row.name}
                       </Link>
+                      <LifecycleBadge status={row.lifecycleStatus} />
                     </div>
                   </td>
                   <td className="px-3 py-2.5 text-right whitespace-nowrap">
@@ -451,6 +490,12 @@ export function CarDatabaseExplorer({
                   </td>
                   <td className="px-3 py-2.5 text-sm text-muted">
                     {row.powertrainLabels.join(" · ")}
+                  </td>
+                  <td
+                    className="px-3 py-2.5 text-right text-sm text-muted tabular-nums"
+                    title={row.generationCode ?? undefined}
+                  >
+                    {row.launchYear ?? <span className="text-faint">—</span>}
                   </td>
                   <td className="py-2.5 pr-3 pl-3 text-right whitespace-nowrap">
                     <span className="text-sm text-muted tabular-nums">

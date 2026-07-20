@@ -164,6 +164,11 @@
 - [x] บันทึกทุกอย่างที่เบส reject ลง DESIGN.md (หลอดราคา/min-max ในแถวสรุป/ระบบกาง/ของซ้ำ/ตัวเล็ก) — กันหลุดซ้ำ
 - [x] verify: tsc/lint/build + screenshot + /brands/toyota 200
 
+## ✅ Milestone 20: คอลัมน์ปี + โลโก้แบรนด์ + ป้ายสถานะ (เสร็จ 2026-07-20)
+- [x] Verify ปีเปิดตัวโฉม Champ (27 พ.ย. 2023) + Revo (21 พ.ค. 2015) จากสื่อยานยนต์หลายแหล่งตรงกัน → EvidenceSource MEDIA/MEDIUM 2 แถว + Generation.launchYear/generationFrom + EvidenceLink (`ops/phase5c-launch-years.ts`) — ปีครบ 7/7 รุ่น
+- [x] คอลัมน์ "ปี" กลับเข้าตาราง (ไม่มีช่องว่างแล้ว) · โลโก้แบรนด์เล็กหน้าชื่อรุ่น (BrandMark + dark variant ตาม registry เดิม) · ป้ายสถานะขายอยู่/เลิกจำหน่าย (LifecycleBadge สี semantic) ท้ายชื่อ
+- [x] verify: tsc/lint/build + screenshot จริง
+
 ## ถัดไป (ยังไม่เริ่ม)
 - [ ] Seed ADAS 3 ฟีเจอร์แรก (AEB/ACC/LKA) — ต้อง research หลักฐานต่อ trim จาก toyota.co.th ก่อน (Phase 4 ต่อ)
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

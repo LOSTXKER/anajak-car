@@ -11,6 +11,7 @@ export type NameplateRow = {
   slug: string;
   name: string;
   brand: string;
+  brandSlug: string; // ใช้หาโลโก้แบรนด์ในตาราง (BRAND_LOGO registry)
   segment: string | null;
   lifecycleStatus: string;
   generationCode: string | null;
@@ -328,6 +329,7 @@ function buildNameplateSummary(nameplate: NameplateWithTree): {
       slug: nameplate.slug,
       name: nameplate.name,
       brand: nameplate.marketPresence.brand.name,
+      brandSlug: nameplate.marketPresence.brand.slug,
       segment: nameplate.segment,
       lifecycleStatus: nameplate.lifecycleStatus,
       generationCode: currentGeneration?.code ?? null,
