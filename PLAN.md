@@ -146,6 +146,12 @@
 - [x] แก้บั๊กระหว่างทาง: initial state ไม่อ่าน URL ตอนเข้าหน้าตรง (derive จาก searchParams) + h1 mobile ลดเป็น text-3xl
 - [x] verify: tsc/lint/build + ทดสอบ filter จริงผ่าน headless (?q=champ→เหลือ Champ · ?body=PICKUP→กระบะ 3 · ?cap=1M→5 รุ่น · ?pt=EV→bZ4X+Travo) + screenshot desktop/mobile-390 (ผ่าน iframe harness — พบว่า Chrome headless บังคับ viewport ≥500 บันทึกบทเรียนใน DESIGN.md แล้ว)
 
+## ✅ Milestone 17: ตารางแบบ tracker density — T3 (เสร็จ 2026-07-20)
+- [x] เบสฟีดแบ็ก "ยังไม่ได้ฟีลเว็บ tracker (dotabuff/op.gg/tracker.gg/prydwen)" → screenshot เว็บอ้างอิงจริง (op.gg champions ชัดสุด) สกัด DNA: dense/panel/tab/bar-in-cell/thumbnail ทุกแถว
+- [x] หน้าเทียบ 3 ระดับความเข้ม (T1 op.gg เต็มตัวตัด hero / T2 panel กลาง / T3 dense โทนเดิม) → เบสเลือก **T3**
+- [x] Apply: แถว py-2 · รูป 56×32 · ชื่อรุ่น semibold + แบรนด์จางสองบรรทัด · PriceBar สเกลนิ่งทั้ง coverage (สีเดียว ไม่มี gradient) ทั้ง 2 มุมมอง + /brands/[slug] ได้เข้าชุดอัตโนมัติ
+- [x] verify: tsc/lint/build + screenshot จริง — bar เทียบราคาอ่านได้ทันที (Fortuner ยาวสุด/Champ สั้นสุด) · บันทึกทางเลือกที่เบส reject (T1/T2) ลง DESIGN.md กันดันกลับ
+
 ## ถัดไป (ยังไม่เริ่ม)
 - [ ] Seed ADAS 3 ฟีเจอร์แรก (AEB/ACC/LKA) — ต้อง research หลักฐานต่อ trim จาก toyota.co.th ก่อน (Phase 4 ต่อ)
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

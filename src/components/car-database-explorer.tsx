@@ -70,9 +70,9 @@ function CarThumb({ slug }: { slug: string }) {
     return (
       <span
         aria-hidden
-        className="flex h-10 w-[72px] shrink-0 items-center justify-center rounded-xl bg-surface-muted"
+        className="flex h-8 w-14 shrink-0 items-center justify-center rounded-lg bg-surface-muted"
       >
-        <svg viewBox="0 0 48 24" className="h-4 w-8 text-faint" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 48 24" className="h-3.5 w-7 text-faint" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
           <path d="M6 17h-2v-4l4-1 5-6h14l6 6h7a3 3 0 0 1 3 3v2h-3" />
           <circle cx="14" cy="17" r="3" />
           <circle cx="36" cy="17" r="3" />
@@ -85,10 +85,22 @@ function CarThumb({ slug }: { slug: string }) {
     <Image
       src={image.src}
       alt=""
-      width={72}
-      height={40}
-      className="h-10 w-[72px] shrink-0 rounded-xl bg-surface-muted object-contain transition-transform duration-300 group-hover:scale-110"
+      width={56}
+      height={32}
+      className="h-8 w-14 shrink-0 rounded-lg bg-surface-muted object-contain transition-transform duration-300 group-hover:scale-110"
     />
+  );
+}
+
+// bar ตำแหน่งราคาเทียบสเกลรวมทั้ง coverage (สเกลนิ่ง ไม่ขยับตาม filter — T3 เบสเลือก 2026-07-20)
+// data-viz จากราคาจริง ไม่ใช่ ranking · สีเดียวทึบ ไม่มี gradient ตามกฎ DESIGN.md
+function PriceBar({ value, max }: { value: number | null; max: number }) {
+  if (value == null || max <= 0) return null;
+  const pct = Math.max(3, Math.min(100, Math.round((value / max) * 100)));
+  return (
+    <span aria-hidden className="mt-1 ml-auto block h-1 w-32 overflow-hidden rounded-full bg-surface-muted">
+      <span className="block h-full rounded-full bg-accent/70" style={{ width: `${pct}%` }} />
+    </span>
   );
 }
 
@@ -233,6 +245,17 @@ export function CarDatabaseExplorer({
     });
     return result;
   }, [variantRows, q, bodyType, powertrain, status, priceCap, sortKey, sortAsc]);
+
+  // สเกลราคาสำหรับ PriceBar — คำนวณจากข้อมูลเต็ม (ไม่ใช่ผลกรอง) ให้ bar นิ่งเทียบกันได้เสมอ
+  const priceScaleMax = useMemo(
+    () =>
+      Math.max(
+        0,
+        ...rows.map((r) => r.priceMax ?? 0),
+        ...variantRows.map((v) => v.price ?? 0),
+      ),
+    [rows, variantRows],
+  );
 
   const hasActiveFilter =
     q.trim() !== "" || bodyType || powertrain || status !== "all" || priceCap != null;
@@ -425,7 +448,7 @@ export function CarDatabaseExplorer({
           <table className="w-full min-w-[820px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs text-faint">
-                <th scope="col" className="py-3 pr-1 pl-2 text-right font-medium">
+                <th scope="col" className="py-2 pr-1 pl-2 text-right font-medium">
                   <span className="sr-only">ลำดับ</span>#
                 </th>
                 <th scope="col" aria-sort={ariaSort("name")} className="px-3 py-1.5 font-medium">
@@ -446,57 +469,58 @@ export function CarDatabaseExplorer({
                     ราคาป้าย (บาท){sortIndicator("price")}
                   </button>
                 </th>
-                <th scope="col" className="px-3 py-3 font-medium">ประเภท</th>
-                <th scope="col" className="px-3 py-3 font-medium">ขุมพลัง</th>
-                <th scope="col" className="px-3 py-3 text-right font-medium">ปี</th>
-                <th scope="col" className="px-3 py-3 text-right font-medium">รุ่นย่อย</th>
-                <th scope="col" className="px-3 py-3 pr-2 font-medium">อัปเดต</th>
+                <th scope="col" className="px-3 py-2 font-medium">ประเภท</th>
+                <th scope="col" className="px-3 py-2 font-medium">ขุมพลัง</th>
+                <th scope="col" className="px-3 py-2 text-right font-medium">ปี</th>
+                <th scope="col" className="px-3 py-2 text-right font-medium">รุ่นย่อย</th>
+                <th scope="col" className="px-3 py-2 pr-2 font-medium">อัปเดต</th>
               </tr>
             </thead>
             <tbody>
               {filteredNameplates.map((row, i) => (
                 <tr key={row.slug} onClick={() => goTo(row.slug)} className={rowClass}>
-                  <td className="py-3 pr-1 pl-2 text-right text-xs text-faint tabular-nums">
+                  <td className="py-2 pr-1 pl-2 text-right text-xs text-faint tabular-nums">
                     {i + 1}
                   </td>
-                  <td className="px-3 py-3">
+                  <td className="px-3 py-2">
                     <div className="flex items-center gap-3">
                       <CarThumb slug={row.slug} />
-                      <Link
-                        href={`/cars/${row.slug}`}
-                        className="font-medium text-foreground group-hover:text-accent"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <span className="mr-1.5 text-xs font-normal text-faint">
-                          {row.brand}
-                        </span>
-                        {row.name}
-                      </Link>
+                      <div className="min-w-0">
+                        <Link
+                          href={`/cars/${row.slug}`}
+                          className="font-semibold text-foreground group-hover:text-accent"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {row.name}
+                        </Link>
+                        <div className="text-[11px] text-faint">{row.brand}</div>
+                      </div>
                     </div>
                   </td>
-                  <td className="px-3 py-3 text-right text-[15px] font-semibold whitespace-nowrap tabular-nums">
+                  <td className="px-3 py-2 text-right text-[15px] font-semibold whitespace-nowrap tabular-nums">
                     {formatPriceRange(row.priceMin, row.priceMax) ?? (
                       <span className="text-sm font-normal text-faint">ไม่มีข้อมูล</span>
                     )}
+                    <PriceBar value={row.priceMax} max={priceScaleMax} />
                   </td>
-                  <td className="px-3 py-3 text-muted">
+                  <td className="px-3 py-2 text-muted">
                     <CategoryCell row={row} />
                   </td>
-                  <td className="px-3 py-3 text-muted">
+                  <td className="px-3 py-2 text-muted">
                     {row.powertrainLabels.join(" · ")}
                   </td>
                   <td
-                    className="px-3 py-3 text-right text-muted tabular-nums"
+                    className="px-3 py-2 text-right text-muted tabular-nums"
                     title={row.generationCode ?? undefined}
                   >
                     {row.launchYear ?? <span className="text-faint">—</span>}
                   </td>
-                  <td className="px-3 py-3 text-right">
+                  <td className="px-3 py-2 text-right">
                     <span className="inline-block rounded-full bg-surface-muted px-2 py-0.5 text-xs text-muted tabular-nums">
                       {row.variantCount}
                     </span>
                   </td>
-                  <td className="px-3 py-3 pr-2">
+                  <td className="px-3 py-2 pr-2">
                     <div className="flex items-center gap-1.5 whitespace-nowrap">
                       <LifecycleDot status={row.lifecycleStatus} />
                       <span className="text-xs text-faint">
@@ -519,7 +543,7 @@ export function CarDatabaseExplorer({
           <table className="w-full min-w-[860px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs text-faint">
-                <th scope="col" className="py-3 pr-1 pl-2 text-right font-medium">
+                <th scope="col" className="py-2 pr-1 pl-2 text-right font-medium">
                   <span className="sr-only">ลำดับ</span>#
                 </th>
                 <th scope="col" aria-sort={ariaSort("name")} className="px-3 py-1.5 font-medium">
@@ -540,10 +564,10 @@ export function CarDatabaseExplorer({
                     ราคาป้าย (บาท){sortIndicator("price")}
                   </button>
                 </th>
-                <th scope="col" className="px-3 py-3 font-medium">ตัวถัง</th>
-                <th scope="col" className="px-3 py-3 font-medium">ขุมพลัง</th>
-                <th scope="col" className="px-3 py-3 font-medium">กำลัง</th>
-                <th scope="col" className="px-3 py-3 pr-2 font-medium">เกียร์</th>
+                <th scope="col" className="px-3 py-2 font-medium">ตัวถัง</th>
+                <th scope="col" className="px-3 py-2 font-medium">ขุมพลัง</th>
+                <th scope="col" className="px-3 py-2 font-medium">กำลัง</th>
+                <th scope="col" className="px-3 py-2 pr-2 font-medium">เกียร์</th>
               </tr>
             </thead>
             <tbody>
@@ -553,10 +577,10 @@ export function CarDatabaseExplorer({
                   onClick={() => goTo(row.nameplateSlug)}
                   className={rowClass}
                 >
-                  <td className="py-3 pr-1 pl-2 text-right text-xs text-faint tabular-nums">
+                  <td className="py-2 pr-1 pl-2 text-right text-xs text-faint tabular-nums">
                     {i + 1}
                   </td>
-                  <td className="px-3 py-3">
+                  <td className="px-3 py-2">
                     <div className="flex items-center gap-3">
                       <CarThumb slug={row.nameplateSlug} />
                       <div className="min-w-0">
@@ -573,23 +597,24 @@ export function CarDatabaseExplorer({
                       </div>
                     </div>
                   </td>
-                  <td className="px-3 py-3 text-right text-[15px] font-semibold whitespace-nowrap tabular-nums">
+                  <td className="px-3 py-2 text-right text-[15px] font-semibold whitespace-nowrap tabular-nums">
                     {row.price != null ? (
                       formatTHB(row.price)
                     ) : (
                       <span className="text-sm font-normal text-faint">ไม่มีข้อมูล</span>
                     )}
+                    <PriceBar value={row.price} max={priceScaleMax} />
                   </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-muted">
+                  <td className="px-3 py-2 whitespace-nowrap text-muted">
                     {BODY_TYPE_LABEL[row.bodyType] ?? row.bodyType}
                   </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-muted">
+                  <td className="px-3 py-2 whitespace-nowrap text-muted">
                     {row.powertrainLabel}
                   </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-muted tabular-nums">
+                  <td className="px-3 py-2 whitespace-nowrap text-muted tabular-nums">
                     {row.powerText ?? <span className="text-faint">ไม่มีข้อมูล</span>}
                   </td>
-                  <td className="px-3 py-3 pr-2 whitespace-nowrap text-muted">
+                  <td className="px-3 py-2 pr-2 whitespace-nowrap text-muted">
                     {row.transmissionText ?? <span className="text-faint">ไม่มีข้อมูล</span>}
                   </td>
                 </tr>
