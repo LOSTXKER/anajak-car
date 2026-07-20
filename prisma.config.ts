@@ -10,6 +10,10 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // prisma CLI (db push/migrate) ต้องใช้สายตรง 5432 — transaction pooler 6543 ทำ CLI ค้าง (ดู PROGRESS.md)
+    // รัน CLI ด้วย: PRISMA_CLI_DIRECT=1 npx prisma db push · runtime ปกติใช้ pooler ตามเดิม
+    url: process.env["PRISMA_CLI_DIRECT"]
+      ? process.env["DIRECT_URL"]
+      : process.env["DATABASE_URL"],
   },
 });

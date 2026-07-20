@@ -16,7 +16,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // DATABASE_URL ถูกจ่ายผ่าน prisma.config.ts (process.env.DATABASE_URL) — ต่อ Supabase Postgres
+  // DATABASE_URL (pooler 6543 · runtime) + directUrl (5432 · prisma CLI) จ่ายผ่าน prisma.config.ts
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -81,13 +81,57 @@ enum BodyType {
 }
 
 // ระบบขับเคลื่อนพลังงาน (doc 5/10 — ICE/HEV/PHEV/BEV)
+// แกนนี้ตอบ "เสียบชาร์จได้ไหม/ใช้พลังงานอะไร" — โครงสร้างเครื่อง-มอเตอร์อยู่ที่ HybridArchitecture (คนละแกน)
 enum PowertrainType {
   ICE
   MHEV
   HEV
   PHEV
+  EREV // extended-range EV (เสียบชาร์จได้ + เครื่องยนต์ปั่นไฟอย่างเดียว) — ≠ PHEV (ไม่มี parallel mode) ≠ BEV (มีถังน้ำมัน) · ต้องคู่ hybridArchitecture=SERIES เสมอเมื่อทราบ
   BEV
   FCEV
+}
+
+// สถาปัตยกรรมไฮบริด — กับดักใหญ่สุดของศัพท์การตลาด: Toyota THS ≠ Honda e:HEV ≠ BYD DM-i แม้บางเจ้าเรียก "E-CVT" เหมือนกัน
+enum HybridArchitecture {
+  POWER_SPLIT // Toyota THS
+  SERIES_PARALLEL // Honda e:HEV, BYD DM-i (EHS)
+  SERIES // Nissan e-POWER, EREV ทุกยี่ห้อ — เครื่องยนต์ปั่นไฟอย่างเดียว ไม่เคยขับล้อ
+  DEDICATED_HYBRID_TRANSMISSION // GWM DHT — เฟือง 1-2 จังหวะเฉพาะทาง ไม่ใช่ DCT
+  OTHER
+}
+
+// หัวชาร์จ EV
+enum ChargePortType {
+  TYPE_2
+  CCS2
+  CHADEMO
+  OTHER
+}
+
+// หมวดฟีเจอร์ ADAS — เทียบข้ามแบรนด์ที่ระดับฟีเจอร์เท่านั้น ห้ามเทียบด้วยชื่อชุด (TSS ≠ SENSING แม้หมวดเดียวกัน)
+enum FeatureCategory {
+  AEB // เบรกฉุกเฉินอัตโนมัติ — เบรกให้จริง (Toyota PCS, Honda CMBS, Mitsubishi FCM)
+  FCW // เตือนชนด้านหน้า — เตือนอย่างเดียว ไม่เบรก (คนละฟีเจอร์กับ AEB)
+  ACC // ครูซคอนโทรลแปรผัน — full-speed Stop&Go หรือไม่ ดู TrimFeature.hasStopAndGo
+  LDW // เตือนออกนอกเลน
+  LKA // ช่วยประคองเลน (Toyota LTA, Honda LKAS)
+  HIGHWAY_ASSIST_L2
+  BSM // เตือนจุดอับสายตา — Honda LaneWatch (กล้องฝั่งซ้าย) ไม่ใช่ BSM เรดาร์
+  RCTA
+  SURROUND_VIEW
+  TRAFFIC_JAM_ASSIST
+  TSR // อ่านป้ายจราจร
+  AUTO_HIGH_BEAM
+  DRIVER_MONITORING
+  OTHER
+}
+
+// วงจรชีวิตของ concept ฟีเจอร์ — append-only: concept ซ้ำ/ควรแยก → MERGED + mergedIntoId ห้ามลบแถว
+enum FeatureStatus {
+  ACTIVE
+  DEPRECATED
+  MERGED
 }
 
 // ประเภท Phase (doc 5 — เปิดตัว/facelift/เปลี่ยนโครงสร้างชุดใหญ่)
@@ -119,23 +163,30 @@ enum ChangeType {
   DISCONTINUED // เลิกขาย
 }
 
-// ประเภทเกียร์
+// ประเภทเกียร์ — E-CVT ของไฮบริดไม่ใช่ CVT สายพาน และ Toyota/Honda ใช้ชื่อ "E-CVT" เรียกกลไกคนละแบบ
+// ห้ามยุบรวม (VOCABULARY.md §2.1) · ไม่รู้กลไกแน่ชัด → OTHER + status unknown ห้ามเดาจากชื่อ
 enum TransmissionType {
   MANUAL
   AUTOMATIC
-  CVT
+  CVT // สายพาน/พูลเลย์จริง — Toyota เรียกเกียร์ CVT ของรุ่น ICE ว่า "E-CVT" บนหน้าเว็บด้วย ต้องดู gear ratio ประกอบ
+  E_CVT_POWER_SPLIT // Toyota/Lexus THS — planetary power-split, ratio แปรผันต่อเนื่องจริง
+  E_CVT_DIRECT_DRIVE // Honda e:HEV — คลัตช์ล็อกเกียร์เดียว ไม่มีอัตราทดแปรผันจริง
   DCT
   AMT
   SINGLE_SPEED // EV
   OTHER
 }
 
-// ประเภทระบบขับเคลื่อน (ล้อ)
+// ประเภทระบบขับเคลื่อน (ล้อ) — AWD/FOUR_WD เดิมคงไว้ = "ยังไม่ verify subtype" (additive, ห้าม reclassify โดยไม่มีหลักฐาน)
 enum DrivetrainType {
   FWD
   RWD
-  AWD
-  FOUR_WD
+  AWD // legacy — AWD ยังไม่ระบุชนิด
+  AWD_ON_DEMAND // ปกติ 2WD ส่งกำลังล้อหลังอัตโนมัติเมื่อจำเป็น (Honda Real Time AWD)
+  AWD_FULL_TIME // ขับสี่ตลอดเวลา มีเฟืองกลาง ใช้ถนนแห้งได้
+  FOUR_WD // legacy — 4WD ยังไม่ระบุชนิด
+  FOUR_WD_PART_TIME // 2H/4H/4L — ห้ามใช้ 4H บนถนนแห้ง
+  FOUR_WD_SELECTABLE // สลับ part-time/full-time ได้ (Mitsubishi Super Select 4WD-II)
 }
 
 // ประเภทแหล่งข้อมูล/หลักฐาน (doc section 8.5)
@@ -145,7 +196,101 @@ enum EvidenceSourceType {
   MARKETPLACE_LICENSED // marketplace/inventory ที่มีสิทธิ์
   PARTNER // dealer/auction/finance/partner
   USER_REPORTED // ผู้ใช้ที่ให้ความยินยอม
-  EDITORIAL // ทีมข้อมูลตรวจทานเอง
+  MEDIA // สื่อยานยนต์/แหล่งอ้างอิงภายนอก (HeadlightMag, AutoLife, Wikipedia ฯลฯ)
+  EDITORIAL // ทีมข้อมูล CARMETA ตรวจทาน/จัดประเภทเอง
+}
+
+// ชนิด entity ที่ pointer polymorphic (AliasMapping/EvidenceLink) ชี้ถึง — ล็อกเป็น enum กัน typo แล้ว join เงียบหาย (VOCABULARY.md §2.0)
+enum EntityType {
+  BRAND
+  MARKET_PRESENCE
+  NAMEPLATE
+  GENERATION
+  DERIVATIVE
+  PHASE
+  TRIM
+  TRIM_FEATURE
+  VARIANT_REVISION
+  ENGINE
+  MOTOR
+  BATTERY
+  TRANSMISSION
+  DRIVETRAIN
+  PROMOTION_OBSERVATION
+  ALIAS_MAPPING // ให้ AliasMapping ผูกหลักฐานผ่าน EvidenceLink เหมือน entity อื่น
+  OTHER
+}
+
+// ชนิดส่วนลดโปรโมชัน (เดิมเป็น String อิสระ — ล็อกตามเจตนา comment เดิม)
+enum DiscountType {
+  CASH
+  GIFT
+  INTEREST_RATE
+  OTHER
+}
+
+// ── Canonical vocabulary enums (VOCABULARY.md §2.1) — คำกลาง แยกจากชื่อการตลาดที่เก็บใน *Raw/name ──
+
+// ชนิดเชื้อเพลิงของเครื่องยนต์สันดาป (มาตรฐานน้ำมันที่รองรับ เช่น E20 เป็นคนละมิติ → Engine.fuelGradeNote)
+enum FuelType {
+  DIESEL
+  GASOLINE
+  OTHER
+}
+
+// ระบบอัดอากาศ — ชื่อการตลาด (VN Turbo, VGT, Bi-Turbo) อยู่ที่ aspirationRaw
+enum AspirationType {
+  NA // naturally aspirated
+  TURBO
+  TWIN_TURBO
+  SUPERCHARGED
+  OTHER
+}
+
+// ตำแหน่งมอเตอร์ EV — ชนิดมอเตอร์ (PMSM/induction) ที่ปนอยู่ใน locationRaw จงใจยังไม่ canonicalize (Phase 5 — ดู VOCABULARY.md §7)
+enum MotorLayout {
+  FRONT
+  REAR
+  DUAL
+  OTHER
+}
+
+// เคมีแบตเตอรี่ — "ลิเธียมไอออน" หยาบเกิน map ไม่ได้ (ครอบทั้ง NMC/LFP) → คง unknown ตามหลักไม่เดา
+// Blade Battery ของ BYD = ชื่อแพ็ก LFP ไม่ใช่เคมีแยกชนิด
+enum BatteryChemistry {
+  NMC
+  LFP
+  OTHER
+}
+
+// แค็บกระบะ — จุดที่ชื่อการตลาดต่างกันสุดในตลาดไทย: Smart Cab (Toyota) / Space Cab (Isuzu) /
+// Mega Cab (Mitsubishi) / King Cab (Nissan) ฯลฯ = EXTENDED_CAB เดียวกัน · ชื่อจริงอยู่ที่ Derivative.name
+enum CabType {
+  SINGLE_CAB // ตอนเดียว
+  EXTENDED_CAB // แค็บ/ตอนครึ่ง
+  DOUBLE_CAB // 4 ประตู
+  NOT_APPLICABLE // ไม่ใช่กระบะ
+}
+
+// ระดับตัวถังกระบะ 2WD — ยกสูงขับหลัง (Prerunner/Hi-Lander/Hi-Rider) ≠ 4WD เด็ดขาด (คนละ cohort ราคามือสอง)
+// ใช้กับกระบะ 2WD เท่านั้น · 4WD และรถไม่ใช่กระบะ = NOT_APPLICABLE · อยู่ระดับ Trim เพราะแบรนด์จัดไลน์ยกสูง/เตี้ยที่ระดับเกรดการขาย
+enum RideHeightClass {
+  STANDARD // ตัวเตี้ย (กระบะพาณิชย์)
+  HIGH_RIDER // ยกสูงขับหลัง (Prerunner-class)
+  NOT_APPLICABLE
+}
+
+// โครงสร้างตัวถัง — แยก SUV แท้ (body-on-frame เช่น PPV) จาก crossover (unibody) โดยไม่พึ่งชื่อการตลาด
+enum ChassisType {
+  BODY_ON_FRAME
+  UNIBODY
+}
+
+// โครงการอีโคคาร์ (นิยามภาษี/ภาครัฐ) — คนละแกนกับขนาดตัวถัง: รถคันเดียวเป็นทั้ง B-segment และอีโคคาร์เฟส 2 ได้
+enum EcoCarPhase {
+  PHASE_1
+  PHASE_2
+  NOT_APPLICABLE
 }
 
 // ประเภทผู้ขาย (doc 8.3 — cohort)
@@ -195,6 +340,7 @@ model Brand {
   modelFamilies   GlobalModelFamily[]
   marketPresences MarketPresence[]
   changeEvents    ChangeEvent[]
+  aliasMappings   AliasMapping[]
 }
 
 /// GlobalModelFamily — ตระกูลรุ่นระดับ Global (ใช้ผูก Nameplate ไทยกับตลาดอื่น · optional)
@@ -264,17 +410,22 @@ model Nameplate {
 
 /// Generation — การเปลี่ยนโครงสร้างหลักของรุ่น
 model Generation {
-  id              String          @id @default(cuid())
-  nameplateId     String
-  code            String? // รหัสเจเนอเรชัน เช่น "MK7"
-  name            String?
-  launchYear      Int?
-  generationFrom  DateTime?
-  generationTo    DateTime?
-  lifecycleStatus LifecycleStatus @default(CURRENT)
-  summary         String?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  id                String          @id @default(cuid())
+  nameplateId       String
+  code              String? // รหัสเจเนอเรชัน เช่น "MK7"
+  name              String?
+  launchYear        Int?
+  generationFrom    DateTime?
+  generationTo      DateTime?
+  lifecycleStatus   LifecycleStatus @default(CURRENT)
+  chassisType       ChassisType? // แยก SUV แท้/crossover โดยไม่พึ่งชื่อการตลาด
+  chassisTypeStatus DataStatus      @default(unknown)
+  platformName      String? // "IMV", "e-TNGA", "DNGA" — เดิมจมอยู่ใน name/summary
+  ecoCarPhase       EcoCarPhase? // นิยามภาษีอีโคคาร์ — คนละแกนกับ segment
+  adasSuiteName     String? // ชื่อชุด ADAS ระดับ generation เช่น "Toyota Safety Sense" — free text ไม่ canonical (เทียบข้ามแบรนด์ที่ระดับฟีเจอร์เท่านั้น)
+  summary           String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   nameplate           Nameplate                 @relation(fields: [nameplateId], references: [id])
   derivatives         Derivative[]
@@ -285,18 +436,21 @@ model Generation {
 }
 
 /// Derivative / Body — ตัวถังหรืออนุพันธ์ (อาจ facelift คนละเวลากัน)
+/// cabType = คำกลางของแค็บกระบะ · ชื่อการตลาด (Smart Cab/Space Cab) ยังอยู่ที่ name ตามเดิม
 model Derivative {
-  id             String    @id @default(cuid())
+  id             String     @id @default(cuid())
   generationId   String
   bodyType       BodyType
   name           String?
+  cabType        CabType?
+  cabTypeStatus  DataStatus @default(unknown)
   doors          Int?
   wheelbaseMm    Int?
   derivativeFrom DateTime?
   derivativeTo   DateTime?
   notes          String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 
   generation Generation @relation(fields: [generationId], references: [id])
   phases     Phase[]
@@ -325,19 +479,25 @@ model Phase {
 }
 
 /// Trim — เกรดการขายภายใน Phase
+/// standardName = normalize การสะกดภายในแบรนด์+nameplate เดียวกันเพื่อการแสดงผลเท่านั้น — ไม่ใช่ tier ข้ามแบรนด์ (false precision)
+/// rideHeightClass อยู่ระดับนี้ (ไม่ใช่ Derivative) เพราะข้อมูลจริงไลน์ยกสูง/4WD ปนกันใน derivative เดียว (Prerunner/4TREX ใต้ Double Cab)
 model Trim {
-  id            String    @id @default(cuid())
-  phaseId       String
-  name          String
-  standardName  String? // ชื่อมาตรฐานหลัง normalize
-  effectiveFrom DateTime?
-  effectiveTo   DateTime?
-  notes         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               String           @id @default(cuid())
+  phaseId          String
+  name             String
+  standardName     String? // ชื่อมาตรฐานหลัง normalize (ภายในแบรนด์เดียวกันเท่านั้น)
+  marketingLine    String? // "Legender", "GR Sport", "Prerunner" — free text จงใจ ไม่ใช่ canonical ห้ามใช้ filter
+  rideHeightClass  RideHeightClass?
+  rideHeightStatus DataStatus       @default(unknown)
+  effectiveFrom    DateTime?
+  effectiveTo      DateTime?
+  notes            String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 
   phase            Phase             @relation(fields: [phaseId], references: [id])
   variantRevisions VariantRevision[]
+  trimFeatures     TrimFeature[]
 
   @@index([phaseId])
 }
@@ -348,6 +508,17 @@ model VariantRevision {
   trimId          String
   name            String?
   powertrainType  PowertrainType
+  // สถาปัตยกรรมไฮบริดอยู่ระดับนี้ (ไม่ใช่ Engine/Motor เดี่ยว) เพราะอธิบายความสัมพันธ์ทั้งชุดเครื่อง+มอเตอร์+เกียร์
+  hybridArchitecture       HybridArchitecture?
+  hybridArchitectureStatus DataStatus          @default(unknown) // not_applicable สำหรับ ICE/BEV
+  gradeCode       String? // รหัสรุ่นทางการจากผู้ผลิต เช่น "ZRE211R-GEXGKT/C4" — ตัวจับคู่ประกาศมือสองที่แม่นสุด (เดิมจมใน notes)
+  // ระยะทาง EV/PHEV — แยกตามมาตรฐานทดสอบ ห้ามแปลงข้ามมาตรฐานด้วยสูตร · status แยกรายมาตรฐาน (แหล่ง/เวลารู้ต่างกันได้)
+  rangeKmNedc       Float?
+  rangeKmNedcStatus DataStatus @default(not_applicable)
+  rangeKmWltp       Float?
+  rangeKmWltpStatus DataStatus @default(not_applicable)
+  rangeKmCltc       Float?
+  rangeKmCltcStatus DataStatus @default(not_applicable)
   modelYear       Int?
   modelYearStatus DataStatus     @default(unknown)
   seatCount       Int?
@@ -388,59 +559,76 @@ model VariantRevision {
 // ─────────────────────────────────────────────────────────────
 
 /// Engine — เครื่องยนต์สันดาป (versioned)
+/// แพตเทิร์นภาษากลาง (VOCABULARY.md §2.1): *Raw = ข้อความเดิม/การตลาด (ไม่ทิ้ง) · enum = คำกลางใช้กรอง/แสดง · *Status = รู้จริงไหม
 model Engine {
-  id             String     @id @default(cuid())
-  code           String?
-  name           String?
-  displacementCc Int?
-  cylinders      Int?
-  aspiration     String? // NA / Turbo / Twin-turbo
-  fuelType       String? // Petrol / Diesel
-  maxPowerHp     Int?
-  maxTorqueNm    Int?
-  powerStatus    DataStatus @default(unknown)
-  effectiveFrom  DateTime?
-  effectiveTo    DateTime?
-  notes          String?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  id               String          @id @default(cuid())
+  code             String?
+  name             String?
+  displacementCc   Int?
+  cylinders        Int?
+  aspirationRaw    String? // ข้อความเดิม เช่น "VN Turbo + Intercooler" (ศัพท์การตลาด Toyota)
+  aspiration       AspirationType?
+  aspirationStatus DataStatus      @default(unknown)
+  fuelTypeRaw      String? // ข้อความเดิม เช่น "ดีเซล"/"เบนซิน"
+  fuelType         FuelType?
+  fuelTypeStatus   DataStatus      @default(unknown)
+  fuelGradeNote    String? // "รองรับ E20" ฯลฯ — สเปกเสริม คนละมิติกับชนิดเชื้อเพลิง ห้ามยุบรวม
+  maxPowerPs       Int? // เดิมชื่อ maxPowerHp — ค่าจริงจากสเปกไทยเป็น PS
+  maxTorqueNm      Int?
+  powerStatus      DataStatus      @default(unknown)
+  effectiveFrom    DateTime?
+  effectiveTo      DateTime?
+  notes            String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
   variantRevisions VariantRevision[]
 }
 
 /// Motor — มอเตอร์ไฟฟ้า (versioned)
 model Motor {
-  id            String     @id @default(cuid())
+  id            String       @id @default(cuid())
   code          String?
   name          String?
   count         Int? // จำนวนมอเตอร์
   maxPowerKw    Float?
   maxTorqueNm   Int?
-  location      String? // front / rear / dual
-  powerStatus   DataStatus @default(unknown)
+  locationRaw   String? // ข้อความเดิม เช่น "หน้า (front eAxle, PMSM)" — ปน fact กลาง + ชื่อการตลาด + ชนิดมอเตอร์
+  layout        MotorLayout?
+  layoutStatus  DataStatus   @default(unknown)
+  powerStatus   DataStatus   @default(unknown)
   effectiveFrom DateTime?
   effectiveTo   DateTime?
   notes         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   variantRevisions VariantRevision[]
 }
 
 /// Battery — แบตเตอรี่ขับเคลื่อน (versioned)
 model Battery {
-  id             String     @id @default(cuid())
-  code           String?
-  chemistry      String? // NMC / LFP
-  capacityKwh    Float?
-  usableKwh      Float?
-  voltage        Int?
-  capacityStatus DataStatus @default(unknown)
-  effectiveFrom  DateTime?
-  effectiveTo    DateTime?
-  notes          String?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  id              String            @id @default(cuid())
+  code            String?
+  chemistryRaw    String? // ข้อความเดิม เช่น "ลิเธียมไอออน" (หยาบกว่าเคมีจริง — ถอยเป็น unknown โดยตั้งใจ ดู VOCABULARY.md §3 ข้อ 8)
+  chemistry       BatteryChemistry?
+  chemistryStatus DataStatus        @default(unknown)
+  capacityKwh     Float?
+  usableKwh       Float?
+  voltage         Int?
+  capacityStatus  DataStatus        @default(unknown)
+  // สเปกชาร์จ — แยก AC/DC เสมอทั้งค่าและ status (kW ตู้ AC ถูกจำกัดโดย on-board charger · มักมาจากแหล่งคนละชุดกับ DC)
+  acMaxKw      Float?
+  acChargePort ChargePortType?
+  acStatus     DataStatus      @default(unknown)
+  dcMaxKw      Float?
+  dcChargePort ChargePortType?
+  dcStatus     DataStatus      @default(unknown)
+  effectiveFrom   DateTime?
+  effectiveTo     DateTime?
+  notes           String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   variantRevisions VariantRevision[]
 }
@@ -462,15 +650,21 @@ model Transmission {
 }
 
 /// Drivetrain — ระบบขับเคลื่อนล้อ (versioned)
+/// name = ชื่อการตลาด (Super Select 4WD-II, Real Time AWD) — ข้อมูลรอง ห้ามเข้า specLine
 model Drivetrain {
-  id            String         @id @default(cuid())
-  type          DrivetrainType
-  name          String?
-  effectiveFrom DateTime?
-  effectiveTo   DateTime?
-  notes         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id                 String         @id @default(cuid())
+  type               DrivetrainType
+  name               String?
+  hasLowRange        Boolean? // มีเกียร์ 4L/low range ไหม
+  lowRangeStatus     DataStatus     @default(unknown)
+  hasRearDiffLock    Boolean? // มีล็อกเฟืองท้ายไหม
+  rearDiffLockStatus DataStatus     @default(unknown)
+  torqueSplitNominal String? // "40:60" — ค่า nominal จากการตลาด ห้ามใช้คำนวณ/เทียบเป็นสเปกวัดจริง
+  effectiveFrom      DateTime?
+  effectiveTo        DateTime?
+  notes              String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
   variantRevisions VariantRevision[]
 }
@@ -479,22 +673,29 @@ model Drivetrain {
 // Supporting entities (doc section 5 "Entity สนับสนุน" + section 8)
 // ─────────────────────────────────────────────────────────────
 
-/// AliasMapping — จับชื่อรุ่นจากเอกสาร/ประกาศ → รหัสกลาง (generic pointer ทุก entity)
+/// AliasMapping — จับชื่อรุ่น/ชื่อการตลาดจากเอกสาร/ประกาศ → รหัสกลาง (generic pointer ทุก entity)
+/// หลักฐานของการ map ผูกผ่าน EvidenceLink(entityType=ALIAS_MAPPING, entityId=<id>) — ไม่มี FK หลักฐานตรงบนตารางนี้ (VOCABULARY.md §2.0)
 model AliasMapping {
   id              String      @id @default(cuid())
   alias           String
   normalizedAlias String?
   language        String? // th / en
   sourceContext   String? // มาจากเอกสาร/ประกาศแบบไหน
-  entityType      String // "Brand" | "Nameplate" | "Trim" | ...
+  entityType      EntityType
   entityId        String
+  // แบรนด์ไหนเรียก alias นี้ — denormalized จาก FK chain จริง (DB บังคับไม่ได้เพราะ entityId เป็น polymorphic pointer)
+  // ต้อง validate ระดับ application ก่อน save เสมอว่า brandId ตรงกับ brand จริงของ entity ปลายทาง
+  brandId         String?
   confidence      Confidence?
   note            String?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
+  brand Brand? @relation(fields: [brandId], references: [id])
+
   @@index([entityType, entityId])
   @@index([normalizedAlias])
+  @@index([brandId])
 }
 
 /// EvidenceSource — Evidence Ledger: ผู้เผยแพร่ เอกสาร วันที่ สิทธิ์ ผู้ตรวจ (doc 5/7.9/9)
@@ -526,8 +727,8 @@ model EvidenceSource {
 
 /// EvidenceLink — เชื่อม EvidenceSource เข้ากับ entity ใดๆ (สำหรับ reference data + หลักฐานเสริม)
 model EvidenceLink {
-  id               String   @id @default(cuid())
-  entityType       String
+  id               String     @id @default(cuid())
+  entityType       EntityType
   entityId         String
   field            String? // field/ข้อเท็จจริงที่หลักฐานนี้รองรับ
   note             String?
@@ -570,7 +771,7 @@ model PromotionObservation {
   variantRevisionId String?
   title             String
   description       String?
-  discountType      String? // เงินสด / ของแถม / ดอกเบี้ย
+  discountType      DiscountType?
   discountAmount    Decimal?  @db.Decimal(12, 2)
   conditions        String?
   priceType         PriceType @default(ANNOUNCED_PROMOTION)
@@ -618,6 +819,48 @@ model ChangeEvent {
   @@index([nameplateId])
   @@index([effectiveDate])
   @@index([changeType])
+}
+
+/// Feature — ทะเบียนฟีเจอร์กลาง (master data · VOCABULARY.md §2.3) — จุดเดียวที่สร้างตารางใหม่จริงของระบบภาษากลาง
+model Feature {
+  id              String        @id @default(cuid())
+  category        FeatureCategory
+  canonicalNameTh String // "เบรกฉุกเฉินอัตโนมัติ"
+  canonicalNameEn String // "Autonomous Emergency Braking"
+  definition      String? // เกณฑ์แยกจากฟีเจอร์ใกล้เคียง เช่น "เบรกให้จริง ไม่ใช่แค่เตือน" (แยก AEB จาก FCW)
+  status          FeatureStatus @default(ACTIVE)
+  mergedIntoId    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  mergedInto   Feature?      @relation("FeatureMerge", fields: [mergedIntoId], references: [id])
+  mergedFrom   Feature[]     @relation("FeatureMerge")
+  trimFeatures TrimFeature[]
+}
+
+/// TrimFeature — ฟีเจอร์ต่อเกรดการขาย (multi-value · unknown ≠ ไม่มี · fact เชิงลบต้องมีหลักฐานเท่าฝั่งบวก)
+/// หลักฐานผูกผ่าน EvidenceLink(entityType=TRIM_FEATURE, field="hasFeature")
+/// ⚠️ unique กันแถวซ้ำใช้ partial index 2 ตัว (สร้างด้วย SQL มือ — ดู ops/phase4-partial-unique.sql)
+/// เพราะ @@unique ปกติถือ NULL ≠ NULL ทำให้แถว effectiveFrom=null ซ้ำได้เงียบๆ
+model TrimFeature {
+  id            String     @id @default(cuid())
+  trimId        String
+  featureId     String
+  status        DataStatus @default(unknown)
+  hasFeature    Boolean? // เติมเมื่อ status=known เท่านั้น
+  hasStopAndGo  Boolean? // เฉพาะ category=ACC — full-speed Stop&Go ≠ ACC ตัดใต้ ~30 กม./ชม.
+  marketingName String? // ชื่อที่แบรนด์เรียก — "Pre-Collision System" (ข้อมูลรอง ห้ามใช้เทียบ)
+  operatingNote String? // ช่วงความเร็ว/เป้าตรวจจับ — free text จงใจ ไม่ over-structure
+  effectiveFrom DateTime?
+  effectiveTo   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  trim    Trim    @relation(fields: [trimId], references: [id])
+  feature Feature @relation(fields: [featureId], references: [id])
+
+  @@index([trimId])
+  @@index([featureId])
 }
 
 /// PhysicalVehicle — รถจริงแต่ละคัน · POST-MVP (VIN/ทะเบียน/ความยินยอม/เชื่อมหลาย Listing)
