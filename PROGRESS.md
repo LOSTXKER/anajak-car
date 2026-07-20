@@ -36,10 +36,9 @@
 - VOCABULARY Phase 5 backlog: reclassify legacy AWD/FOUR_WD → subtype (ต้องเช็ค spec ทีละรุ่น) · motor type PMSM/induction · `ecoCarPhase` Yaris Ativ รอหลักฐานภาษี
 - dev server: อย่ารันบน 3000 (ชนงาน meecard ของเบส) — ตอน verify ใช้ `PORT=3105 npm start` แล้วปิดแล้ว
 - รูปรถ = ลิขสิทธิ์ Toyota (CREDITS.md ครบ) — ทบทวนสิทธิ์ก่อน production · ยังไม่มี production domain
-- งานทั้งหมดยังไม่ commit (นโยบาย: รอเบสสั่ง) — ไฟล์ที่แตะ: schema.prisma, prisma.config.ts, seed*.ts, vocab.ts, ops/*, queries.ts, labels.ts, VOCABULARY.md, PLAN.md, PROGRESS.md
+- ~~งานยังไม่ commit~~ → **commit + push แล้ว (เบสสั่ง 2026-07-20)**: `a330ea4` เว็บ v1 (M2–M12) + `a01076e` ภาษากลาง (M13–M14) — tree สะอาด
 
 ## ▶ NEXT (ทำต่อทันที)
-1. เบสอ่าน TL;DR หัว `VOCABULARY.md` (สรุปสั้นภาษาคน) — ถ้าโอเค สั่ง commit ได้เลย
-2. Seed Hilux Champ/Revo 21 รุ่นย่อย (ข้อมูล verified รอใน journal) — รอบนี้ต้องกรอกช่องภาษากลางใหม่ด้วย (cabType/rideHeight/fuelType ฯลฯ ผ่าน editorial gate §4)
-3. Research + seed ADAS 3 ฟีเจอร์แรกจากหน้า Toyota Safety Sense ทางการ → เปิดหน้าเทียบฟีเจอร์
-4. รอเบสรีวิวหน้า "บันไดราคา" (`/cars/hilux-travo`) — ถ้าใช่ทิศทาง เกลาหน้าแรก/แบรนด์ต่อ
+1. Seed Hilux Champ/Revo 21 รุ่นย่อย (ข้อมูล verified รอใน journal) — รอบนี้ต้องกรอกช่องภาษากลางใหม่ด้วย (cabType/rideHeight/fuelType ฯลฯ ผ่าน editorial gate §4)
+2. Research + seed ADAS 3 ฟีเจอร์แรกจากหน้า Toyota Safety Sense ทางการ → เปิดหน้าเทียบฟีเจอร์
+3. รอเบสรีวิวหน้า "บันไดราคา" (`/cars/hilux-travo`) — ถ้าใช่ทิศทาง เกลาหน้าแรก/แบรนด์ต่อ
