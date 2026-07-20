@@ -169,8 +169,15 @@
 - [x] คอลัมน์ "ปี" กลับเข้าตาราง (ไม่มีช่องว่างแล้ว) · โลโก้แบรนด์เล็กหน้าชื่อรุ่น (BrandMark + dark variant ตาม registry เดิม) · ป้ายสถานะขายอยู่/เลิกจำหน่าย (LifecycleBadge สี semantic) ท้ายชื่อ
 - [x] verify: tsc/lint/build + screenshot จริง
 
+## ✅ Milestone 21: ADAS 3 ฟีเจอร์แรก — จากสเปกทางการต่อรุ่นย่อย (เสร็จ 2026-07-20)
+- [x] Fetch สเปกทางการทั้ง 16 series จาก `/model/api/car/` — section ระบบความปลอดภัยระบุ PCS/Cruise/LTA·LKC ต่อ grade ชัดเจน (audit: `ops/data/adas-classified-20260720.json`)
+- [x] Classifier เข้มตามกฎ §4: "ไม่มี"/"-" = false (fact ลบมีหลักฐาน) · ไม่มีแถว = unknown ไม่ insert (Fortuner ไม่มีแถว PCS ทั้งไลน์) · Cruise "มี" เฉยๆ = unknown (ครูซธรรมดา ≠ ACC) — ระหว่างทางจับบั๊กตัวเอง ("ไม่มี" เคยถูกอ่านเป็นมี) + เจอชื่อที่ 3 ของ LKA (Yaris ใช้ "LKC")
+- [x] Seed: Feature 3 (AEB/ACC/LKA canonical) + TrimFeature 90 แถว known ทั้งหมด — จับคู่ grade→variant ด้วย gradeCode แม่น 63/63 · ข้าม 5 trim ที่ค่าไม่ชัด · EvidenceSource ทางการต่อ series + EvidenceLink ทุกแถว (รวม 261)
+- [x] หน้า /cars: section "ระบบช่วยขับขี่" — uniform ทั้งรุ่น = สรุปบรรทัดเดียว (bZ4X/Champ/Revo) · ต่างตามเกรด = ตาราง trim×ฟีเจอร์ (Altis/Yaris/Travo/Fortuner) · มี=เขียว ไม่มี=จาง ยังไม่ยืนยัน=เอียง · marketing name เป็น tooltip ตามกฎ §3 ข้อ 7
+- [x] verify: verify-vocab.ts 34/34 ✅ + build + curl 7 หน้า + screenshot (ตาราง Travo เล่าเรื่องชัด: รุ่นล่างไม่มี → Overland Plus/Travo-e ครบ)
+
 ## ถัดไป (ยังไม่เริ่ม)
-- [ ] Seed ADAS 3 ฟีเจอร์แรก (AEB/ACC/LKA) — ต้อง research หลักฐานต่อ trim จาก toyota.co.th ก่อน (Phase 4 ต่อ)
+
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี
 - [ ] Nameplate Hub (Generation + ภาพรวมราคา)
 - [ ] Generation/Phase Profile (Phase/Trim/Variant + timeline)

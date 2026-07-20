@@ -203,6 +203,84 @@ export default async function NameplatePage({ params }: Props) {
         )}
       </section>
 
+      {/* ระบบช่วยขับขี่ (ADAS) — จาก TrimFeature ตามสเปกทางการต่อรุ่นย่อย (VOCABULARY.md Phase 4)
+          กฎ §3 ข้อ 7: คำกลางนำ ชื่อการตลาดเป็น tooltip · ห้าม badge "มีชุด Toyota Safety Sense" รวมๆ
+          อย่าซ้ำ: ถ้าทุกเกรดเหมือนกันหมด สรุปบรรทัดเดียว ไม่กางตาราง */}
+      {detail.adas && detail.adas.trims.length > 0 && (() => {
+        const { features, trims } = detail.adas;
+        const uniform = features.every((f) => {
+          const vals = trims.map((t) => t.values.find((v) => v.key === f.key)?.has);
+          return new Set(vals.map(String)).size === 1;
+        });
+        const statusText = (has: boolean | null) =>
+          has === true ? "มี" : has === false ? "ไม่มี" : "ยังไม่ยืนยัน";
+        const statusClass = (has: boolean | null) =>
+          has === true
+            ? "text-success font-medium"
+            : has === false
+              ? "text-faint"
+              : "text-faint italic";
+        return (
+          <section aria-labelledby="adas-heading" className="border-t border-border pt-10 pb-14">
+            <h2 id="adas-heading" className="text-xl font-semibold tracking-tight">
+              ระบบช่วยขับขี่
+            </h2>
+            {uniform ? (
+              <ul className="mt-4 max-w-3xl space-y-2">
+                {features.map((f) => {
+                  const v = trims[0].values.find((x) => x.key === f.key)!;
+                  return (
+                    <li key={f.key} className="flex items-baseline gap-3 text-[15px]">
+                      <span className={statusClass(v.has)}>{statusText(v.has)}</span>
+                      <span title={f.definition ?? undefined}>
+                        {f.nameTh} <span className="text-faint">({f.key})</span>
+                      </span>
+                      {v.marketing && v.has && (
+                        <span className="text-sm text-faint" title={v.marketing}>
+                          — {v.marketing.split(":")[0]}
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+                <li className="pt-1 text-[13px] text-faint">ทุกรุ่นย่อยเหมือนกันทั้งรุ่น</li>
+              </ul>
+            ) : (
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full max-w-3xl text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-left text-[13px] text-faint">
+                      <th scope="col" className="py-2 pr-3 font-medium">รุ่นย่อย/เกรด</th>
+                      {features.map((f) => (
+                        <th key={f.key} scope="col" className="px-3 py-2 font-medium" title={f.definition ?? undefined}>
+                          {f.nameTh} <span className="font-normal">({f.key})</span>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {trims.map((t) => (
+                      <tr key={t.label} className="border-b border-border last:border-b-0">
+                        <td className="py-2.5 pr-3 font-medium">{t.label}</td>
+                        {t.values.map((v) => (
+                          <td key={v.key} className="px-3 py-2.5" title={v.marketing ?? undefined}>
+                            <span className={statusClass(v.has)}>{statusText(v.has)}</span>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <p className="mt-3 text-[13px] text-faint">
+              ตามตารางสเปกทางการ toyota.co.th ต่อรุ่นย่อย — ค่าที่สเปกไม่ระบุแสดงเป็น
+              &ldquo;ยังไม่ยืนยัน&rdquo; (ไม่ใช่ &ldquo;ไม่มี&rdquo;) · ชื่อระบบทางการค้าดูได้จาก tooltip
+            </p>
+          </section>
+        );
+      })()}
+
       {detail.changeEvents.length > 0 && (
         <section aria-labelledby="timeline-heading" className="border-t border-border pt-10 pb-14">
           <h2 id="timeline-heading" className="text-xl font-semibold tracking-tight">

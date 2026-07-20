@@ -70,6 +70,23 @@ export type VariantGroup = {
   rows: VariantRow[];
 };
 
+// ระบบช่วยขับขี่ (ADAS) ต่อ trim — จาก TrimFeature (VOCABULARY.md Phase 4)
+// has: true=มี · false=ไม่มี (สเปกทางการระบุชัด) · null=ยังไม่ยืนยัน (สเปกไม่ระบุ)
+export type AdasFeatureCol = {
+  key: string;
+  nameTh: string;
+  nameEn: string;
+  definition: string | null;
+};
+export type AdasTrimRow = {
+  label: string; // ชื่อ trim (+ชื่อตัวถังเมื่อชื่อซ้ำข้ามแค็บ)
+  values: { key: string; has: boolean | null; marketing: string | null }[];
+};
+export type AdasSection = {
+  features: AdasFeatureCol[];
+  trims: AdasTrimRow[];
+} | null;
+
 export type ChangeEventRow = {
   id: string;
   changeType: string;
@@ -108,6 +125,7 @@ export type NameplateDetail = {
   priceMax: number | null;
   latestChecked: string | null;
   groups: VariantGroup[];
+  adas: AdasSection;
   changeEvents: ChangeEventRow[];
   sources: SourceRow[];
 };
@@ -497,6 +515,66 @@ export const getNameplateDetail = cache(async (slug: string): Promise<NameplateD
 
   const currentGeneration = nameplate.generations[0] ?? null;
 
+  // ── ADAS ต่อ trim (TrimFeature — VOCABULARY.md Phase 4) ──
+  const trimFeatures = await prisma.trimFeature.findMany({
+    where: { trim: { phase: { derivative: { generation: { nameplateId: nameplate.id } } } } },
+    include: { feature: true },
+  });
+  let adas: AdasSection = null;
+  if (trimFeatures.length > 0) {
+    const FEATURE_ORDER = ["AEB", "ACC", "LKA"];
+    const features: AdasFeatureCol[] = [...new Map(
+      trimFeatures.map((tf) => [tf.feature.category, {
+        key: tf.feature.category,
+        nameTh: tf.feature.canonicalNameTh,
+        nameEn: tf.feature.canonicalNameEn,
+        definition: tf.feature.definition,
+      }]),
+    ).values()].sort((a, b) => FEATURE_ORDER.indexOf(a.key) - FEATURE_ORDER.indexOf(b.key));
+
+    // ไล่ trim ตามลำดับที่ปรากฏในบันไดราคา (ราคาต่ำ→สูง) · ชื่อ trim ซ้ำข้ามแค็บ → เติมชื่อตัวถัง
+    const byTrimId = new Map<string, typeof trimFeatures>();
+    for (const tf of trimFeatures) {
+      if (!byTrimId.has(tf.trimId)) byTrimId.set(tf.trimId, []);
+      byTrimId.get(tf.trimId)!.push(tf);
+    }
+    const seenTrimIds = new Set<string>();
+    const orderedTrims: { id: string; name: string; derivativeLabel: string }[] = [];
+    for (const flat of flats.slice().sort((a, b) => {
+      const pa = latestPrice(a)?.amount, pb = latestPrice(b)?.amount;
+      return (pa != null ? Number(pa) : Infinity) - (pb != null ? Number(pb) : Infinity);
+    })) {
+      if (!seenTrimIds.has(flat.trim.id)) {
+        seenTrimIds.add(flat.trim.id);
+        orderedTrims.push({
+          id: flat.trim.id,
+          name: flat.trim.name,
+          derivativeLabel: flat.derivative.name ?? "",
+        });
+      }
+    }
+    const nameCounts = new Map<string, number>();
+    for (const t of orderedTrims) nameCounts.set(t.name, (nameCounts.get(t.name) ?? 0) + 1);
+
+    const trims: AdasTrimRow[] = orderedTrims.map((t) => {
+      const tfs = byTrimId.get(t.id) ?? [];
+      return {
+        label: (nameCounts.get(t.name) ?? 0) > 1 && t.derivativeLabel
+          ? `${t.name} — ${t.derivativeLabel}`
+          : t.name,
+        values: features.map((f) => {
+          const tf = tfs.find((x) => x.feature.category === f.key);
+          return {
+            key: f.key,
+            has: tf && tf.status === "known" ? tf.hasFeature : null,
+            marketing: tf?.marketingName ?? null,
+          };
+        }),
+      };
+    });
+    adas = { features, trims };
+  }
+
   return {
     slug: nameplate.slug,
     name: nameplate.name,
@@ -513,6 +591,7 @@ export const getNameplateDetail = cache(async (slug: string): Promise<NameplateD
     priceMax: prices.length ? Math.max(...prices) : null,
     latestChecked: maxDate(checked),
     groups,
+    adas,
     changeEvents: changeEvents.map((event) => ({
       id: event.id,
       changeType: event.changeType,

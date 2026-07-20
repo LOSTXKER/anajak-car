@@ -1,0 +1,1158 @@
+{
+ "altis": {
+  "series_title": "Corolla Altis",
+  "grades": [
+   {
+    "grade_code": "ZWE211R-GEXGBT/B5",
+    "title": "HEV Premium",
+    "price": 1009000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Dynamic Radar Cruise Control แบบ All-speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "มี"
+     }
+    }
+   },
+   {
+    "grade_code": "ZWE211R-GEXDBT/B4",
+    "title": "HEV Smart",
+    "price": 949000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Dynamic Radar Cruise Control แบบ All-speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "มี"
+     }
+    }
+   },
+   {
+    "grade_code": "ZRE211R-GEXGKT/C4",
+    "title": "1.8G",
+    "price": 909000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   }
+  ]
+ },
+ "altis_grsport": {
+  "series_title": "Corolla Altis GR Sport",
+  "grades": [
+   {
+    "grade_code": "ZWE211R-GEXXBT/B1",
+    "title": "HEV GR Sport",
+    "price": 1129000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี พร้อมระบบ Dynamic Radar Cruise Control แบบ All-speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "มี"
+     }
+    }
+   }
+  ]
+ },
+ "bz4x": {
+  "series_title": "bZ4X",
+  "grades": [
+   {
+    "grade_code": "XEAM15R-MWDHQW/A4",
+    "title": "AWD",
+    "price": 1649000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Dynamic Radar Cruise Control แบบ All-Speed และระบบลดความเร็วอัตโนมัติขณะเข้าโค้ง"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "มี"
+     }
+    }
+   },
+   {
+    "grade_code": "XEAM11R-MWDHQW/N4",
+    "title": "FWD",
+    "price": 1529000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Dynamic Radar Cruise Control แบบ All-Speed และระบบลดความเร็วอัตโนมัติขณะเข้าโค้ง"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "มี"
+     }
+    }
+   }
+  ]
+ },
+ "fortuner_grsport": {
+  "series_title": "Fortuner GR Sport",
+  "grades": [
+   {
+    "grade_code": "GUN156R-STTHXT/C5",
+    "title": "2.8 GR Sport 4WD",
+    "price": 1969000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี แบบ Dynamic Radar Cruise Control"
+     }
+    }
+   }
+  ]
+ },
+ "fortuner_leader": {
+  "series_title": "Fortuner Leader",
+  "grades": [
+   {
+    "grade_code": "GUN155R-STTHXT/A5",
+    "title": "2.4 Leader V 4WD",
+    "price": 1600000,
+    "features": {
+     "ACC": {
+      "present": null,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN165R-STTHXT/A5",
+    "title": "2.4 Leader V",
+    "price": 1530000,
+    "features": {
+     "ACC": {
+      "present": null,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN165R-STTSXT/XT",
+    "title": "2.4 Leader G+",
+    "price": 1439000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN165R-STTSXT/A5",
+    "title": "2.4 Leader G",
+    "price": 1400000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN165R-STTLXT/A5",
+    "title": "2.4 Leader S",
+    "price": 1239000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   }
+  ]
+ },
+ "fortuner_legender": {
+  "series_title": "Fortuner Legender",
+  "grades": [
+   {
+    "grade_code": "GUN156R-STTHXT/B5",
+    "title": "2.8 Legender 4WD",
+    "price": 1904000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี แบบ Dynamic Radar Cruise Control"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN166R-STTHXT/B5",
+    "title": "2.8 Legender",
+    "price": 1835000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี แบบ Dynamic Radar Cruise Control"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN155R-STTHXT/B5",
+    "title": "2.4 Legender 4WD",
+    "price": 1713000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี แบบ Dynamic Radar Cruise Control"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN165R-STTHXT/B5",
+    "title": "2.4 Legender",
+    "price": 1643000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี แบบ Dynamic Radar Cruise Control"
+     }
+    }
+   }
+  ]
+ },
+ "hilux_champ": {
+  "series_title": "Hilux Champ",
+  "grades": [
+   {
+    "grade_code": "GUN100R-ATTHXT/A3",
+    "title": "2.4 AT Super SWB Attractive Package",
+    "price": 615000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN110R-ATTHXT/A3",
+    "title": "2.4 AT SWB Attractive Package",
+    "price": 602000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN120R-ATTHXT/A3",
+    "title": "2.4 AT LWB",
+    "price": 582000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN110R-ATTHXT3/A3",
+    "title": "2.4 AT C&C SWB",
+    "price": 557000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN122R-ATMHXT/A3",
+    "title": "2.4 MT LWB",
+    "price": 547000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN122R-ATMHXT3/A3",
+    "title": "2.4 MT C&C LWB",
+    "price": 519000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   }
+  ]
+ },
+ "hilux_revo_standard": {
+  "series_title": "Hilux Revo Standard Cab",
+  "grades": [
+   {
+    "grade_code": "GUN121R-BTFLXT/A5",
+    "title": "2.8 Entry",
+    "price": 639000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "-"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN120R-BTTLXT/A5",
+    "title": "2.4 Entry AT",
+    "price": 674000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "-"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN122R-BTFLXT/A5",
+    "title": "2.4 Entry",
+    "price": 624000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "-"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN112R-BTMLXT/A5",
+    "title": "2.4 Entry ช่วงล้อสั้น",
+    "price": 624000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "-"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN122R-BTFLXT3/5A",
+    "title": "2.4 Entry (ไม่มีกระบะ)",
+    "price": 584000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "-"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN120R-BTTLXT3/5A",
+    "title": "2.4 Entry AT (ไม่มีกระบะ)",
+    "price": 634000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "-"
+     }
+    }
+   }
+  ]
+ },
+ "hilux_revo_zedition": {
+  "series_title": "Hilux Revo Z Edition",
+  "grades": [
+   {
+    "grade_code": "GUN120R-DTTSXT/D5",
+    "title": "Double Cab Z Edition 4x2 2.4 Mid AT",
+    "price": 862000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN122R-DTFSXT/D5",
+    "title": "Double Cab Z Edition 4x2 2.4 Mid",
+    "price": 822000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN120R-DTTLXT/A5",
+    "title": "Double Cab Z Edition 4x2 2.4 Entry AT",
+    "price": 784000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN122R-DTFLXT/B5",
+    "title": "Double Cab Z Edition 4x2 2.4 Entry",
+    "price": 744000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN121R-DTTSXT/C6",
+    "title": "Double Cab 4x2 2.8 GR Sport AT",
+    "price": 934000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN120R-CTTSXT/C5",
+    "title": "Smart Cab Z Edition 4x2 2.4 Mid AT",
+    "price": 790000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN122R-CTFSXT/C5",
+    "title": "Smart Cab Z Edition 4x2 2.4 Mid",
+    "price": 740000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN120R-CTTLXT/A5",
+    "title": "Smart Cab Z Edition 4x2 2.4 Entry AT",
+    "price": 719000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN122R-CTFLXT/B5",
+    "title": "Smart Cab Z Edition 4x2 2.4 Entry",
+    "price": 669000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     }
+    }
+   }
+  ]
+ },
+ "hilux_travo_e": {
+  "series_title": "Hilux Travo-e",
+  "grades": [
+   {
+    "grade_code": "XPN225R-DTDHST/A1",
+    "title": "Hilux Travo-e Double Cab 4TREX",
+    "price": 1491000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "พร้อมระบบ Dynamic Radar Cruise Control แบบ All Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "มี"
+     }
+    }
+   }
+  ]
+ },
+ "hilux_travo_overland": {
+  "series_title": "Hilux Travo Overland",
+  "grades": [
+   {
+    "grade_code": "GUN236R-DTTHXT/A1",
+    "title": "Hilux Travo Double Cab Prerunner 2.8 Overland AT",
+    "price": 1102000,
+    "features": {
+     "ACC": {
+      "present": null,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN236R-DTTHXT/B1",
+    "title": "Hilux Travo Double Cab Prerunner 2.8 Overland Plus AT",
+    "price": 1176000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "พร้อมระบบ Dynamic Radar Cruise Control แบบ All Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN226R-DTTHXT/A1",
+    "title": "Hilux Travo Double Cab 4TREX 2.8 Overland AT",
+    "price": 1292000,
+    "features": {
+     "ACC": {
+      "present": null,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN226R-DTTHXT/B1",
+    "title": "Hilux Travo Double Cab 4TREX 2.8 Overland Plus AT",
+    "price": 1366000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "พร้อมระบบ Dynamic Radar Cruise Control แบบ All Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "มี"
+     }
+    }
+   }
+  ]
+ },
+ "hilux_travo_prerunner_4trex": {
+  "series_title": "Hilux Travo Prerunner & 4TREX",
+  "grades": [
+   {
+    "grade_code": "GUN236R-DTTMXT/A1",
+    "title": "Hilux Travo Double Cab Prerunner 2.8 Premium AT",
+    "price": 999000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN226R-DTFMXT/A1",
+    "title": "Hilux Travo Double Cab 4TREX 2.8 Premium MT",
+    "price": 1090000,
+    "features": {
+     "ACC": {
+      "present": null,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN236R-DTFMXT/A1",
+    "title": "Hilux Travo Double Cab Prerunner 2.8 Premium MT",
+    "price": 949000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN236R-DTTLXT/A1",
+    "title": "Hilux Travo Double Cab Prerunner 2.8 Smart AT",
+    "price": 945000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN236R-DTFLXT/A1",
+    "title": "Hilux Travo Double Cab Prerunner 2.8 Smart MT",
+    "price": 895000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN226R-CTTMXT/A1",
+    "title": "Hilux Travo Smart Cab 4TREX 2.8 Premium AT",
+    "price": 1029000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN226R-CTFMXT/A1",
+    "title": "Hilux Travo Smart Cab 4TREX 2.8 Premium MT",
+    "price": 984000,
+    "features": {
+     "ACC": {
+      "present": null,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN236R-CTTMXT/A1",
+    "title": "Hilux Travo Smart Cab Prerunner 2.8 Premium AT",
+    "price": 909000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN236R-CTFMXT/A1",
+    "title": "Hilux Travo Smart Cab Prerunner 2.8 Premium MT",
+    "price": 859000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN236R-CTTLXT/A1",
+    "title": "Hilux Travo Smart Cab Prerunner 2.8 Smart AT",
+    "price": 839000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN236R-CTFLXT/A1",
+    "title": "Hilux Travo Smart Cab Prerunner 2.8 Smart MT",
+    "price": 789000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   }
+  ]
+ },
+ "hilux_travo_standard_4trex": {
+  "series_title": "Hilux Travo Standard Cab 4TREX",
+  "grades": [
+   {
+    "grade_code": "GUN226R-BTTLXT/A1",
+    "title": "Hilux Travo Standard Cab 4TREX 2.8  AT",
+    "price": 819000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "GUN226R-BTFXXT/A1",
+    "title": "Hilux Travo Standard Cab 4TREX 2.8  MT",
+    "price": 767000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": false,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "ไม่มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยควบคุมรถให้อยู่กลางเลน (LTA)",
+      "value": "ไม่มี"
+     }
+    }
+   }
+  ]
+ },
+ "yarisativ": {
+  "series_title": "Yaris ATIV",
+  "grades": [
+   {
+    "grade_code": "NYC100R-TEXHBT/A1",
+    "title": "HEV Premium",
+    "price": 729000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Adaptive Cruise Control แบบ All-Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยคุมรถให้อยู่ในเลน (LKC)",
+      "value": "มี"
+     }
+    }
+   },
+   {
+    "grade_code": "NGC100R-TEXMKT/D2",
+    "title": "Premium Luxury",
+    "price": 709000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Adaptive Cruise Control แบบ All-Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยคุมรถให้อยู่ในเลน (LKC)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "NGC100R-TEXMKT/CB",
+    "title": "NIGHTSHADE",
+    "price": 709000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Adaptive Cruise Control แบบ All-Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยคุมรถให้อยู่ในเลน (LKC)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "NGC100R-TEXMKT/C2",
+    "title": "Premium",
+    "price": 679000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Adaptive Cruise Control แบบ All-Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยคุมรถให้อยู่ในเลน (LKC)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "NGC100R-TEXMKT/B2",
+    "title": "Smart",
+    "price": 599000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยคุมรถให้อยู่ในเลน (LKC)",
+      "value": "ไม่มี"
+     }
+    }
+   },
+   {
+    "grade_code": "NGC100R-TEXMKT/A2",
+    "title": "Sport",
+    "price": 569000,
+    "features": {
+     "ACC": {
+      "present": false,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "ไม่มี"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยคุมรถให้อยู่ในเลน (LKC)",
+      "value": "ไม่มี"
+     }
+    }
+   }
+  ]
+ },
+ "yarisativ_grsport": {
+  "series_title": "Yaris ATIV GR Sport",
+  "grades": [
+   {
+    "grade_code": "NYC100R-TEXGBT/A1",
+    "title": "HEV GR Sport",
+    "price": 779000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Adaptive Cruise Control แบบ All-Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": true,
+      "title": "ระบบช่วยคุมรถให้อยู่ในเลน (LKC)",
+      "value": "มี"
+     }
+    }
+   }
+  ]
+ },
+ "yarisativ_nightshade": {
+  "series_title": "Yaris ATIV Nightshade",
+  "grades": [
+   {
+    "grade_code": "NGC100R-TEXMKT/CB",
+    "title": "NIGHTSHADE",
+    "price": 709000,
+    "features": {
+     "ACC": {
+      "present": true,
+      "title": "ระบบควบคุมความเร็วอัตโนมัติ (Cruise Control)",
+      "value": "Adaptive Cruise Control แบบ All-Speed"
+     },
+     "AEB": {
+      "present": true,
+      "title": "ระบบความปลอดภัยก่อนการชน (PCS)",
+      "value": "มี"
+     },
+     "LKA": {
+      "present": false,
+      "title": "ระบบช่วยคุมรถให้อยู่ในเลน (LKC)",
+      "value": "ไม่มี"
+     }
+    }
+   }
+  ]
+ }
+}

@@ -14,7 +14,7 @@ async function main() {
   ok(linkTypes.every((t) => /^[A-Z_]+$/.test(t.entityType)), `EvidenceLink.entityType เป็น enum ทั้งหมด: ${JSON.stringify(linkTypes.map((t) => `${t.entityType}:${t._count}`))}`);
   const mediaCount = await prisma.evidenceSource.count({ where: { sourceType: "MEDIA" } });
   const editorialCount = await prisma.evidenceSource.count({ where: { sourceType: "EDITORIAL" } });
-  ok(mediaCount === 9, `MEDIA source = 9 (จริง: ${mediaCount})`);
+  ok(mediaCount === 11, `MEDIA source = 11 (9 reclassify + 2 ปีเปิดตัว Champ/Revo · จริง: ${mediaCount})`);
   ok(editorialCount === 1, `EDITORIAL เหลือเฉพาะทีมข้อมูลจริง = 1 (จริง: ${editorialCount})`);
 
   // Phase 1 — engine canonical (นับแบบไม่ hardcode: ทุกตัวต้อง known + ตัวที่ระบุ VN Turbo ต้องเป็น TURBO)
@@ -58,10 +58,20 @@ async function main() {
   const chargedBatteries = await prisma.battery.count({ where: { dcMaxKw: { not: null }, dcStatus: "known" } });
   ok(chargedBatteries === 2, `แบตที่มีสเปกชาร์จ DC known = 2 (จริง: ${chargedBatteries})`);
 
-  // Phase 4 — โครง Feature พร้อม (ยังว่างโดยตั้งใจ)
+  // Phase 4/6 — ADAS seed แล้ว (2026-07-20): 3 feature × 90 trim-assignment ทั้งหมด known + evidence
   const featureCount = await prisma.feature.count();
   const trimFeatureCount = await prisma.trimFeature.count();
-  ok(featureCount === 0 && trimFeatureCount === 0, "Feature/TrimFeature = โครงเปล่า (ยังไม่ seed ADAS — รอ research หลักฐานรอบหน้า)");
+  ok(featureCount === 3, `Feature master = 3 (AEB/ACC/LKA · จริง: ${featureCount})`);
+  ok(trimFeatureCount === 90, `TrimFeature = 90 (จริง: ${trimFeatureCount})`);
+  const tfUnknownHas = await prisma.trimFeature.count({ where: { status: "known", hasFeature: null } });
+  ok(tfUnknownHas === 0, "TrimFeature known ทุกแถวมี hasFeature จริง");
+  const tfSample = await prisma.trimFeature.findMany({ select: { id: true }, take: 500 });
+  let tfNoEv = 0;
+  for (const tf of tfSample) {
+    const c = await prisma.evidenceLink.count({ where: { entityType: "TRIM_FEATURE", entityId: tf.id } });
+    if (c === 0) tfNoEv++;
+  }
+  ok(tfNoEv === 0, "TrimFeature ทุกแถวมี EvidenceLink");
 
   // Integrity รวม — ทุกค่า canonical known ต้องมี EvidenceLink
   const knownEngines = await prisma.engine.findMany({ where: { fuelTypeStatus: "known" }, select: { id: true } });
