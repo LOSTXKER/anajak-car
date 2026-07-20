@@ -1,7 +1,7 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-20 (apply ระบบภาษากลาง Phase 0–4 เสร็จ)
+อัปเดตล่าสุด: 2026-07-20 (ภาษากลาง Phase 0–4 + seed Hilux Champ/Revo 21 รุ่น — M15)
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
@@ -14,8 +14,8 @@
 - สคริปต์ migrate/backfill/verify ทั้งหมดอยู่ `prisma/ops/` (audit trail) · `prisma/ops/verify-vocab.ts` รันซ้ำได้ = 24/24 ผ่าน
 
 ข้อมูล (ของจริง ตรวจแล้ว):
-- Supabase · Toyota 5 nameplate: Corolla Altis (4) · Yaris Ativ (7) · Hilux Travo (18 รวม Travo-e BEV) · Fortuner (10) · bZ4X (2) = 41 variant/41 ราคา MANUFACTURER_OFFICIAL/HIGH · EvidenceSource 30 (ทางการ 20 · MEDIA 9 · EDITORIAL 1 = "การจัดประเภทศัพท์กลาง rev.1") · EvidenceLink 101 · 0 orphan
-- ข้อมูล verified ที่ยังไม่ seed: Hilux Champ (6) · Revo Standard (6) · Revo Z Edition (9) — อยู่ใน workflow journal `wf_827f82de-ed0` · ตอน seed ต้องผ่าน editorial gate ของ VOCABULARY.md §4 (Revo Standard = กระบะเตี้ย → RideHeightClass.STANDARD ตัวแรกของระบบ)
+- Supabase · Toyota 7 nameplate: Corolla Altis (4) · Yaris Ativ (7) · Hilux Travo (18 รวม Travo-e BEV) · **Hilux Champ (6) · Hilux Revo (15 — Standard Cab 6 + Z Edition 9) 🆕 seed 2026-07-20 จาก API ทางการ fetch สด** · Fortuner (10) · bZ4X (2) = **62 variant/62 ราคา** MANUFACTURER_OFFICIAL/HIGH · EvidenceSource 33 (ทางการ 23 · MEDIA 9 · EDITORIAL 1) · EvidenceLink 169 · 0 orphan · GlobalModelFamily "hilux" เชื่อม Travo/Champ/Revo (ตารางนี้เปิดใช้แล้ว)
+- ~~Champ/Revo ยังไม่ seed~~ → **seed แล้ว (M15)**: RideHeightClass.STANDARD ใช้จริง 14 trims · raw API JSON เก็บที่ `prisma/ops/data/hilux-3lines-20260720.json` · endpoint สเปกทางการ: `GET /model/api/car/?series_code=<code>` (+ ราคารวม: `POST /api-service/car/series {"grades":true}`)
 - ⚠️ prisma CLI: รันด้วย `PRISMA_CLI_DIRECT=1` (สลับไป DIRECT_URL 5432 ใน prisma.config.ts — pooler 6543 ทำ CLI ค้าง) · enum/rename ที่มีข้อมูลต้องทำ SQL มือใน `prisma/ops/*.sql` ก่อน push (db push cast เองไม่ได้) · partial unique index ของ TrimFeature สร้างด้วย SQL มือ (db push ไม่ลบ — ตรวจแล้ว)
 
 หน้าเว็บ (5 หน้า — อย่าลืม `/brands/[slug]` ใช้ CarDatabaseExplorer ตัวเดียวกับหน้าแรก):
@@ -39,6 +39,5 @@
 - ~~งานยังไม่ commit~~ → **commit + push แล้ว (เบสสั่ง 2026-07-20)**: `a330ea4` เว็บ v1 (M2–M12) + `a01076e` ภาษากลาง (M13–M14) — tree สะอาด
 
 ## ▶ NEXT (ทำต่อทันที)
-1. Seed Hilux Champ/Revo 21 รุ่นย่อย (ข้อมูล verified รอใน journal) — รอบนี้ต้องกรอกช่องภาษากลางใหม่ด้วย (cabType/rideHeight/fuelType ฯลฯ ผ่าน editorial gate §4)
-2. Research + seed ADAS 3 ฟีเจอร์แรกจากหน้า Toyota Safety Sense ทางการ → เปิดหน้าเทียบฟีเจอร์
+1. Research + seed ADAS 3 ฟีเจอร์แรกจากหน้า Toyota Safety Sense ทางการ → เปิดหน้าเทียบฟีเจอร์
 3. รอเบสรีวิวหน้า "บันไดราคา" (`/cars/hilux-travo`) — ถ้าใช่ทิศทาง เกลาหน้าแรก/แบรนด์ต่อ

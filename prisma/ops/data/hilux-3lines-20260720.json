@@ -1,0 +1,503 @@
+{
+ "hilux_champ": {
+  "title": "Hilux Champ",
+  "model_year": "102025",
+  "grades": [
+   {
+    "title": "2.4 AT Super SWB Attractive Package",
+    "price": 615000,
+    "grade_code": "GUN100R-ATTHXT/A3",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6-speed automatic with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV(High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Intercooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "4,520 x 1,785 x 1,735",
+    "wheelbase": "2580",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 AT SWB Attractive Package",
+    "price": 602000,
+    "grade_code": "GUN110R-ATTHXT/A3",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6-speed automatic with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV(High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Intercooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "4,970 x 1,785 x 1,735",
+    "wheelbase": "2750",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 AT LWB",
+    "price": 582000,
+    "grade_code": "GUN120R-ATTHXT/A3",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6-speed automatic with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV(High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Intercooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,300 x 1,785 x 1,735",
+    "wheelbase": "3085",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 AT C&C SWB",
+    "price": 557000,
+    "grade_code": "GUN110R-ATTHXT3/A3",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6-speed automatic with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV(High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Intercooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "4,705 x 1,785 x 1,735",
+    "wheelbase": "2750",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 MT LWB",
+    "price": 547000,
+    "grade_code": "GUN122R-ATMHXT/A3",
+    "transmission_field": "ธรรมดา 5 จังหวะ",
+    "transmission_en": "5-speed Manual",
+    "transmission_spec": "ธรรมดา 5 จังหวะ",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Intercooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 343,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "343 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,300 x 1,785 x 1,735",
+    "wheelbase": "3085",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 MT C&C LWB",
+    "price": 519000,
+    "grade_code": "GUN122R-ATMHXT3/A3",
+    "transmission_field": "ธรรมดา 5 จังหวะ",
+    "transmission_en": "5-speed Manual",
+    "transmission_spec": "ธรรมดา 5 จังหวะ",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Intercooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 343,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "343 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,040 x 1,785 x 1,735",
+    "wheelbase": "3085",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   }
+  ]
+ },
+ "hilux_revo_standard": {
+  "title": "Hilux Revo Standard Cab",
+  "model_year": "112025",
+  "grades": [
+   {
+    "title": "2.8 Entry",
+    "price": 639000,
+    "grade_code": "GUN121R-BTFLXT/A5",
+    "transmission_field": "ธรรมดา 6 จังหวะ",
+    "transmission_en": "5MT",
+    "transmission_spec": "ธรรมดา 6 จังหวะ",
+    "total_seat": 2,
+    "engine": {
+     "model": "1GD-FTV (High) / 4 สูบ แถวเรียง DOHC 16 วาล์ว",
+     "cc": 2755,
+     "kW": 150.0,
+     "PS": 204,
+     "torqueNm": 420,
+     "powerRaw": "150 (204) / 3,400",
+     "torqueRaw": "420 / 1,400 - 3,400",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,265 x 1,800 x 1,690",
+    "wheelbase": "-",
+    "seats_spec": "2",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 Entry AT",
+    "price": 674000,
+    "grade_code": "GUN120R-BTTLXT/A5",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6AT with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV (High) / 4 สูบ แถวเรียง DOHC 16 วาล์ว",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,265 x 1,800 x 1,690",
+    "wheelbase": "-",
+    "seats_spec": "2",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 Entry",
+    "price": 624000,
+    "grade_code": "GUN122R-BTFLXT/A5",
+    "transmission_field": "ธรรมดา 6 จังหวะ",
+    "transmission_en": "6MT",
+    "transmission_spec": "ธรรมดา 6 จังหวะ",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง DOHC 16 วาล์ว",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 343,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "343 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,265 x 1,800 x 1,690",
+    "wheelbase": "-",
+    "seats_spec": "2",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 Entry ช่วงล้อสั้น",
+    "price": 624000,
+    "grade_code": "GUN112R-BTMLXT/A5",
+    "transmission_field": "ธรรมดา 5 จังหวะ",
+    "transmission_en": "5MT",
+    "transmission_spec": "ธรรมดา 5 จังหวะ",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง DOHC 16 วาล์ว",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 343,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "343 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "4,930 x 1,800 x 1,685",
+    "wheelbase": "-",
+    "seats_spec": "2",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 Entry (ไม่มีกระบะ)",
+    "price": 584000,
+    "grade_code": "GUN122R-BTFLXT3/5A",
+    "transmission_field": "ธรรมดา 6 จังหวะ",
+    "transmission_en": "6MT",
+    "transmission_spec": "ธรรมดา 6 จังหวะ",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง DOHC 16 วาล์ว",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 343,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "343 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,075 x 1,800 x 1,685",
+    "wheelbase": "-",
+    "seats_spec": "2",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "2.4 Entry AT (ไม่มีกระบะ)",
+    "price": 634000,
+    "grade_code": "GUN120R-BTTLXT3/5A",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6AT with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV (High) / 4 สูบ แถวเรียง DOHC 16 วาล์ว",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,075 x 1,800 x 1,685",
+    "wheelbase": "-",
+    "seats_spec": "2",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   }
+  ]
+ },
+ "hilux_revo_zedition": {
+  "title": "Hilux Revo Z Edition",
+  "model_year": "112025",
+  "grades": [
+   {
+    "title": "Double Cab Z Edition 4x2 2.4 Mid AT",
+    "price": 862000,
+    "grade_code": "GUN120R-DTTSXT/D5",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6AT with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 5,
+    "engine": {
+     "model": "2GD-FTV (High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Turbocooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,315 x 1,855 x 1,700",
+    "wheelbase": "-",
+    "seats_spec": "5 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "Double Cab Z Edition 4x2 2.4 Mid",
+    "price": 822000,
+    "grade_code": "GUN122R-DTFSXT/D5",
+    "transmission_field": "ธรรมดา 6 จังหวะ",
+    "transmission_en": "6MT",
+    "transmission_spec": "ธรรมดา 6 จังหวะ",
+    "total_seat": 5,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Turbocooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 343,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "343 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,315 x 1,855 x 1,700",
+    "wheelbase": "-",
+    "seats_spec": "5 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "Double Cab Z Edition 4x2 2.4 Entry AT",
+    "price": 784000,
+    "grade_code": "GUN120R-DTTLXT/A5",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6AT with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 5,
+    "engine": {
+     "model": "2GD-FTV (High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Turbocooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,285 x 1,855 x 1,700",
+    "wheelbase": "-",
+    "seats_spec": "5 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "Double Cab Z Edition 4x2 2.4 Entry",
+    "price": 744000,
+    "grade_code": "GUN122R-DTFLXT/B5",
+    "transmission_field": "ธรรมดา 6 จังหวะ",
+    "transmission_en": "6MT",
+    "transmission_spec": "ธรรมดา 6 จังหวะ",
+    "total_seat": 5,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Turbocooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 343,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "343 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,285 x 1,855 x 1,700",
+    "wheelbase": "-",
+    "seats_spec": "5 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "Double Cab 4x2 2.8 GR Sport AT",
+    "price": 934000,
+    "grade_code": "GUN121R-DTTSXT/C6",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift และ Paddle Shift",
+    "transmission_en": "6AT with Sequential Shift & Paddle Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift และ Paddle Shift",
+    "total_seat": 5,
+    "engine": {
+     "model": "1GD-FTV (High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Intercooler",
+     "cc": 2755,
+     "kW": 150.0,
+     "PS": 204,
+     "torqueNm": 500,
+     "powerRaw": "150 (204) / 3,400",
+     "torqueRaw": "500 / 1,600 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,285 x 1,855 x 1,730",
+    "wheelbase": "-",
+    "seats_spec": "5 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "Smart Cab Z Edition 4x2 2.4 Mid AT",
+    "price": 790000,
+    "grade_code": "GUN120R-CTTSXT/C5",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6AT with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV (High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Turbocooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,285 x 1,855 x 1,695",
+    "wheelbase": "-",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "Smart Cab Z Edition 4x2 2.4 Mid",
+    "price": 740000,
+    "grade_code": "GUN122R-CTFSXT/C5",
+    "transmission_field": "ธรรมดา 6 จังหวะ",
+    "transmission_en": "6MT",
+    "transmission_spec": "ธรรมดา 6 จังหวะ",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Turbocooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 343,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "343 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,285 x 1,855 x 1,695",
+    "wheelbase": "-",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "Smart Cab Z Edition 4x2 2.4 Entry AT",
+    "price": 719000,
+    "grade_code": "GUN120R-CTTLXT/A5",
+    "transmission_field": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "transmission_en": "6AT with Sequential Shift",
+    "transmission_spec": "อัตโนมัติ 6 จังหวะ พร้อม Sequential Shift",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV (High) / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Turbocooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 400,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "400 / 1,600 - 2,000",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,285 x 1,855 x 1,695",
+    "wheelbase": "-",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   },
+   {
+    "title": "Smart Cab Z Edition 4x2 2.4 Entry",
+    "price": 669000,
+    "grade_code": "GUN122R-CTFLXT/B5",
+    "transmission_field": "ธรรมดา 6 จังหวะ",
+    "transmission_en": "6MT",
+    "transmission_spec": "ธรรมดา 6 จังหวะ",
+    "total_seat": 2,
+    "engine": {
+     "model": "2GD-FTV / 4 สูบ แถวเรียง 16 วาล์ว DOHC VN Turbo และ Turbocooler",
+     "cc": 2393,
+     "kW": 110.0,
+     "PS": 150,
+     "torqueNm": 344,
+     "powerRaw": "110 (150) / 3,400",
+     "torqueRaw": "344 / 1,400 - 2,800",
+     "fuel": "ดีเซล"
+    },
+    "dims": "5,285 x 1,855 x 1,695",
+    "wheelbase": "-",
+    "seats_spec": "2 ที่นั่ง",
+    "drive": "ขับเคลื่อน 2 ล้อ"
+   }
+  ]
+ }
+}

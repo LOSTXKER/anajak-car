@@ -129,6 +129,15 @@
 - [x] verify: `prisma/ops/verify-vocab.ts` ผ่าน 24/24 ข้อ + lint/tsc/build ผ่าน + curl 5 หน้า (specLine ยังเป็นคำกลางล้วน · marketing อยู่ tooltip เท่านั้น · Brand Hub แหล่งอ้างอิงครบ) + screenshot จริง 2 หน้า
 - [x] อัปเดต VOCABULARY.md: TL;DR อ่านง่ายสำหรับเบส (ฟีดแบ็ก "อ่านยาก") + สถานะ apply + จุดที่ต่างจากร่าง
 
+## ✅ Milestone 15: Seed Hilux Champ/Revo 21 รุ่นย่อย (เสร็จ 2026-07-20)
+- [x] ขุด journal เก่า (`wf_827f82de-ed0`) — ยืนยันตัวเลขอ้างอิง 6/6/9 variant + เจอ endpoint API ทางการ (`/model/api/car/?series_code=...`)
+- [x] Fetch สดจาก API ทางการ toyota.co.th (2026-07-20, version 739): ราคา + grade_code + สเปกเต็มทุก grade — raw JSON เก็บเป็น audit ที่ `prisma/ops/data/hilux-3lines-20260720.json`
+- [x] Editorial gate ผ่าน: ทุกไลน์ = ดีเซล 4x2 ตัวเตี้ย → ได้ใช้ `RideHeightClass.STANDARD` 14 trims แรกของระบบ · เคลียร์ข้อขัดแย้งเกียร์ 2.8 Entry (ตารางสเปก 6MT ชนะ field EN "5MT" — บันทึกใน notes)
+- [x] Taxonomy: nameplate ใหม่ 2 ตัว (hilux-champ 1 derivative · hilux-revo 3 derivatives ครบ 3 แค็บ) + `GlobalModelFamily` "hilux" เชื่อม Travo/Champ/Revo (เปิดใช้ตารางที่ไม่เคยถูกใช้)
+- [x] Append-seed (`prisma/ops/phase5-seed-hilux-lines.ts`): +21 variant/+21 ราคา → รวม 62/62 · engine reuse เมื่อสเปกตรงเป๊ะ 3 จุด สร้างใหม่ 3 (รวมเคส Toyota ระบุ 344 vs 343 Nm — เก็บตามแหล่งพร้อม note) · เกียร์ 5MT ใหม่ · EvidenceSource +3 · EvidenceLink รวม 169
+- [x] Fixup ชื่อ variant ซ้ำหัวกลุ่ม (บทเรียน M11 โผล่ซ้ำ — strip "Double/Smart Cab" prefix 9 แถว)
+- [x] verify: verify-vocab.ts 29/29 ✅ + build ผ่าน + เปิดหน้าจริง `/cars/hilux-champ` `/cars/hilux-revo` + screenshot (บันไดราคา/สเปกคำกลาง/ขับหลัง ครบ)
+
 ## ถัดไป (ยังไม่เริ่ม)
 - [ ] Seed ADAS 3 ฟีเจอร์แรก (AEB/ACC/LKA) — ต้อง research หลักฐานต่อ trim จาก toyota.co.th ก่อน (Phase 4 ต่อ)
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี
