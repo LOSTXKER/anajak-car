@@ -1,26 +1,150 @@
 @import "tailwindcss";
 
+/* CARMETA design tokens — ตาม DESIGN.md
+   ทิศทาง: minimal เปิดโล่ง ลดกล่องการ์ด · โค้งมนทันสมัย · แยกชั้นด้วย whitespace + เส้นแบ่งบาง แทนกรอบกล่อง
+   ธีม: light = ขาวล้วน · dark = เทาเข้มแบบ GitHub/Linear (ไม่ดำสนิท) · สลับผ่าน [data-theme] (toggle) หรือ prefers-color-scheme
+   accent = "Royal Softened" (เลือกโดยเบสจากหน้าเทียบ 14 โทนตระกูลสีโลโก้):
+     light #2f56c9 (6.4:1 บนขาว) · dark #7c9dfa (6.8:1 บนเทาเข้ม)
+   --accent-2 (#0ac3fb) = ฟ้าอ่อนจากโลโก้จริง ใช้เฉพาะจุดตกแต่ง (hero glow) ไม่ใช่ accent การใช้งานหลัก
+   ทุกคู่สีข้อความผ่าน WCAG AA (คำนวณจริงก่อนตั้งค่า) */
+
 :root {
+  color-scheme: light;
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #ffffff;
+  --surface-muted: #f4f5f7;
+  --border: #e7e8ea;
+  --border-strong: #d6d7da;
+  --foreground: #18181b;
+  --muted: #52525b;
+  --faint: #6e6e73;
+  --accent: #2f56c9;
+  --accent-soft: rgba(47, 86, 201, 0.08);
+  --accent-2: #0ac3fb;
+  --accent-2-soft: rgba(10, 195, 251, 0.1);
+  --success: #157f4d;
+  --success-soft: rgba(52, 199, 89, 0.13);
+  --warning: #a05a00;
+  --warning-soft: rgba(255, 159, 10, 0.14);
+  --danger: #c93030;
+  --danger-soft: rgba(255, 69, 58, 0.12);
+}
+
+/* ค่าธีมมืด — ใช้ซ้ำ 2 ที่ (toggle เลือกเอง + ตามระบบ) ต้อง copy ให้ตรงกันเสมอ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #17181c;
+  --surface: #1d1e23;
+  --surface-muted: #25262c;
+  --border: #2c2d33;
+  --border-strong: #3a3b42;
+  --foreground: #f0f1f3;
+  --muted: #a4a6ae;
+  --faint: #969aa2;
+  --accent: #7c9dfa;
+  --accent-soft: rgba(124, 157, 250, 0.14);
+  --accent-2: #0ac3fb;
+  --accent-2-soft: rgba(10, 195, 251, 0.14);
+  --success: #4cd07d;
+  --success-soft: rgba(48, 209, 88, 0.16);
+  --warning: #ffb340;
+  --warning-soft: rgba(255, 159, 10, 0.16);
+  --danger: #ff6961;
+  --danger-soft: rgba(255, 69, 58, 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --background: #17181c;
+    --surface: #1d1e23;
+    --surface-muted: #25262c;
+    --border: #2c2d33;
+    --border-strong: #3a3b42;
+    --foreground: #f0f1f3;
+    --muted: #a4a6ae;
+    --faint: #969aa2;
+    --accent: #7c9dfa;
+    --accent-soft: rgba(124, 157, 250, 0.14);
+    --accent-2: #0ac3fb;
+    --accent-2-soft: rgba(10, 195, 251, 0.14);
+    --success: #4cd07d;
+    --success-soft: rgba(48, 209, 88, 0.16);
+    --warning: #ffb340;
+    --warning-soft: rgba(255, 159, 10, 0.16);
+    --danger: #ff6961;
+    --danger-soft: rgba(255, 69, 58, 0.16);
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-2: var(--accent-2);
+  --color-accent-2-soft: var(--accent-2-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --font-sans: var(--font-geist-sans), var(--font-thai), ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* สลับภาพโลโก้ตามธีม — ใช้ selector เดียวกับระบบสี CSS var ข้างบน (data-theme toggle + prefers-color-scheme)
+   กัน hydration mismatch: DOM เหมือนกันทุก render ต่างแค่ display ผ่าน CSS ล้วน */
+.theme-logo-light {
+  display: block;
+}
+.theme-logo-dark {
+  display: none;
+}
+:root[data-theme="dark"] .theme-logo-light {
+  display: none;
+}
+:root[data-theme="dark"] .theme-logo-dark {
+  display: block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-logo-light {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .theme-logo-dark {
+    display: block;
+  }
 }

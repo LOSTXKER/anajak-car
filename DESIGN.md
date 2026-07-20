@@ -18,12 +18,22 @@
 - **สถานะข้อมูล** — ค่าที่ไม่มี = "ไม่มีข้อมูล / ยังสรุปไม่ได้" (ไม่โชว์ 0 ปลอม · map จาก `DataStatus`)
 - แยกชนิดราคาให้เห็นชัด (ป้ายมือหนึ่ง ≠ โปร ≠ ประกาศมือสอง ≠ ซื้อขายจริง) — ใช้ label/สี/ตำแหน่งต่างกัน
 
-## Tokens (baseline — ปรับผ่าน Tailwind v4 `@theme` ใน globals.css)
-- **สี:** neutral scale (bg/surface/border/text) + accent 1 สี + semantic (success/warning/danger สำหรับ confidence/quality)
-- **radius:** เล็ก–กลาง (เช่น 6–10px) สม่ำเสมอ
-- **spacing:** สเกล 4px · card padding สม่ำเสมอ
-- **font:** UI sans (เช่น Geist/Inter ที่ scaffold มา) · ตัวเลขใช้ `font-variant-numeric: tabular-nums`
-- **dark mode:** รองรับตั้งแต่ต้น (neutral + accent ทำงานทั้ง 2 โหมด · ใช้ CSS variables / Tailwind dark:)
+## Tokens (baseline — ปรับผ่าน Tailwind v4 `@theme` ใน globals.css · อัปเดตตามคำสั่งเบส 2026-07-19)
+- **สี:** light = พื้นขาวล้วน (#ffffff) · dark = เทาเข้มแบบ GitHub/Linear (#17181c ไม่ดำสนิท) + accent "Royal Softened" (#2f56c9 / dark #7c9dfa — จากตระกูลสีโลโก้) + semantic (success/warning/danger สำหรับ confidence/quality)
+- **ลดกล่องการ์ด:** แยกชั้นข้อมูลด้วย whitespace + เส้นแบ่งบาง (`divide-y`/`border-t`) แทนกล่องมีกรอบ · ใช้พื้น `surface-muted` เฉพาะ element ที่ต้องการ affordance (ปุ่ม/pill/tile ที่กดได้)
+- **radius:** โค้งมนทันสมัย — ปุ่ม/pill/ตัวกรอง = `rounded-full` · การ์ด/ตาราง/รูป = `rounded-2xl` (16px)
+- **ตัวกรอง:** dropdown select แบบมาตรฐานเว็บตารางข้อมูล (ตัวถัง ▾ ขุมพลัง ▾ สถานะ ▾) — state ที่เลือกแสดงเป็นสี accent บนตัวปุ่ม
+- **spacing:** สเกล 4px · padding สม่ำเสมอ
+- **font:** UI sans (Geist + Noto Sans Thai) · ตัวเลขใช้ `font-variant-numeric: tabular-nums`
+- **dark mode:** รองรับตั้งแต่ต้น (neutral + accent ทำงานทั้ง 2 โหมด · CSS variables + data-theme toggle)
+- **❌ ห้าม (เบสตัดสินใจแล้ว 2026-07-19):** gradient (ทั้ง text/พื้น/เส้น) · aurora/เอฟเฟกต์พื้นหลัง · แอนิเมชันเข้าฉาก · ไอคอนประดับหัว section · ฟอนต์อื่นนอกจาก Geist+Noto Sans Thai
+
+## หลักการนำเสนอข้อมูล (สำคัญกว่าการตกแต่ง — บทเรียนจากฟีดแบ็กเบส 2026-07-19)
+- **หนึ่งหน้า หนึ่งพระเอก:** หน้ารายละเอียดรถ พระเอกคือ "ราคา" — ช่วงราคาแสดงตัวใหญ่ระดับ display, ทุกอย่างอื่นถอยเป็นฉากหลัง
+- **บันไดราคา:** รุ่นย่อยเรียงราคาต่ำ→สูงเป็นขั้นบันได แต่ละขั้นแสดง **"+ส่วนต่างจากขั้นก่อน"** — ตอบคำถามจริงของคนซื้อ ("จ่ายเพิ่มเท่าไหร่ได้อะไร")
+- **สเปกเป็นประโยคเดียว:** "ดีเซล · 204 PS · อัตโนมัติ 6 สปีด · 4WD" ในบรรทัดเงียบๆ ใต้ชื่อรุ่น ไม่แตกเป็นหลายคอลัมน์
+- **ความเชื่อมั่นพูดครั้งเดียว:** ถ้าทุกราคาอ้างแหล่งเดียว/ระดับเดียว → สรุปเป็นประโยคเดียวต่อหน้า (เช่น "ทุกราคาอ้างอิง Toyota Motor Thailand · ตรวจสอบ 19 ก.ค. 2026") ห้ามติดป้าย HIGH ซ้ำทุกแถว · ป้ายรายแถวใช้เฉพาะเมื่อแหล่ง/ระดับต่างกันจริง · รายละเอียดรายแหล่งอยู่ section แหล่งอ้างอิงเสมอ
+- **อย่าใส่ข้อมูลซ้ำ:** ค่าที่ซ้ำกันทุกแถว (วันที่เดียวกัน แหล่งเดียวกัน) ยกขึ้นไปพูดที่ระดับ section
 
 ## Component ที่คาดว่าใช้ซ้ำ (สร้างเมื่อถึงตา — อย่าสร้างล่วงหน้า)
 - `EntityBreadcrumb` (Brand › Nameplate › Generation › Trim › Variant)
