@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getNameplateDetail } from "@/lib/queries";
 import {
   BODY_TYPE_LABEL,
@@ -16,23 +16,28 @@ import { Chip, DataStatusValue, EvidenceLink, LifecycleBadge } from "@/component
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string; carSlug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const detail = await getNameplateDetail(slug);
+  const { carSlug } = await params;
+  const detail = await getNameplateDetail(carSlug);
   // โยน 404 ตั้งแต่ชั้น metadata — ถ้ารอโยนใน page ตอน stream ไปแล้ว status จะค้างเป็น 200
   if (!detail) notFound();
   return {
     title: `${detail.brand} ${detail.name} — ราคาและสเปก`,
     description: `ราคาป้ายทางการ สเปก และรุ่นย่อยทั้งหมดของ ${detail.brand} ${detail.name} พร้อมแหล่งอ้างอิงที่ตรวจสอบได้`,
+    alternates: { canonical: `/brands/${detail.brandSlug}/cars/${detail.slug}` },
   };
 }
 
 export default async function NameplatePage({ params }: Props) {
-  const { slug } = await params;
-  const detail = await getNameplateDetail(slug);
+  const { slug, carSlug } = await params;
+  const detail = await getNameplateDetail(carSlug);
   if (!detail) notFound();
+  // brand ใน URL ไม่ตรงกับ brand จริงของรุ่น → redirect ไป canonical (entity มีจริง แค่ URL ผิดที่ · ไม่ loop เพราะปลายทางตรงเสมอ)
+  if (detail.brandSlug !== slug) {
+    permanentRedirect(`/brands/${detail.brandSlug}/cars/${detail.slug}`);
+  }
 
   const priceRange = formatPriceRange(detail.priceMin, detail.priceMax);
   const heroImage = nameplateImage(detail.slug);

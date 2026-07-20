@@ -42,7 +42,7 @@ export function ModelCard({ row }: { row: NameplateRow }) {
 
   return (
     <Link
-      href={`/cars/${row.slug}`}
+      href={`/brands/${row.brandSlug}/cars/${row.slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl bg-surface-muted transition-all hover:-translate-y-0.5 hover:shadow-md"
     >
       <div className="flex aspect-[16/9] items-center justify-center px-5 pt-4">

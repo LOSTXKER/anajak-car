@@ -622,7 +622,7 @@ export type BrandTile = {
   nameplateCount: number;
 };
 
-export async function getBrandTiles(): Promise<BrandTile[]> {
+export const getBrandTiles = cache(async (): Promise<BrandTile[]> => {
   const brands = await prisma.brand.findMany({
     orderBy: { name: "asc" },
     include: {
@@ -638,7 +638,7 @@ export async function getBrandTiles(): Promise<BrandTile[]> {
       0,
     ),
   }));
-}
+});
 
 export type BrandDetail = {
   slug: string;
@@ -689,9 +689,14 @@ export const getBrandDetail = cache(async (slug: string): Promise<BrandDetail | 
 
   const summaries = nameplates.map(buildNameplateSummary);
   const rows = summaries.map((s) => s.row);
-  const prices = rows.flatMap((r) => [r.priceMin, r.priceMax]).filter(
-    (p): p is number => p != null,
-  );
+  // ช่วงราคา = เฉพาะรุ่นย่อยที่ "ซื้อได้ตอนนี้" + มีราคา — ให้ตรงกับบันไดราคา/gate (กัน false precision:
+  // เลขหัวเรื่องต้องไม่รวมรุ่นเลิกขาย/รอเปิดตัวที่บันไดตัดออก)
+  const prices = summaries
+    .flatMap((s) => s.variantRows)
+    .filter(
+      (r) => r.price != null && (r.lifecycleStatus === "CURRENT" || r.lifecycleStatus === "TRANSITION"),
+    )
+    .map((r) => r.price as number);
   const presence = brand.marketPresences[0] ?? null;
 
   const sourceMap = new Map<string, SourceRow>();
@@ -729,4 +734,165 @@ export const getBrandDetail = cache(async (slug: string): Promise<BrandDetail | 
       latestChecked: maxDate(summaries.flatMap((s) => s.checkedDates)),
     },
   };
+});
+
+// ── โซนแบรนด์ (M23) ──────────────────────────────────────────────
+
+// where ของ ChangeEvent ทุกระดับที่อยู่ใต้แบรนด์ (brand/nameplate/generation/phase/variantRevision — optional คนละช่อง)
+function brandChangeEventWhere(slug: string) {
+  return {
+    OR: [
+      { brand: { slug } },
+      { nameplate: { marketPresence: { brand: { slug } } } },
+      { generation: { nameplate: { marketPresence: { brand: { slug } } } } },
+      { phase: { derivative: { generation: { nameplate: { marketPresence: { brand: { slug } } } } } } },
+      {
+        variantRevision: {
+          trim: { phase: { derivative: { generation: { nameplate: { marketPresence: { brand: { slug } } } } } } },
+        },
+      },
+    ],
+  };
+}
+
+// Shell เบาสำหรับ brand layout (รันทุกหน้าในโซน) — ห้ามใช้ getBrandDetail (ลาก tree เต็ม)
+// flags = gate เมนู sidebar ตามข้อมูลจริง (กฎห้ามหน้า thin)
+export type BrandShell = {
+  slug: string;
+  name: string;
+  hasPriceLadder: boolean;
+  hasTimeline: boolean;
+};
+
+export const getBrandShell = cache(async (slug: string): Promise<BrandShell | null> => {
+  const brand = await prisma.brand.findUnique({
+    where: { slug },
+    select: {
+      slug: true,
+      name: true,
+      marketPresences: {
+        where: { market: "TH", operationTo: null },
+        orderBy: { operationFrom: "desc" }, // เลือก presence ล่าสุด (ตรงกับ getBrandDetail)
+        select: { operationFrom: true },
+        take: 1,
+      },
+    },
+  });
+  if (!brand) return null;
+
+  const [eventCount, pricedCount] = await Promise.all([
+    prisma.changeEvent.count({ where: brandChangeEventWhere(slug) }),
+    // นับเฉพาะราคาของรุ่นที่ "ซื้อได้ตอนนี้" — ให้ gate ตรงกับสิ่งที่บันไดราคาแสดง (กันลิงก์ไปหน้าเปล่า)
+    prisma.officialPriceObservation.count({
+      where: {
+        variantRevision: {
+          trim: {
+            phase: {
+              derivative: {
+                generation: {
+                  nameplate: {
+                    lifecycleStatus: { in: ["CURRENT", "TRANSITION"] },
+                    marketPresence: { brand: { slug } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }),
+  ]);
+
+  const presence = brand.marketPresences[0];
+  return {
+    slug: brand.slug,
+    name: brand.name,
+    hasPriceLadder: pricedCount > 0,
+    hasTimeline: eventCount > 0 || Boolean(presence?.operationFrom),
+  };
+});
+
+// หา brandSlug ของ nameplate — สำหรับ redirect ลิงก์เก่า /cars/[slug] → /brands/[brand]/cars/[slug]
+export const getNameplateBrandSlug = cache(async (slug: string): Promise<string | null> => {
+  const nameplate = await prisma.nameplate.findUnique({
+    where: { slug },
+    select: { marketPresence: { select: { brand: { select: { slug: true } } } } },
+  });
+  return nameplate?.marketPresence.brand.slug ?? null;
+});
+
+// ไทม์ไลน์ระดับแบรนด์ (§7.6) — ChangeEvent ทุกระดับใต้แบรนด์ + รุ่นที่กระทบ (name+slug) + แหล่งอ้างอิง dedupe
+export type BrandTimelineEvent = ChangeEventRow & {
+  scope: "BRAND" | "NAMEPLATE" | "GENERATION" | "PHASE" | "VARIANT";
+  nameplateName: string | null;
+  nameplateSlug: string | null;
+};
+export type BrandTimeline = { events: BrandTimelineEvent[]; sources: SourceRow[] };
+
+const npSelect = { select: { name: true, slug: true } };
+
+export const getBrandTimeline = cache(async (slug: string): Promise<BrandTimeline> => {
+  const events = await prisma.changeEvent.findMany({
+    where: brandChangeEventWhere(slug),
+    orderBy: [{ effectiveDate: "desc" }, { createdAt: "desc" }],
+    include: {
+      evidenceSource: true,
+      nameplate: npSelect,
+      generation: { select: { nameplate: npSelect } },
+      phase: { select: { derivative: { select: { generation: { select: { nameplate: npSelect } } } } } },
+      variantRevision: {
+        select: { trim: { select: { phase: { select: { derivative: { select: { generation: { select: { nameplate: npSelect } } } } } } } } },
+      },
+    },
+  });
+
+  const sourceMap = new Map<string, SourceRow>();
+  const mapped: BrandTimelineEvent[] = events.map((e) => {
+    // ระดับ entity ที่ลึกสุดชนะ (variant > phase > generation > nameplate > brand)
+    let scope: BrandTimelineEvent["scope"] = "BRAND";
+    let np: { name: string; slug: string } | null = null;
+    if (e.variantRevision) {
+      scope = "VARIANT";
+      np = e.variantRevision.trim.phase.derivative.generation.nameplate;
+    } else if (e.phase) {
+      scope = "PHASE";
+      np = e.phase.derivative.generation.nameplate;
+    } else if (e.generation) {
+      scope = "GENERATION";
+      np = e.generation.nameplate;
+    } else if (e.nameplate) {
+      scope = "NAMEPLATE";
+      np = e.nameplate;
+    }
+
+    const s = e.evidenceSource;
+    if (!sourceMap.has(s.id)) {
+      sourceMap.set(s.id, {
+        id: s.id,
+        publisher: s.publisher,
+        title: s.title,
+        url: s.url,
+        sourceType: s.sourceType,
+        confidence: s.confidence as ConfidenceLevel,
+        publishedDate: s.publishedDate?.toISOString() ?? null,
+        checkedDate: s.checkedDate?.toISOString() ?? null,
+      });
+    }
+
+    return {
+      id: e.id,
+      changeType: e.changeType,
+      title: e.title,
+      summary: e.summary,
+      beforeValue: e.beforeValue,
+      afterValue: e.afterValue,
+      effectiveDate: e.effectiveDate?.toISOString() ?? null,
+      evidence: toEvidenceRef(e.evidenceSource),
+      scope,
+      nameplateName: np?.name ?? null,
+      nameplateSlug: np?.slug ?? null,
+    };
+  });
+
+  return { events: mapped, sources: [...sourceMap.values()] };
 });

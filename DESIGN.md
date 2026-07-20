@@ -43,7 +43,14 @@
   - **Sidebar = เมนู "หมวด" ล้วน** (route group `(app)`: หน้าแรก · **ฐานข้อมูล** > รุ่นรถทั้งหมด, แบรนด์ · icon + section header + active by startsWith) — **ห้ามเอาชื่อรุ่นมาไว้ใน sidebar** (เบส reject รอบแรก: "ชื่อรุ่นไม่ต้องไว้ sidebar รุ่นเราเหมือน character")
   - **รุ่นรถ = "character"** → แสดงเป็น **grid การ์ด (`ModelCard`) ในหน้า** (`/cars` = หน้า Characters: ค้นหา + ฟิลเตอร์ชิปตัวถัง/ขุมพลัง + "แสดง N รุ่น" · และหน้า `/brands/[slug]`) ไม่ใช่ list ใน sidebar
   - ตามธีมเว็บ (`bg-background`/`border-r` ไม่เข้มถาวร) · content column ต้อง `min-w-0` · `max-w-6xl` อยู่ที่ layout ของแต่ละ group · mobile = top bar + drawer (เมนูหมวดเดียวกัน · focus-trap/Esc/scroll-lock/ปิดเมื่อ navigate) · ไอคอนเมนูนำทาง ≠ ไอคอนประดับหัว section ที่ห้าม (คนละหน้าที่ — เบสอนุมัติ) · ไม่ลิสต์แบรนด์ upcoming ใน sidebar (เล่าที่หน้า `/brands`)
-- **หน้าแบรนด์ `/brands/[slug]` = model grid ไม่ใช่ตาราง (M22 — แก้ฟีดแบ็กเบส "ไม่น่าใช้"):** ต้นเหตุคือหน้านี้เคย = หน้าแรกลบ hero (CarDatabaseExplorer ตัวเดียวกันเป๊ะ) คลิกเข้ามาไม่ได้อะไรใหม่ · แก้เป็น "หน้าเลือกรุ่น" — การ์ดรูปรถต่อรุ่น (รูป + ชื่อ + สถานะ + สเปกบรรทัดเดียว + **ราคาเริ่มต้นตัวเดียว** ไม่ min–max/ไม่หลอดราคา) เรียงราคาต่ำ→สูง · **เลิกใช้ CarDatabaseExplorer ในหน้าแบรนด์** · ข้อมูลบริษัท (dl) ย้ายลงใต้ grid เป็นข้อมูลรอง · ค้นหา/filter หายจากหน้านี้โดยตั้งใจ (ทำที่หน้าแรกซึ่งค้นครอบชื่อรุ่นย่อยแล้ว)
+- **โครง "แบรนด์ = เกม" เต็มรูปแบบ (M23 — เบสสั่งจาก prydwen game-zone):** ยกระดับจาก M22 →
+  - **Navbar บนสุด (global ทุกหน้าในโซน app):** โลโก้ + **BrandSwitcher** (dropdown สลับแบรนด์ แบบ game selector) + ลิงก์ "รุ่นรถทั้งหมด" + theme toggle · โลโก้/toggle ย้ายจาก sidebar มาที่นี่ (กันซ้ำ)
+  - **Sidebar = เมนูประจำโซน:** โซน global (`/cars`,`/brands`) = หน้าแรก/รุ่นรถทั้งหมด/แบรนด์ · **โซนแบรนด์ (`/brands/[slug]/*`)** = หัวโลโก้แบรนด์ + หน้าหลัก · **ฐานข้อมูล** > รุ่นรถ, บันไดราคา, ไทม์ไลน์และประวัติ (gate ตามข้อมูลจริง — ห้ามหน้า thin)
+  - **URL ใต้แบรนด์:** `/brands/[slug]` (Brand Home) · `/brands/[slug]/cars` (grid) · `/brands/[slug]/cars/[carSlug]` (หน้ารถ — **ย้ายจาก `/cars/[slug]` · ลิงก์เก่า 308 redirect ไป canonical**) · `/price-ladder` · `/timeline`
+  - **Brand Home = การ์ดนำทาง 3 ใบ (พระเอก)** สรุปหน้าลูกด้วยตัวเลขจริง (รุ่นรถ/บันไดราคา/ไทม์ไลน์) + ทางลัดรุ่น (รูปย่อ+ชื่อ ไม่มีราคา กันซ้ำ) + ความเคลื่อนไหวล่าสุด 3 รายการ (teaser ไม่มี evidence) — Home ไม่เป็นเจ้าของข้อมูลก้อนไหน เป็นเจ้าของ "การนำทาง+ความสด"
+  - route group: `(global)/brands/page` (/brands) อยู่ร่วมกับ `brands/[slug]/*` ได้ (คนละ path · build ยืนยันไม่ชน) · param ห้ามซ้ำ → `[carSlug]`
+- **บันไดราคาแบรนด์ `/brands/[slug]/price-ladder` (M23 — แทน "tier list" ที่ทำตรงๆ ไม่ได้ตามกฎห้ามจัดอันดับ):** พระเอก = แกนราคาเดียวทั้งแบรนด์ (ช่วงราคา display + บันได 62 ขั้นเรียงราคาต่ำ→สูงทั้งแบรนด์) · **"หมุดราคา"** (เส้น+ตัวเลขจางทุก step กลม {100k/250k/500k/1M} ให้ได้ 3–8 อัน) = ตำแหน่งบอกด้วยตัวเลข+landmark **แทนหลอดราคาที่เบส reject** · delta ข้ามรุ่นแม่ตั้งใจ (คำถาม cross-shop จริง) · **ไม่มีคอลัมน์ # (เลี่ยงกลิ่นจัดอันดับ)** · เฉพาะรุ่น CURRENT/TRANSITION · กรองแล้ว delta+หมุดคำนวณใหม่
+- **หน้าแบรนด์ = model grid ไม่ใช่ตาราง (M22 · ตอนนี้ = `/brands/[slug]/cars`):** การ์ดรูปรถต่อรุ่น (รูป/ชื่อ/สถานะ/สเปกบรรทัดเดียว/**ราคาเริ่มต้นตัวเดียว** ไม่ min–max/หลอดราคา) เรียงราคาต่ำ→สูง · **เลิกใช้ CarDatabaseExplorer** (ลบไฟล์แล้ว)
 
 ## Component ที่คาดว่าใช้ซ้ำ (สร้างเมื่อถึงตา — อย่าสร้างล่วงหน้า)
 - `EntityBreadcrumb` (Brand › Nameplate › Generation › Trim › Variant)
@@ -60,3 +67,9 @@
 ## ⚠️ บทเรียนเครื่องมือตรวจภาพ (กันวินิจฉัยผิดซ้ำ — เจ็บมาแล้ว 2026-07-20)
 - **Chrome headless บังคับความกว้างขั้นต่ำ 500px** — `--window-size=390` ได้ viewport 500 จริง (`innerWidth=500`) แล้ว crop ภาพเหลือ 390 → ทุกอย่างดู "เบ้ซ้าย-ตัดขวา" เหมือน layout พังทั้งที่ไม่พัง · ตรวจ mobile < 500px ต้องใช้ **iframe harness** (หน้า HTML กว้าง ≥500 มี `<iframe width=390>` ชี้ localhost แล้ว screenshot ทั้งหน้า) หรือ CDP `Emulation.setDeviceMetricsOverride`
 - ก่อนสรุปว่า "layout พัง" จาก screenshot: เช็ค `innerWidth` จริงก่อนเสมอ (inject script วัดในหน้า repro)
+
+## ⚠️ บทเรียนเทคนิค (M23 — กันพลาดซ้ำ)
+- **`backdrop-filter`/`filter`/`transform` สร้าง containing block ให้ `position: fixed` ลูก** — วาง drawer/overlay ที่เป็น `fixed` ไว้ใน navbar ที่มี `backdrop-blur` → drawer ถูกบีบอยู่ในกล่อง navbar (h-14=56px) เมนูไม่โผล่ (bug จริง M23 · headless screenshot จับได้) · **แก้: `createPortal` overlay ไป `document.body`** (หนี containing block) + guard `mounted` (SSR ไม่มี body) · drawer/modal ทุกตัวควร portal ไป body เป็นหลัก
+- **ห้ามส่ง component (function) เป็น prop ข้าม server→client** (เช่น icon ใน nav config) — build error "Functions cannot be passed to Client Components" → ใช้ `iconKey: string` + registry map ฝั่ง client (`NAV_ICONS`)
+- **route group อยู่ร่วม segment เดียวกันได้** ถ้าคนละ path จริง: `(global)/brands/page.tsx` (/brands) + `brands/[slug]/` (/brands/[slug]) build ผ่าน — ให้ layout ต่างกันต่อโซนโดยไม่ double sidebar
+- **legacy URL redirect ที่ต้อง lookup DB** ทำใน `next.config` ไม่ได้ (static เท่านั้น) → ทำ page redirect-only: `permanentRedirect()` (308) · ไม่รู้จัก slug → `notFound()` · **ห้ามครอบ permanentRedirect ด้วย try/catch** (มัน throw `NEXT_REDIRECT` ภายใน)

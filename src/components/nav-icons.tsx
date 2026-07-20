@@ -3,6 +3,8 @@
 // หมายเหตุ: ไอคอนนำทาง (affordance กวาดตาหาเมนู) คนละหน้าที่กับ "ไอคอนประดับหัว section"
 // ในเนื้อหาที่ DESIGN.md ห้าม — เบสอนุมัติให้เมนูมีไอคอนแล้ว
 
+import type { NavIconKey } from "@/lib/nav";
+
 type IconProps = { className?: string };
 
 const BASE = "size-[18px]";
@@ -41,6 +43,35 @@ export function IconBrands({ className }: IconProps) {
     </svg>
   );
 }
+
+export function IconPriceLadder({ className }: IconProps) {
+  // ขั้นบันได — บันไดราคา (แต่ละขั้นสูงขึ้น = ราคาเพิ่ม)
+  return (
+    <svg viewBox="0 0 24 24" className={className ?? BASE} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 19.5h4.5v-4h4.5v-4h4.5v-4H22" />
+      <path d="M4 19.5V15" />
+    </svg>
+  );
+}
+
+export function IconTimeline({ className }: IconProps) {
+  // นาฬิกา — ไทม์ไลน์/ประวัติ (การเปลี่ยนแปลงตามเวลา)
+  return (
+    <svg viewBox="0 0 24 24" className={className ?? BASE} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7v5l3.2 1.8" />
+    </svg>
+  );
+}
+
+// registry สำหรับ map iconKey (string จาก lib/nav.ts) → component ฝั่ง client
+export const NAV_ICONS: Record<NavIconKey, (p: IconProps) => React.ReactElement> = {
+  home: IconHome,
+  cars: IconCars,
+  brands: IconBrands,
+  ladder: IconPriceLadder,
+  timeline: IconTimeline,
+};
 
 export function IconMenu({ className }: IconProps) {
   return (

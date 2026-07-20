@@ -2,40 +2,30 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconHome, IconCars, IconBrands } from "@/components/nav-icons";
-
-type NavItem = {
-  href: string;
-  label: string;
-  icon: (p: { className?: string }) => React.ReactElement;
-  match: "exact" | "prefix";
-};
-type NavGroup = { header?: string; items: NavItem[] };
-
-// เมนู sidebar = "หมวด" ล้วน (แบบ prydwen: Home / DATABASE > …) — ไม่ลิสต์ชื่อรุ่น
-// รุ่นรถ = "character" แสดงเป็น grid การ์ดในหน้า /cars ไม่ใช่ใน sidebar
-const NAV: NavGroup[] = [
-  { items: [{ href: "/", label: "หน้าแรก", icon: IconHome, match: "exact" }] },
-  {
-    header: "ฐานข้อมูล",
-    items: [
-      { href: "/cars", label: "รุ่นรถทั้งหมด", icon: IconCars, match: "prefix" },
-      { href: "/brands", label: "แบรนด์", icon: IconBrands, match: "prefix" },
-    ],
-  },
-];
+import type { NavGroup, NavItem } from "@/lib/nav";
+import { NAV_ICONS } from "@/components/nav-icons";
 
 function isActive(pathname: string, item: NavItem): boolean {
   if (item.match === "exact") return pathname === item.href;
   return pathname === item.href || pathname.startsWith(item.href + "/");
 }
 
-export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+// เมนู sidebar — รับ nav เป็น prop (GLOBAL_NAV หรือ brandNav(slug)) ใช้ร่วม desktop + mobile drawer
+// label = ป้าย landmark (drawer มี 2 nav ต้องตั้งชื่อต่างกัน กัน landmark ซ้ำ)
+export function SidebarNav({
+  nav,
+  onNavigate,
+  label = "เมนูหลัก",
+}: {
+  nav: NavGroup[];
+  onNavigate?: () => void;
+  label?: string;
+}) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="เมนูหลัก" className="flex flex-col gap-5">
-      {NAV.map((group, gi) => (
+    <nav aria-label={label} className="flex flex-col gap-5">
+      {nav.map((group, gi) => (
         <div key={group.header ?? gi} className="flex flex-col gap-1">
           {group.header && (
             <p className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-faint uppercase">
@@ -44,7 +34,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           )}
           {group.items.map((item) => {
             const active = isActive(pathname, item);
-            const Icon = item.icon;
+            const Icon = NAV_ICONS[item.iconKey];
             return (
               <Link
                 key={item.href}

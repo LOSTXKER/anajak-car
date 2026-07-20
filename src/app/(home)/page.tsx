@@ -157,7 +157,7 @@ export default async function Home() {
                       {brandRows.map((row) => (
                         <li key={row.slug}>
                           <Link
-                            href={`/cars/${row.slug}`}
+                            href={`/brands/${row.brandSlug}/cars/${row.slug}`}
                             className="inline-flex items-center gap-1.5 rounded-full bg-surface-muted px-3.5 py-1.5 text-sm text-foreground transition-colors hover:bg-accent-soft hover:text-accent"
                           >
                             ราคา {row.brand} {row.name}

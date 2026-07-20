@@ -188,6 +188,16 @@
 - [x] verify: lint/tsc/build ผ่าน + curl 6 route (200×5/404×1) + screenshot CDP desktop 1280 light+dark (home landing ไม่มี sidebar · /cars character grid + ฟิลเตอร์ · sidebar active) + filter `?body=PICKUP`→3 กระบะ + mobile 390 drawer (เมนูหมวดล้วน ไม่มีชื่อรุ่น)
 - ⚠️ `car-database-explorer.tsx` **ไม่ถูกใช้แล้ว** (ตารางเดิม) — เก็บไว้ก่อน เผื่อ base อยากได้ table view · redesign `/brands/[slug]` เป็น model grid ยังใช้อยู่
 
+## ✅ Milestone 23: "แบรนด์ = เกม" เต็มรูปแบบ (brand zone + navbar + 3 หน้าใหม่) (เสร็จ 2026-07-20)
+> เบสต่อยอด prydwen: แบรนด์=เกมมี home ตัวเอง · navbar บน=ใช้ร่วมทุกแบรนด์ · sidebar=หน้าประจำแบรนด์ · ตรง §7.2/§7.6/§8.2 ใน OVERVIEW · tier list→บันไดราคา (กฎห้ามจัดอันดับ)
+- [x] Step 0: commit M22 (`a36ed1c`) + PLAN M23
+- [x] Step 1 Foundation: `lib/nav.ts` (GLOBAL_NAV+brandNav · **iconKey string ไม่ใช่ component** — กันส่ง fn ข้าม server→client) · `nav-icons` NAV_ICONS registry + IconPriceLadder/IconTimeline · sidebar/sidebar-nav รับ nav prop (+topSlot) · queries: getBrandShell/getNameplateBrandSlug/getBrandTimeline (OR 5 ชั้น) + cache(getBrandTiles)
+- [x] Step 2 Navbar+shell: global-navbar/brand-switcher(dropdown)/mobile-nav-drawer/app-shell · `(app)/(global)/layout` + git mv cars+brands/page เข้า · (home)+(app) ใช้ GlobalNavbar · ลบ landing-header/mobile-topbar/car-database-explorer · **route group `(global)/brands` กับ `brands/[slug]` อยู่ร่วมได้ (build ยืนยัน)**
+- [x] Step 3 Brand zone: `brands/[slug]/layout` (getBrandShell+brand sidebar topSlot=โลโก้แบรนด์) · git mv หน้ารถ → `[carSlug]` (validate brand mismatch→canonical redirect) · Brand Home (การ์ดนำทาง 3 + ทางลัดรุ่น + ความเคลื่อนไหว) · cars grid · price-ladder (บันได 62 + หมุดราคา + delta) · timeline (จัดปี + evidence + ประวัติ + sources)
+- [x] Step 4 Redirect: `(global)/cars/[slug]` redirect-only 308 → canonical · แก้ model-card/coverage chips → `/brands/[b]/cars/[s]` · grep กวาดครบ · (notes narrative เลื่อนเป็น enhancement — ไม่ render ดิบ)
+- [x] Step 5 Verify: lint/build ผ่าน + curl matrix (8×200 · /cars/[s]→308 canonical · 404 ครบ) + screenshot CDP ทุกหน้า light+dark + **แก้บั๊ก mobile drawer: `backdrop-blur` บน navbar สร้าง containing block → fixed drawer ถูกบีบใน 56px → portal drawer ไป body** (drawer เมนูแบรนด์+global ครบ)
+- URL ใหม่: `/brands/[slug]` (home) · `/brands/[slug]/cars` · `/brands/[slug]/cars/[carSlug]` (ย้ายจาก /cars/[slug]) · `/brands/[slug]/price-ladder` · `/brands/[slug]/timeline` · `/cars` (index ข้ามแบรนด์ คงอยู่)
+
 ## ถัดไป (ยังไม่เริ่ม)
 
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

@@ -1,20 +1,13 @@
-import { Sidebar } from "@/components/sidebar";
-import { MobileTopBar } from "@/components/mobile-topbar";
-import { SiteFooter } from "@/components/site-footer";
+import { getBrandTiles } from "@/lib/queries";
+import { GlobalNavbar } from "@/components/global-navbar";
 
-// Layout ของหน้าฐานข้อมูล (/cars, /brands …) = sidebar เมนูหมวด + content column
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+// Layout โซน app — navbar เต็มกว้างบนสุด (global) + {children} (= zone layout ที่ใส่ sidebar เอง)
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const brands = await getBrandTiles();
   return (
-    <div className="flex min-h-svh">
-      <Sidebar />
-      {/* min-w-0 = กันตาราง/เนื้อห ากว้างดัน flex column จน layout ระเบิดแนวนอน (bug อันดับหนึ่งของ flex sidebar) */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar />
-        <main className="flex-1">
-          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">{children}</div>
-        </main>
-        <SiteFooter />
-      </div>
+    <div className="flex min-h-svh flex-col">
+      <GlobalNavbar brands={brands} />
+      {children}
     </div>
   );
 }
