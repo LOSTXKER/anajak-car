@@ -64,7 +64,7 @@ export default async function NameplatePage({ params }: Props) {
         : null;
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+    <>
       <nav aria-label="breadcrumb" className="pt-8 text-sm text-faint">
         <ol className="flex flex-wrap items-center gap-1.5">
           <li>
@@ -324,6 +324,6 @@ export default async function NameplatePage({ params }: Props) {
           {detail.generationSummary}
         </p>
       )}
-    </div>
+    </>
   );
 }

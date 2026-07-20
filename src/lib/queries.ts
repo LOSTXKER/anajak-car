@@ -400,7 +400,7 @@ function buildNameplateSummary(nameplate: NameplateWithTree): {
   };
 }
 
-export async function getDatabaseIndex(): Promise<DatabaseIndex> {
+export const getDatabaseIndex = cache(async (): Promise<DatabaseIndex> => {
   const [nameplates, totalSources] = await Promise.all([
     prisma.nameplate.findMany({
       orderBy: { name: "asc" },
@@ -425,7 +425,7 @@ export async function getDatabaseIndex(): Promise<DatabaseIndex> {
       latestChecked: maxDate(allChecked),
     },
   };
-}
+});
 
 type EvidenceSourceRecord = NameplateWithTree["generations"][number]["derivatives"][number]["phases"][number]["trims"][number]["variantRevisions"][number]["officialPriceObservations"][number]["evidenceSource"];
 

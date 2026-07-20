@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 py-32 text-center sm:px-6">
+    <div className="mx-auto flex min-h-svh max-w-md flex-col items-center justify-center px-4 text-center">
       <p className="text-xs font-medium tracking-[0.22em] text-faint uppercase">404</p>
       <h1 className="mt-3 text-2xl font-semibold tracking-tight">ไม่พบหน้าที่ต้องการ</h1>
       <p className="mt-2 max-w-md text-sm text-muted">

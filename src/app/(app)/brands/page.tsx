@@ -17,7 +17,7 @@ export default async function BrandsPage() {
   const upcoming = UPCOMING_BRANDS.filter((name) => !liveNames.has(name.toLowerCase()));
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+    <>
       <nav aria-label="breadcrumb" className="pt-8 text-sm text-faint">
         <ol className="flex flex-wrap items-center gap-1.5">
           <li>
@@ -92,6 +92,6 @@ export default async function BrandsPage() {
           ))}
         </div>
       </section>
-    </div>
+    </>
   );
 }

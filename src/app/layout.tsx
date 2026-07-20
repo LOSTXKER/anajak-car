@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,17 +49,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Root = โครงเปล่า (html/body/theme/fonts) — "chrome" อยู่ที่ layout ของแต่ละกลุ่ม:
+  // (home) = landing เต็มจอมี top header · (app) = sidebar layout
   return (
     <html
       lang="th"
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${notoSansThai.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-sans">
+      <body className="font-sans">
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        {children}
       </body>
     </html>
   );

@@ -176,6 +176,18 @@
 - [x] หน้า /cars: section "ระบบช่วยขับขี่" — uniform ทั้งรุ่น = สรุปบรรทัดเดียว (bZ4X/Champ/Revo) · ต่างตามเกรด = ตาราง trim×ฟีเจอร์ (Altis/Yaris/Travo/Fortuner) · มี=เขียว ไม่มี=จาง ยังไม่ยืนยัน=เอียง · marketing name เป็น tooltip ตามกฎ §3 ข้อ 7
 - [x] verify: verify-vocab.ts 34/34 ✅ + build + curl 7 หน้า + screenshot (ตาราง Travo เล่าเรื่องชัด: รุ่นล่างไม่มี → Overland Plus/Travo-e ครบ)
 
+## ✅ Milestone 22: โครงเว็บ sidebar แบบ prydwen (landing + เมนูหมวด + character grid) (เสร็จ 2026-07-20)
+> เบสฟีดแบ็ก `/brands/toyota` "ไม่ค่อยน่าใช้" + ส่งภาพ prydwen.gg "อยากได้ฟิลงี้ เป็น sidebar"
+> **รอบแรกทำผิด** (เบสให้ไปดู prydwen/star-rail/characters จริง): เอาชื่อรุ่นยัดใน sidebar + หน้าแรกมี sidebar
+> **ถูกต้อง (prydwen จริง):** sidebar = เมนู "หมวด" ล้วน · รุ่นรถ = "character" แสดงเป็น grid การ์ดในหน้า · หน้าแรก = landing ไม่มี sidebar
+- [x] เปิด Chrome extension เข้าดู `prydwen.gg/star-rail/characters` จริง (sidebar หมวด + character grid + search + filter ธาตุ/path + "Showing N")
+- [x] แยก layout ด้วย route group: `layout.tsx` root เหลือ minimal (html/body/theme/fonts) · `(home)/layout.tsx` = landing (top header `LandingHeader` + footer ไม่มี sidebar) · `(app)/layout.tsx` = sidebar shell (ย้าย `brands/`+`cars/` เข้า `(app)/` ด้วย git mv — URL ไม่เปลี่ยน)
+- [x] `sidebar-nav.tsx` เป็น **เมนูหมวดล้วน** (config array + section header "ฐานข้อมูล": หน้าแรก · รุ่นรถทั้งหมด · แบรนด์ · icon + active by startsWith) — **ตัดชื่อรุ่น + getSidebarNav + navData ทิ้ง** · `nav-icons.tsx` เพิ่ม IconCars/เปลี่ยน IconHome เป็นบ้าน
+- [x] หน้าใหม่ `(app)/cars/page.tsx` "รุ่นรถทั้งหมด" (= หน้า Characters) + `car-grid.tsx` client: ค้นหา (ครอบชื่อรุ่นย่อย) + ฟิลเตอร์ชิปตัวถัง/ขุมพลัง + "แสดง N รุ่น" + ล้างตัวกรอง + grid `ModelCard` · อ่าน URL param จาก hero
+- [x] แยก `ModelCard` เป็น `model-card.tsx` ใช้ร่วม /cars + /brands/[slug] · `HeroSearch` เปลี่ยนจาก in-page เป็น `router.push('/cars?...')` · หน้าแรกตัดตารางใหญ่ (ย้ายไป /cars) เหลือ hero+brands+value+coverage+FAQ
+- [x] verify: lint/tsc/build ผ่าน + curl 6 route (200×5/404×1) + screenshot CDP desktop 1280 light+dark (home landing ไม่มี sidebar · /cars character grid + ฟิลเตอร์ · sidebar active) + filter `?body=PICKUP`→3 กระบะ + mobile 390 drawer (เมนูหมวดล้วน ไม่มีชื่อรุ่น)
+- ⚠️ `car-database-explorer.tsx` **ไม่ถูกใช้แล้ว** (ตารางเดิม) — เก็บไว้ก่อน เผื่อ base อยากได้ table view · redesign `/brands/[slug]` เป็น model grid ยังใช้อยู่
+
 ## ถัดไป (ยังไม่เริ่ม)
 
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

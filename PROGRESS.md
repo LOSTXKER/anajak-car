@@ -1,7 +1,7 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-20 (M16–M21: hero/ตารางเกลากับเบส 5 รอบ + ปี/โลโก้/ป้ายสถานะ + ADAS 3 ฟีเจอร์แรกขึ้นหน้าเว็บ)
+อัปเดตล่าสุด: 2026-07-20 (M22: รื้อโครงเว็บเป็น sidebar แบบ prydwen.gg + หน้าแบรนด์เปลี่ยนเป็น model grid)
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
@@ -18,27 +18,36 @@
 - ~~Champ/Revo ยังไม่ seed~~ → **seed แล้ว (M15)**: RideHeightClass.STANDARD ใช้จริง 14 trims · raw API JSON เก็บที่ `prisma/ops/data/hilux-3lines-20260720.json` · endpoint สเปกทางการ: `GET /model/api/car/?series_code=<code>` (+ ราคารวม: `POST /api-service/car/series {"grades":true}`)
 - ⚠️ prisma CLI: รันด้วย `PRISMA_CLI_DIRECT=1` (สลับไป DIRECT_URL 5432 ใน prisma.config.ts — pooler 6543 ทำ CLI ค้าง) · enum/rename ที่มีข้อมูลต้องทำ SQL มือใน `prisma/ops/*.sql` ก่อน push (db push cast เองไม่ได้) · partial unique index ของ TrimFeature สร้างด้วย SQL มือ (db push ไม่ลบ — ตรวจแล้ว)
 
-หน้าเว็บ (5 หน้า — อย่าลืม `/brands/[slug]` ใช้ CarDatabaseExplorer ตัวเดียวกับหน้าแรก) · **deploy แล้ว: anajak-car.vercel.app (auto-deploy จาก main)**:
-- `/` **Hero ใหม่ search-first (M16 — เบสเลือกจากหน้าเทียบ 3 แบบ)**: ช่องค้นหาใหญ่เป็นพระเอก + ชิปหมวดผูก filter จริง + บรรทัดพิสูจน์ตัวเลขจริง · hero ส่งเงื่อนไขเข้าตารางผ่าน URL param (`?q=/&body=/&pt=/&cap=` — แชร์ลิงก์ผลกรองได้) · ช่องค้นหาในตารางซ่อนบนหน้าแรก (hideSearch — กันซ้ำ) · ตาราง 2 มุมมอง + dropdown filters (ตัวเลือกขุมพลังจาก enum canonical)
-- `/cars/[slug]` = บันไดราคา · specLine เป็นคำกลางล้วน (`ดีเซล · 204 PS · อัตโนมัติ 6 สปีด · 4WD`) · ชื่อการตลาด (VN Turbo ฯลฯ) อยู่ title tooltip เท่านั้น · HEV โชว์ "E-CVT"
-- `/brands` + `/brands/[slug]` (แหล่งอ้างอิงอ่านผ่าน EntityType enum แล้ว — type-safe)
-- ธีม: ขาวล้วน/เทาเข้ม · accent Royal Softened #2f56c9/#7c9dfa · Geist+Noto Sans Thai — **หน้าตาไม่เปลี่ยนจากรอบก่อน (ตั้งใจ)**
+**โครงเว็บ = sidebar หมวด แบบ prydwen (M22 · เบสสั่ง+ให้ไปดู `/star-rail/characters` จริง) · deploy: anajak-car.vercel.app**:
+> ⚠️ รอบแรกทำผิด (เอาชื่อรุ่นยัด sidebar + หน้าแรกมี sidebar) → เบสแก้: sidebar = "หมวด" · รุ่นรถ = "character" grid ในหน้า · หน้าแรก = landing ไม่มี sidebar
+- **แยก layout ด้วย route group:** `layout.tsx` root minimal (html/body/theme/fonts) · `(home)/` มี `LandingHeader` (top nav, ไม่มี sidebar) · `(app)/` มี `Sidebar`+`MobileTopBar` (brands/cars ย้ายเข้า `(app)/` ด้วย git mv — URL เดิม) · `max-w-6xl` อยู่ที่ layout ของแต่ละ group
+- **Sidebar = เมนูหมวดล้วน** (`sidebar-nav.tsx` config array + `nav-icons.tsx`): หน้าแรก · **ฐานข้อมูล** > รุ่นรถทั้งหมด, แบรนด์ (icon + section header + active by startsWith) → footer evidence-first + ThemeToggle · **ไม่มีชื่อรุ่นใน sidebar** (getSidebarNav/navData ถูกลบ) · ตามธีมเว็บ · mobile = drawer เมนูหมวดเดียวกัน (a11y ครบ)
+- `/` = **landing เต็มจอ ไม่มี sidebar** (M16 hero search-first + BrandShortcuts + value cards + Coverage + FAQ · ตัดตารางใหญ่ออก) · HeroSearch → `router.push('/cars?...')`
+- `/cars` = **หน้า "รุ่นรถทั้งหมด" = character grid** (ใหม่ · `car-grid.tsx` client): ค้นหา (ครอบชื่อรุ่นย่อย) + ฟิลเตอร์ชิปตัวถัง/ขุมพลัง + "แสดง N รุ่น" + ล้างตัวกรอง + grid `ModelCard` (อ่าน URL param จาก hero)
+- `/brands/[slug]` = model grid การ์ดรุ่น (`ModelCard` ใช้ร่วมกับ /cars) + dl บริษัทใต้ grid · `/cars/[slug]` = บันไดราคา (คงเดิม) · `/brands` = การ์ดเลือกยี่ห้อ (live+upcoming)
+- ธีม: ขาวล้วน/เทาเข้ม · accent #2f56c9/#7c9dfa · Geist+Noto Sans Thai
 
-บทเรียนดีไซน์สำคัญ (DESIGN.md — อย่าหลุดซ้ำ): เบส reject gradient/aurora/แอนิเมชันเข้าฉาก/ไอคอนประดับ/ฟอนต์ Anuphan/ป้าย HIGH ซ้ำรายแถว · หลัก: หนึ่งหน้าหนึ่งพระเอก · บันไดราคา+delta · สเปกเป็นประโยค · ความเชื่อมั่นพูดครั้งเดียว
+บทเรียนดีไซน์สำคัญ (DESIGN.md): เบส reject gradient/aurora/แอนิเมชันเข้าฉาก/ไอคอนประดับหัว section/ฟอนต์ Anuphan/ป้าย HIGH ซ้ำ · **prydwen model: sidebar = หมวด · รุ่น = character grid · หน้าแรก = landing ไม่มี sidebar** · หลัก: หนึ่งหน้าหนึ่งพระเอก · บันไดราคา · สเปกประโยคเดียว · ความเชื่อมั่นพูดครั้งเดียว
 
-## ตรวจแล้ว (รอบภาษากลาง)
-- `prisma/ops/verify-vocab.ts` 24/24 ✅ (governance/engine/E-CVT/cab/rideHeight/segment/chassis/gradeCode/arch/charging/Feature ว่าง/evidence ครบ/ราคา 41 ไม่กระทบ)
-- lint + tsc + production build ผ่าน · curl 5 หน้า 200 + เช็คเนื้อหา: คำกลางขึ้นถูก, marketing อยู่ tooltip, ไม่มี enum ดิบ (E_CVT_*) หลุดหน้าเว็บ · screenshot จริง home + hilux (dark) — layout เดิมไม่พัง
-- Headless Chrome pipeline ใช้ได้สำหรับ desktop · **⚠️ mobile <500px ห้ามใช้ --window-size ตรงๆ — Chrome headless บังคับ viewport ขั้นต่ำ 500 แล้ว crop ภาพ ทำให้ดูเหมือน layout พังทั้งที่ไม่พัง (เจ็บมาแล้ว M16)** → ใช้ iframe harness ดูวิธีใน DESIGN.md ท้ายไฟล์
+## ตรวจแล้ว (M22 โครงใหม่)
+- lint + tsc + production build ผ่าน (routes: / · /cars · /cars/[slug] · /brands · /brands/[slug])
+- curl 6 route: `/` `/cars` `/cars?body=PICKUP` `/brands` `/brands/toyota` `/cars/hilux-revo` = 200 · `/cars/nope` = 404
+- **screenshot CDP จริง** (`scratchpad/shot.mjs`/`shot2.mjs` — Node 24 WebSocket + `setDeviceMetricsOverride`/`setEmulatedMedia`): home landing (ไม่มี sidebar, top header) · /cars character grid + ฟิลเตอร์ + "แสดง 7 รุ่น" · filter `?body=PICKUP`→3 กระบะ + "ล้างตัวกรอง" · sidebar active ถูกหมวด · dark ทำงาน · mobile 390 drawer = เมนูหมวดล้วน (ไม่มีชื่อรุ่น) focus ไป X
+- **⚠️ mobile <500px:** ใช้ CDP `setDeviceMetricsOverride` (width 390) — เลี่ยงบั๊ก `--window-size` headless ≥500 (บทเรียน M16)
+- **⚠️ cold start:** หน้า force-dynamic รอบแรกอาจติด loading skeleton ตอน screenshot — warm ด้วย curl ก่อนถ่าย
+- verify-vocab.ts (รอบภาษากลาง) 34/34 ✅ ไม่กระทบ (M22 ไม่แตะ data/schema)
 
 ## ค้าง / ติดอะไร
 - ~~ADAS 0 แถว~~ → **seed แล้ว (M21)**: Feature 3 (AEB/ACC/LKA) + TrimFeature 90 known + evidence ครบ · section "ระบบช่วยขับขี่" ขึ้นหน้า /cars ทุกรุ่นแล้ว (uniform=สรุปบรรทัด · ต่าง=ตาราง) · ที่เหลือ unknown โดยตั้งใจ: Fortuner AEB/LKA (สเปกไม่มีแถว) + ACC 5 trim (ครูซ "มี" เฉยๆ ไม่ระบุ radar)
 - VOCABULARY Phase 5 backlog: reclassify legacy AWD/FOUR_WD → subtype (ต้องเช็ค spec ทีละรุ่น) · motor type PMSM/induction · `ecoCarPhase` Yaris Ativ รอหลักฐานภาษี
-- dev server: อย่ารันบน 3000 (ชนงาน meecard ของเบส) — ตอน verify ใช้ `PORT=3105 npm start` แล้วปิดแล้ว
+- dev server: อย่ารันบน 3000 (ชนงาน meecard ของเบส) · 3001 เบสเปิด dev อยู่ — ตอน verify ใช้ `PORT=3105 npm start`
+- M22 ยังไม่ commit (รอเบสรีวิว) · Champ/Revo ยังไม่มีภาพในการ์ด (ใช้ fallback เงารถ) — เพิ่มภาพทางการภายหลังได้
+- `car-database-explorer.tsx` (ตารางเดิม) **ไม่ถูก import ที่ไหนแล้ว** หลังย้ายไป model grid — เก็บไว้ก่อน (โค้ดใหญ่ที่ทดสอบแล้ว เผื่ออยากได้ table view) · `(home)/loading.tsx` skeleton ยังเป็นทรงตาราง ไม่เข้ากับ landing (cosmetic ตอน cold load)
 - รูปรถ = ลิขสิทธิ์ Toyota (CREDITS.md ครบ) — ทบทวนสิทธิ์ก่อน production · ยังไม่มี production domain
 - ~~งานยังไม่ commit~~ → **commit + push แล้ว (เบสสั่ง 2026-07-20)**: `a330ea4` เว็บ v1 (M2–M12) + `a01076e` ภาษากลาง (M13–M14) — tree สะอาด
 
 ## ▶ NEXT (ทำต่อทันที)
-1. รอเบสรีวิวของจริงบน anajak-car.vercel.app (หน้าแรกโฉมใหม่ + section ระบบช่วยขับขี่ในหน้ารถ)
-2. งานต่อที่เลือกได้: ขยาย ADAS ฟีเจอร์เพิ่ม (BSM/AHB/LDW — ข้อมูล classify ไว้แล้วบางส่วน) · เกลาหน้า /cars ให้ตัวหนังสือใหญ่ขึ้นเข้าชุดหน้าแรก · หน้า Compare exact entity · แบรนด์ที่ 2 (ผ่าน editorial gate VOCABULARY §4)
-3. VOCABULARY Phase 5 backlog (ดูหัวข้อ "ค้าง")
+1. รอเบสรีวิวโครงใหม่ (localhost:3105 / vercel): หน้าแรก landing ไม่มี sidebar · /cars character grid · sidebar เมนูหมวด — ถ้าโอเคค่อย commit + push M22
+2. Polish ที่กันไว้ (เสนอเบส): เกลาการ์ด `ModelCard` ให้ image-forward ขึ้นแบบ prydwen (รูปใหญ่ + badge ตัวถังมุมบน?) ถ้าเบสอยากใกล้ prydwen กว่านี้ · loading.tsx หน้าแรกให้เข้ากับ landing · เพิ่มภาพทางการ Champ/Revo · ลบ car-database-explorer ถ้าแน่ใจไม่ใช้
+3. งานต่อที่เลือกได้: ขยาย ADAS (BSM/AHB/LDW) · หน้า Compare exact entity (เพิ่มเป็นหมวดใน sidebar config ได้เลย) · แบรนด์ที่ 2 (editorial gate VOCABULARY §4)
+4. VOCABULARY Phase 5 backlog (ดูหัวข้อ "ค้าง")

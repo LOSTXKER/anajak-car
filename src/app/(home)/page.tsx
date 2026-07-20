@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getBrandTiles, getDatabaseIndex } from "@/lib/queries";
 import { formatDateTH } from "@/lib/format";
-import { CarDatabaseExplorer } from "@/components/car-database-explorer";
 import { BrandShortcuts } from "@/components/brand-shortcuts";
 import { HeroSearch } from "@/components/hero-search";
 
@@ -36,7 +35,7 @@ const FAQ = [
 ];
 
 export default async function Home() {
-  const [{ rows, variantRows, stats }, brands] = await Promise.all([
+  const [{ rows, stats }, brands] = await Promise.all([
     getDatabaseIndex(),
     getBrandTiles(),
   ]);
@@ -54,7 +53,7 @@ export default async function Home() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+    <>
       {/* Hero แบบ search-first (เบสเลือกจากหน้าเทียบ 3 แบบ 2026-07-20) — ช่องค้นหาคือพระเอก
           คนมาเว็บนี้เพื่อ "ค้นรถ" ให้ทำได้ทันที · ตัวเลขจริงเป็นบรรทัดพิสูจน์ ไม่ใช่การ์ดสถิติ (เบสถอดการ์ดไปแล้วใน M5) */}
       <section className="pt-14 pb-10 text-center sm:pt-20">
@@ -76,23 +75,6 @@ export default async function Home() {
       <section id="brands" aria-label="แบรนด์ใน coverage" className="scroll-mt-20 pb-14">
         <BrandShortcuts brands={brands} />
       </section>
-
-      {/* ตารางฐานข้อมูลแบบ data-dense */}
-      <div id="database" className="scroll-mt-20">
-        {isEmpty ? (
-          <section className="pb-24">
-            <div className="px-6 py-20 text-center">
-              <p className="text-lg font-medium">ฐานข้อมูลกำลังเตรียมข้อมูลชุดแรก</p>
-              <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-                เรากำลังรวบรวมและตรวจสอบราคา/สเปกจากแหล่งทางการ —
-                ทุกตัวเลขที่จะแสดงบนหน้านี้ต้องมีหลักฐานอ้างอิงก่อนเสมอ
-              </p>
-            </div>
-          </section>
-        ) : (
-          <CarDatabaseExplorer rows={rows} variantRows={variantRows} hideSearch />
-        )}
-      </div>
 
       {/* Landing: จุดยืนของผลิตภัณฑ์ */}
       <section aria-labelledby="why-heading" className="border-t border-border py-14">
@@ -221,6 +203,6 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-    </div>
+    </>
   );
 }

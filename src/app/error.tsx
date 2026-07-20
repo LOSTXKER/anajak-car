@@ -8,7 +8,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 py-32 text-center sm:px-6">
+    <div className="mx-auto flex min-h-svh max-w-md flex-col items-center justify-center px-4 text-center">
       <p className="text-xs font-medium tracking-[0.22em] text-faint uppercase">Error</p>
       <h1 className="mt-3 text-2xl font-semibold tracking-tight">
         โหลดข้อมูลไม่สำเร็จ

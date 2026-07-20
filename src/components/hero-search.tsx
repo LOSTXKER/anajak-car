@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-// ชิปหมวดใต้ช่องค้นหา — ค่าต้องตรงกับ filter จริงของ CarDatabaseExplorer เท่านั้น
+// ชิปหมวดใต้ช่องค้นหา — ค่าต้องตรงกับ filter จริงของ CarGrid หน้า /cars เท่านั้น
 // (body = BodyType enum · pt = powertrainLabel canonical · cap = งบสูงสุดบาท)
 const QUICK_FILTERS: { label: string; params: Record<string, string> }[] = [
   { label: "กระบะ", params: { body: "PICKUP" } },
@@ -14,16 +14,15 @@ const QUICK_FILTERS: { label: string; params: Record<string, string> }[] = [
   { label: "งบไม่เกิน 1 ล้าน", params: { cap: "1000000" } },
 ];
 
-// ช่องค้นหาพระเอกของ hero — เขียนเงื่อนไขลง URL (?q=/&body=/&pt=/&cap=) แล้วเลื่อนลงตาราง
-// CarDatabaseExplorer อ่าน param ชุดนี้มาตั้ง filter — state เดียวกัน ไม่มีสองระบบค้นหา
+// ช่องค้นหาพระเอกของ hero — พาไปหน้า "รุ่นรถทั้งหมด" (/cars) พร้อมเงื่อนไขใน URL (?q=/&body=/&pt=/&cap=)
+// CarGrid อ่าน param ชุดนี้มาตั้ง filter — state เดียวกัน ไม่มีสองระบบค้นหา
 export function HeroSearch() {
   const router = useRouter();
   const [value, setValue] = useState("");
 
   function apply(params: Record<string, string>) {
     const sp = new URLSearchParams(params);
-    router.replace(sp.size > 0 ? `/?${sp.toString()}` : "/", { scroll: false });
-    document.getElementById("database")?.scrollIntoView({ behavior: "smooth" });
+    router.push(sp.size > 0 ? `/cars?${sp.toString()}` : "/cars");
   }
 
   return (
