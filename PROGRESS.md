@@ -42,7 +42,7 @@
 - ~~ADAS 0 แถว~~ → **seed แล้ว (M21)**: Feature 3 (AEB/ACC/LKA) + TrimFeature 90 known + evidence ครบ · section "ระบบช่วยขับขี่" ขึ้นหน้า /cars ทุกรุ่นแล้ว (uniform=สรุปบรรทัด · ต่าง=ตาราง) · ที่เหลือ unknown โดยตั้งใจ: Fortuner AEB/LKA (สเปกไม่มีแถว) + ACC 5 trim (ครูซ "มี" เฉยๆ ไม่ระบุ radar)
 - VOCABULARY Phase 5 backlog: reclassify legacy AWD/FOUR_WD → subtype (ต้องเช็ค spec ทีละรุ่น) · motor type PMSM/induction · `ecoCarPhase` Yaris Ativ รอหลักฐานภาษี
 - dev server: อย่ารันบน 3000 (ชนงาน meecard ของเบส) · 3001 เบสเปิด dev อยู่ — ตอน verify ใช้ `PORT=3105 npm start`
-- **M22 commit แล้ว (`a36ed1c` local ยังไม่ push) · M23 ยังไม่ commit (รอเบสรีวิว)** · Champ/Revo ยังไม่มีภาพ (fallback เงารถ)
+- **M22+M23 commit + push main แล้ว (เบสสั่ง 2026-07-21): `a36ed1c` M22 · `1cd1bdc` M23 → Vercel auto-deploy** · Champ/Revo ยังไม่มีภาพ (fallback เงารถ)
 - timeline: narrative ประวัติจาก `MarketPresence.notes` ยังไม่ render (ท้าย notes มี comment ภายใน) — v1 โชว์ dl+channel+events+sources · จะเพิ่ม narrative เมื่อ clean notes (ops) แยกเนื้อหาสาธารณะ
 - `(home)/loading.tsx` skeleton ยังเป็นทรงตาราง ไม่เข้ากับ landing (cosmetic ตอน cold load)
 - รูปรถ = ลิขสิทธิ์ Toyota (CREDITS.md ครบ) — ทบทวนสิทธิ์ก่อน production · ยังไม่มี production domain
