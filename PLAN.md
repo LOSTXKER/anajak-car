@@ -152,6 +152,12 @@
 - [x] Apply: แถว py-2 · รูป 56×32 · ชื่อรุ่น semibold + แบรนด์จางสองบรรทัด · PriceBar สเกลนิ่งทั้ง coverage (สีเดียว ไม่มี gradient) ทั้ง 2 มุมมอง + /brands/[slug] ได้เข้าชุดอัตโนมัติ
 - [x] verify: tsc/lint/build + screenshot จริง — bar เทียบราคาอ่านได้ทันที (Fortuner ยาวสุด/Champ สั้นสุด) · บันทึกทางเลือกที่เบส reject (T1/T2) ลง DESIGN.md กันดันกลับ
 
+## ✅ Milestone 18: ตารางเดียว — กดแถวกางรุ่นย่อย (เสร็จ 2026-07-20)
+- [x] เบสสั่งรวมมุมมอง "รุ่นรถ/รุ่นย่อยทั้งหมด" เป็นตารางเดียว + ชอบการแสดงผลแบบรุ่นย่อย → `ExpandableRow`: กดแถวรุ่น = กางรุ่นย่อยใต้แถว (สไตล์บันไดราคา: ชื่อ + สเปกจาง + ราคา/bar) · ตัด toggle มุมมองทิ้ง
+- [x] ค้นหาครอบชื่อรุ่นย่อย + auto-expand เมื่อ match ด้วยชื่อรุ่นย่อย (?q=4trex → กาง Travo อัตโนมัติ)
+- [x] แก้ปัญหารุ่นย่อยชื่อซ้ำข้ามแค็บ (Prerunner 2.8 Smart MT มีทั้ง Smart/Double Cab): เพิ่ม `derivativeName` ใน VariantIndexRow นำหน้าบรรทัดสเปก
+- [x] verify: tsc/lint/build + ทดสอบ auto-expand จริง (aria-expanded) + screenshot สภาพกาง 18 รุ่นย่อย Travo
+
 ## ถัดไป (ยังไม่เริ่ม)
 - [ ] Seed ADAS 3 ฟีเจอร์แรก (AEB/ACC/LKA) — ต้อง research หลักฐานต่อ trim จาก toyota.co.th ก่อน (Phase 4 ต่อ)
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

@@ -290,6 +290,7 @@ export type VariantIndexRow = {
   brand: string;
   name: string;
   trimName: string;
+  derivativeName: string | null; // ชื่อตัวถัง เช่น "Travo Smart Cab" — ใช้แยกรุ่นย่อยชื่อซ้ำข้ามแค็บตอนกางในตารางรวม
   bodyType: string;
   lifecycleStatus: string;
   powertrainLabel: string;
@@ -357,6 +358,7 @@ function buildNameplateSummary(nameplate: NameplateWithTree): {
         brand: nameplate.marketPresence.brand.name,
         name: flat.variant.name ?? flat.trim.name,
         trimName: flat.trim.name,
+        derivativeName: flat.derivative.name,
         bodyType: flat.derivative.bodyType,
         lifecycleStatus: nameplate.lifecycleStatus,
         powertrainLabel: powertrainLabel(
