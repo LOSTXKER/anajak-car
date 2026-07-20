@@ -90,117 +90,6 @@ function CarThumb({ slug }: { slug: string }) {
   );
 }
 
-// แถวรุ่นรถแบบกางได้: กดแถว → รุ่นย่อยกางใต้แถวเรียงราคาต่ำ→สูง
-// เกลารอบ 2 (ฟีดแบ็กเบส "รก/ตัวเล็ก/ไม่เป็นระเบียบ" 2026-07-20): ราคาเริ่มต้นตัวเดียว ·
-// ตัดหลอดราคา/แบรนด์ใต้ชื่อ/ปี/วันที่รายแถว (ของซ้ำยกไปพูดครั้งเดียวเหนือตาราง) · ตัวหนังสือใหญ่ขึ้นทั้งชุด
-function ExpandableRow({
-  row,
-  index,
-  expanded,
-  onToggle,
-  variants,
-  onOpen,
-  rowClass,
-}: {
-  row: NameplateRow;
-  index: number;
-  expanded: boolean;
-  onToggle: () => void;
-  variants: VariantIndexRow[];
-  onOpen: () => void;
-  rowClass: string;
-}) {
-  return (
-    <>
-      <tr onClick={onToggle} aria-expanded={expanded} className={rowClass}>
-        <td className="py-2.5 pr-1 pl-2 text-right text-[13px] text-faint tabular-nums">
-          {index + 1}
-        </td>
-        <td className="px-3 py-2.5">
-          <div className="flex items-center gap-3">
-            <CarThumb slug={row.slug} />
-            <Link
-              href={`/cars/${row.slug}`}
-              className="text-[15px] font-semibold text-foreground group-hover:text-accent"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {row.name}
-            </Link>
-          </div>
-        </td>
-        <td className="px-3 py-2.5 text-right whitespace-nowrap">
-          {row.priceMin != null ? (
-            <>
-              <span className="mr-1.5 text-[13px] text-faint">เริ่มต้น</span>
-              <span className="text-base font-semibold tabular-nums">
-                {formatTHB(row.priceMin)}
-              </span>
-            </>
-          ) : (
-            <span className="text-sm text-faint">ไม่มีข้อมูล</span>
-          )}
-        </td>
-        <td className="px-3 py-2.5 text-sm text-muted">
-          <CategoryCell row={row} />
-        </td>
-        <td className="px-3 py-2.5 text-sm text-muted">
-          {row.powertrainLabels.join(" · ")}
-        </td>
-        <td className="py-2.5 pr-3 pl-3 text-right whitespace-nowrap">
-          <span className="text-sm text-muted tabular-nums">{row.variantCount} รุ่นย่อย</span>
-          <svg
-            viewBox="0 0 12 12"
-            aria-hidden
-            className={`ml-2 inline size-3 text-faint transition-transform duration-200 ${expanded ? "rotate-180 text-accent" : ""}`}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="m2.5 4.5 3.5 3.5 3.5-3.5" />
-          </svg>
-        </td>
-      </tr>
-      {expanded && (
-        <tr className="border-b border-border">
-          <td aria-hidden />
-          <td colSpan={5} className="px-3 pt-0.5 pb-3">
-            <ul className="divide-y divide-border/70">
-              {variants.map((v) => (
-                <li key={v.id}>
-                  <button
-                    type="button"
-                    onClick={onOpen}
-                    className="grid w-full cursor-pointer grid-cols-[1fr_auto] items-center gap-x-4 rounded-lg px-1.5 py-2.5 text-left transition-colors hover:bg-surface-muted"
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium">{v.name}</span>
-                      <span className="block text-[13px] text-faint">
-                        {/* derivativeName นำหน้า — รุ่นย่อยชื่อซ้ำข้ามแค็บ (Prerunner 2.8 Smart มีทั้ง Smart/Double Cab) ต้องแยกได้ */}
-                        {[v.derivativeName, v.powertrainLabel, v.powerText, v.transmissionText]
-                          .filter(Boolean)
-                          .join(" · ") || "ไม่มีข้อมูลสเปก"}
-                      </span>
-                    </span>
-                    <span className="text-right text-[15px] font-semibold tabular-nums">
-                      {v.price != null ? (
-                        formatTHB(v.price)
-                      ) : (
-                        <span className="text-sm font-normal text-faint">ไม่มีข้อมูล</span>
-                      )}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </td>
-        </tr>
-      )}
-    </>
-  );
-}
-
 // เซกเมนต์กับตัวถังมักซ้ำความหมายกัน (เช่น PPV/PPV, กระบะ/กระบะ) — แสดงครั้งเดียวเมื่อข้อความตรงกัน
 function CategoryCell({ row }: { row: NameplateRow }) {
   const segmentLabel = row.segment ? (SEGMENT_LABEL[row.segment] ?? row.segment) : null;
@@ -229,8 +118,6 @@ export function CarDatabaseExplorer({
   const searchParams = useSearchParams();
   const initCap = searchParams.get("cap");
   const [isNavigating, startNavigation] = useTransition();
-  // ตารางเดียว: แถวรุ่นรถกดเพื่อกางรุ่นย่อยใต้แถว (เบสสั่งรวม 2 มุมมอง 2026-07-20)
-  const [expandedSlugs, setExpandedSlugs] = useState<Set<string>>(new Set());
   const [q, setQ] = useState(searchParams.get("q") ?? "");
   const [bodyType, setBodyType] = useState<string | null>(searchParams.get("body"));
   const [powertrain, setPowertrain] = useState<string | null>(searchParams.get("pt"));
@@ -325,20 +212,6 @@ export function CarDatabaseExplorer({
     return result;
   }, [rows, variantsBySlug, q, bodyType, powertrain, status, priceCap, sortKey, sortAsc]);
 
-  // ค้นด้วยชื่อรุ่นย่อย (เช่น "GR Sport") → กางรุ่นที่ match ให้เห็นเลย โดยไม่ต้องกดเอง
-  const autoExpanded = useMemo(() => {
-    const query = q.trim().toLowerCase();
-    const s = new Set<string>();
-    if (!query) return s;
-    for (const row of filteredNameplates) {
-      const selfHit = `${row.brand} ${row.name} ${row.generationCode ?? ""}`
-        .toLowerCase()
-        .includes(query);
-      if (!selfHit) s.add(row.slug);
-    }
-    return s;
-  }, [q, filteredNameplates]);
-
   const hasActiveFilter =
     q.trim() !== "" || bodyType || powertrain || status !== "all" || priceCap != null;
 
@@ -357,19 +230,6 @@ export function CarDatabaseExplorer({
   const totalCount = rows.length;
   const shownVariantCount = filteredNameplates.reduce((n, r) => n + r.variantCount, 0);
   const isEmptyResult = shownCount === 0;
-
-  function isExpanded(slug: string) {
-    return expandedSlugs.has(slug) || autoExpanded.has(slug);
-  }
-
-  function toggleExpand(slug: string) {
-    setExpandedSlugs((prev) => {
-      const next = new Set(prev);
-      if (next.has(slug)) next.delete(slug);
-      else next.add(slug);
-      return next;
-    });
-  }
 
   function resetFilters() {
     setQ("");
@@ -484,7 +344,7 @@ export function CarDatabaseExplorer({
       </div>
 
       <p aria-live="polite" className="mt-5 mb-1 flex flex-wrap items-center gap-2 text-[13px] text-faint">
-        {shownCount} จาก {totalCount} รุ่น ({shownVariantCount} รุ่นย่อย — กดแถวเพื่อกางดู)
+        {shownCount} จาก {totalCount} รุ่น · {shownVariantCount} รุ่นย่อย
         <span aria-hidden>·</span>
         <span>ราคาป้ายทางการ</span>
         {latestCheckedAll && (
@@ -558,16 +418,49 @@ export function CarDatabaseExplorer({
             </thead>
             <tbody>
               {filteredNameplates.map((row, i) => (
-                <ExpandableRow
-                  key={row.slug}
-                  row={row}
-                  index={i}
-                  expanded={isExpanded(row.slug)}
-                  onToggle={() => toggleExpand(row.slug)}
-                  variants={variantsBySlug.get(row.slug) ?? []}
-                  onOpen={() => goTo(row.slug)}
-                  rowClass={rowClass}
-                />
+                <tr key={row.slug} onClick={() => goTo(row.slug)} className={rowClass}>
+                  <td className="py-2.5 pr-1 pl-2 text-right text-[13px] text-faint tabular-nums">
+                    {i + 1}
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center gap-3">
+                      <CarThumb slug={row.slug} />
+                      <Link
+                        href={`/cars/${row.slug}`}
+                        className="text-[15px] font-semibold text-foreground group-hover:text-accent"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {row.name}
+                      </Link>
+                    </div>
+                  </td>
+                  <td className="px-3 py-2.5 text-right whitespace-nowrap">
+                    {row.priceMin != null ? (
+                      <>
+                        <span className="mr-1.5 text-[13px] text-faint">เริ่มต้น</span>
+                        <span className="text-base font-semibold tabular-nums">
+                          {formatTHB(row.priceMin)}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-sm text-faint">ไม่มีข้อมูล</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-sm text-muted">
+                    <CategoryCell row={row} />
+                  </td>
+                  <td className="px-3 py-2.5 text-sm text-muted">
+                    {row.powertrainLabels.join(" · ")}
+                  </td>
+                  <td className="py-2.5 pr-3 pl-3 text-right whitespace-nowrap">
+                    <span className="text-sm text-muted tabular-nums">
+                      {row.variantCount} รุ่นย่อย
+                    </span>
+                    <span aria-hidden className="ml-1.5 text-faint transition-colors group-hover:text-accent">
+                      ›
+                    </span>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
