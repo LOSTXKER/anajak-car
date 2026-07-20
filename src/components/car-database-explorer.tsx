@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { NameplateRow, VariantIndexRow } from "@/lib/queries";
 import { BODY_TYPE_LABEL, SEGMENT_LABEL } from "@/lib/labels";
 import { formatDateTH, formatPriceRange, formatTHB } from "@/lib/format";
@@ -112,20 +112,44 @@ function CategoryCell({ row }: { row: NameplateRow }) {
 export function CarDatabaseExplorer({
   rows,
   variantRows,
+  hideSearch = false,
 }: {
   rows: NameplateRow[];
   variantRows: VariantIndexRow[];
+  // หน้าแรกมีช่องค้นหาใหญ่ใน hero แล้ว (hero-search.tsx) — ซ่อนช่องซ้ำในตาราง (หลัก: อย่าใส่ข้อมูลซ้ำ)
+  // หน้าอื่น (/brands/[slug]) ไม่มี hero ยังใช้ช่องนี้ตามเดิม
+  hideSearch?: boolean;
 }) {
   const router = useRouter();
+  // เงื่อนไขจากช่องค้นหา hero มาทาง URL (?q=/&body=/&pt=/&cap= — ดู hero-search.tsx)
+  // ค่าเริ่มต้นของ filter derive จาก URL ตรงๆ (รองรับเข้าหน้าพร้อม param/แชร์ลิงก์)
+  const searchParams = useSearchParams();
+  const initCap = searchParams.get("cap");
   const [isNavigating, startNavigation] = useTransition();
   const [view, setView] = useState<ViewMode>("nameplates");
-  const [q, setQ] = useState("");
-  const [bodyType, setBodyType] = useState<string | null>(null);
-  const [powertrain, setPowertrain] = useState<string | null>(null);
+  const [q, setQ] = useState(searchParams.get("q") ?? "");
+  const [bodyType, setBodyType] = useState<string | null>(searchParams.get("body"));
+  const [powertrain, setPowertrain] = useState<string | null>(searchParams.get("pt"));
   const [status, setStatus] = useState<StatusFilter>("all");
-  const [priceCapText, setPriceCapText] = useState("");
+  const [priceCapText, setPriceCapText] = useState(
+    initCap && Number.isFinite(Number(initCap)) ? Number(initCap).toLocaleString("en-US") : "",
+  );
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortAsc, setSortAsc] = useState(true);
+
+  // เมื่อ URL เปลี่ยนภายหลัง (กดค้นหา/ชิปจาก hero ขณะอยู่บนหน้า): ตั้ง filter ทั้งชุดตาม URL
+  // ใช้ render-phase adjustment (แพตเทิร์น "adjusting state when props change" ของ React)
+  // — การพิมพ์ในตารางไม่แตะ URL จึงไม่ถูกทับ
+  const paramsKey = searchParams.toString();
+  const [prevParamsKey, setPrevParamsKey] = useState(paramsKey);
+  if (paramsKey !== prevParamsKey) {
+    setPrevParamsKey(paramsKey);
+    setQ(searchParams.get("q") ?? "");
+    setBodyType(searchParams.get("body"));
+    setPowertrain(searchParams.get("pt"));
+    const cap = searchParams.get("cap");
+    setPriceCapText(cap && Number.isFinite(Number(cap)) ? Number(cap).toLocaleString("en-US") : "");
+  }
 
   const bodyTypeOptions = useMemo(
     () =>
@@ -223,6 +247,10 @@ export function CarDatabaseExplorer({
     setPowertrain(null);
     setStatus("all");
     setPriceCapText("");
+    // ล้างเงื่อนไขที่มาจาก hero ใน URL ด้วย — กัน state กับ URL ไม่ตรงกัน
+    if (paramsKey !== "") {
+      router.replace(window.location.pathname, { scroll: false });
+    }
   }
 
   function toggleSort(key: SortKey) {
@@ -255,22 +283,24 @@ export function CarDatabaseExplorer({
   return (
     <section aria-label="ตารางฐานข้อมูลรถ" className="pb-20">
       <div className="flex flex-col gap-4">
-        <label className="relative mx-auto block w-full max-w-2xl">
-          <span className="sr-only">ค้นหารุ่นรถ</span>
-          <span
-            aria-hidden
-            className="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-lg text-faint"
-          >
-            ⌕
-          </span>
-          <input
-            type="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="ค้นหา เช่น Hilux, Corolla, bZ4X…"
-            className="w-full rounded-full border border-border bg-surface py-3.5 pr-6 pl-12 text-[15px] shadow-sm transition-[border-color,box-shadow] outline-none placeholder:text-faint focus:border-accent focus:shadow-md"
-          />
-        </label>
+        {!hideSearch && (
+          <label className="relative mx-auto block w-full max-w-2xl">
+            <span className="sr-only">ค้นหารุ่นรถ</span>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-lg text-faint"
+            >
+              ⌕
+            </span>
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="ค้นหา เช่น Hilux, Corolla, bZ4X…"
+              className="w-full rounded-full border border-border bg-surface py-3.5 pr-6 pl-12 text-[15px] shadow-sm transition-[border-color,box-shadow] outline-none placeholder:text-faint focus:border-accent focus:shadow-md"
+            />
+          </label>
+        )}
 
         <div className="flex flex-wrap items-center gap-2">
           <div

@@ -138,6 +138,14 @@
 - [x] Fixup ชื่อ variant ซ้ำหัวกลุ่ม (บทเรียน M11 โผล่ซ้ำ — strip "Double/Smart Cab" prefix 9 แถว)
 - [x] verify: verify-vocab.ts 29/29 ✅ + build ผ่าน + เปิดหน้าจริง `/cars/hilux-champ` `/cars/hilux-revo` + screenshot (บันไดราคา/สเปกคำกลาง/ขับหลัง ครบ)
 
+## ✅ Milestone 16: Hero หน้าแรกใหม่ — search-first (เสร็จ 2026-07-20)
+- [x] เบสฟีดแบ็ก "Hero ปรับให้ดีกว่านี้ได้" → ทำหน้าเทียบ 3 แบบจริง (Search-first / Table-first / Centered เกลาใหม่) ด้วยสี+โลโก้+ตัวเลขจริง → เบสเลือก **A Search-first**
+- [x] `HeroSearch` component ใหม่: ช่องค้นหาใหญ่ + ชิปหมวดผูก filter จริง (กระบะ/SUV/PPV/ซีดาน/รถไฟฟ้า/งบ≤1ล้าน) + ส่งเงื่อนไขผ่าน URL param → explorer อ่านมาตั้ง filter (แชร์ลิงก์ผลกรองได้)
+- [x] ตัดปุ่ม CTA 2 ปุ่ม + คำโปรยยาว → บรรทัดพิสูจน์ตัวเลขจริงจากระบบ (7 รุ่น · 62 รุ่นย่อย · แหล่งทางการ · ตรวจล่าสุด) — เป็นบรรทัด ไม่ใช่การ์ดสถิติที่เบสเคยถอด
+- [x] ซ่อนช่องค้นหาซ้ำในตารางเฉพาะหน้าแรก (hideSearch prop — หลักอย่าใส่ข้อมูลซ้ำ) + ล้างตัวกรองล้าง URL ด้วย
+- [x] แก้บั๊กระหว่างทาง: initial state ไม่อ่าน URL ตอนเข้าหน้าตรง (derive จาก searchParams) + h1 mobile ลดเป็น text-3xl
+- [x] verify: tsc/lint/build + ทดสอบ filter จริงผ่าน headless (?q=champ→เหลือ Champ · ?body=PICKUP→กระบะ 3 · ?cap=1M→5 รุ่น · ?pt=EV→bZ4X+Travo) + screenshot desktop/mobile-390 (ผ่าน iframe harness — พบว่า Chrome headless บังคับ viewport ≥500 บันทึกบทเรียนใน DESIGN.md แล้ว)
+
 ## ถัดไป (ยังไม่เริ่ม)
 - [ ] Seed ADAS 3 ฟีเจอร์แรก (AEB/ACC/LKA) — ต้อง research หลักฐานต่อ trim จาก toyota.co.th ก่อน (Phase 4 ต่อ)
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

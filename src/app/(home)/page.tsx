@@ -4,6 +4,7 @@ import { getBrandTiles, getDatabaseIndex } from "@/lib/queries";
 import { formatDateTH } from "@/lib/format";
 import { CarDatabaseExplorer } from "@/components/car-database-explorer";
 import { BrandShortcuts } from "@/components/brand-shortcuts";
+import { HeroSearch } from "@/components/hero-search";
 
 export const dynamic = "force-dynamic";
 
@@ -54,34 +55,37 @@ export default async function Home() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-      {/* คำตรงกลาง — hero */}
-      <section className="pt-16 pb-10 text-center sm:pt-24">
+      {/* Hero แบบ search-first (เบสเลือกจากหน้าเทียบ 3 แบบ 2026-07-20) — ช่องค้นหาคือพระเอก
+          คนมาเว็บนี้เพื่อ "ค้นรถ" ให้ทำได้ทันที · ตัวเลขจริงเป็นบรรทัดพิสูจน์ ไม่ใช่การ์ดสถิติ (เบสถอดการ์ดไปแล้วใน M5) */}
+      <section className="pt-14 pb-10 text-center sm:pt-20">
         <p className="text-xs font-medium tracking-[0.22em] text-faint uppercase">
           Thailand Car Database
         </p>
-        <h1 className="mx-auto mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
+        {/* mobile ใช้ text-3xl — วลี "ด้วยข้อมูลรถที่ตรวจสอบได้" เป็นสตริงไทยยาวไม่มีวรรค ตัดคำไม่ได้ ที่ 4xl จะล้นจอ 390px */}
+        <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
           เช็กก่อนซื้อ
           <br className="sm:hidden" />
           <span className="text-muted"> ด้วยข้อมูลรถที่ตรวจสอบได้</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-xl text-[15px] text-muted sm:text-base">
-          ราคาป้ายทางการ สเปก และเจเนอเรชันของรถในไทย แยกลึกถึงระดับรุ่นย่อย —
-          ทุกตัวเลขผูกแหล่งอ้างอิง พร้อมวันที่ตรวจสอบและระดับความเชื่อมั่น
-        </p>
-        <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="#database"
-            className="rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
-          >
-            สำรวจฐานข้อมูล
-          </a>
-          <Link
-            href="/brands"
-            className="rounded-full border border-border bg-surface px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
-          >
-            ดูแบรนด์ทั้งหมด
-          </Link>
+        <div className="mt-8">
+          <HeroSearch />
         </div>
+        {!isEmpty && (
+          <p className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[13.5px] text-faint">
+            <span>
+              <b className="font-semibold text-foreground">{stats.nameplates}</b> รุ่น ·{" "}
+              <b className="font-semibold text-foreground">{stats.variants}</b> รุ่นย่อย
+            </span>
+            <span>
+              ทุกราคาอ้าง<b className="font-semibold text-foreground">แหล่งทางการ</b>
+            </span>
+            {latestChecked && (
+              <span>
+                ตรวจล่าสุด <b className="font-semibold text-foreground">{latestChecked}</b>
+              </span>
+            )}
+          </p>
+        )}
       </section>
 
       {/* โลโก้แบรนด์ = shortcut เข้าหน้าแบรนด์ */}
@@ -102,7 +106,7 @@ export default async function Home() {
             </div>
           </section>
         ) : (
-          <CarDatabaseExplorer rows={rows} variantRows={variantRows} />
+          <CarDatabaseExplorer rows={rows} variantRows={variantRows} hideSearch />
         )}
       </div>
 

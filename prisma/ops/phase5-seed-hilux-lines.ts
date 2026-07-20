@@ -374,7 +374,6 @@ async function main() {
           "STANDARD = กระบะเตี้ย 2WD ตามนิยาม VOCABULARY.md §6 — คนละ cohort กับ HIGH_RIDER/4WD");
 
         for (const { g, lineCode } of items) {
-          const spec = transSpecOf(g);
           const cnc = /ไม่มีกระบะ|C&C/i.test(g.title)
             ? " · Cab & Chassis (ไม่มีกระบะท้าย — สำหรับต่อตัวถังเอง)"
             : "";
