@@ -6,8 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { NameplateRow, VariantIndexRow } from "@/lib/queries";
 import { BODY_TYPE_LABEL, SEGMENT_LABEL } from "@/lib/labels";
-import { formatDateTH, formatPriceRange, formatTHB } from "@/lib/format";
-import { LifecycleDot } from "@/components/badges";
+import { formatDateTH, formatTHB } from "@/lib/format";
 import { nameplateImage } from "@/lib/images";
 
 type SortKey = "name" | "price";
@@ -91,27 +90,15 @@ function CarThumb({ slug }: { slug: string }) {
   );
 }
 
-// bar ตำแหน่งราคาเทียบสเกลรวมทั้ง coverage (สเกลนิ่ง ไม่ขยับตาม filter — T3 เบสเลือก 2026-07-20)
-// data-viz จากราคาจริง ไม่ใช่ ranking · สีเดียวทึบ ไม่มี gradient ตามกฎ DESIGN.md
-function PriceBar({ value, max }: { value: number | null; max: number }) {
-  if (value == null || max <= 0) return null;
-  const pct = Math.max(3, Math.min(100, Math.round((value / max) * 100)));
-  return (
-    <span aria-hidden className="mt-1 ml-auto block h-1 w-32 overflow-hidden rounded-full bg-surface-muted">
-      <span className="block h-full rounded-full bg-accent/70" style={{ width: `${pct}%` }} />
-    </span>
-  );
-}
-
-// แถวรุ่นรถแบบกางได้ (เบสสั่งรวม 2 มุมมอง 2026-07-20): กดแถว → รุ่นย่อยกางใต้แถว
-// รุ่นย่อยใช้สไตล์เดียวกับบันไดราคาหน้ารถ (ชื่อ + สเปกประโยคจาง + ราคา/bar ขวา) — แบบที่เบสบอกว่าอ่านง่าย
+// แถวรุ่นรถแบบกางได้: กดแถว → รุ่นย่อยกางใต้แถวเรียงราคาต่ำ→สูง
+// เกลารอบ 2 (ฟีดแบ็กเบส "รก/ตัวเล็ก/ไม่เป็นระเบียบ" 2026-07-20): ราคาเริ่มต้นตัวเดียว ·
+// ตัดหลอดราคา/แบรนด์ใต้ชื่อ/ปี/วันที่รายแถว (ของซ้ำยกไปพูดครั้งเดียวเหนือตาราง) · ตัวหนังสือใหญ่ขึ้นทั้งชุด
 function ExpandableRow({
   row,
   index,
   expanded,
   onToggle,
   variants,
-  priceScaleMax,
   onOpen,
   rowClass,
 }: {
@@ -120,65 +107,51 @@ function ExpandableRow({
   expanded: boolean;
   onToggle: () => void;
   variants: VariantIndexRow[];
-  priceScaleMax: number;
   onOpen: () => void;
   rowClass: string;
 }) {
   return (
     <>
       <tr onClick={onToggle} aria-expanded={expanded} className={rowClass}>
-        <td className="py-2 pr-1 pl-2 text-right text-xs text-faint tabular-nums">
+        <td className="py-2.5 pr-1 pl-2 text-right text-[13px] text-faint tabular-nums">
           {index + 1}
         </td>
-        <td className="px-3 py-2">
+        <td className="px-3 py-2.5">
           <div className="flex items-center gap-3">
             <CarThumb slug={row.slug} />
-            <div className="min-w-0">
-              <Link
-                href={`/cars/${row.slug}`}
-                className="font-semibold text-foreground group-hover:text-accent"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {row.name}
-              </Link>
-              <div className="text-[11px] text-faint">{row.brand}</div>
-            </div>
+            <Link
+              href={`/cars/${row.slug}`}
+              className="text-[15px] font-semibold text-foreground group-hover:text-accent"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {row.name}
+            </Link>
           </div>
         </td>
-        <td className="px-3 py-2 text-right text-[15px] font-semibold whitespace-nowrap tabular-nums">
-          {formatPriceRange(row.priceMin, row.priceMax) ?? (
-            <span className="text-sm font-normal text-faint">ไม่มีข้อมูล</span>
+        <td className="px-3 py-2.5 text-right whitespace-nowrap">
+          {row.priceMin != null ? (
+            <>
+              <span className="mr-1.5 text-[13px] text-faint">เริ่มต้น</span>
+              <span className="text-base font-semibold tabular-nums">
+                {formatTHB(row.priceMin)}
+              </span>
+            </>
+          ) : (
+            <span className="text-sm text-faint">ไม่มีข้อมูล</span>
           )}
-          <PriceBar value={row.priceMax} max={priceScaleMax} />
         </td>
-        <td className="px-3 py-2 text-muted">
+        <td className="px-3 py-2.5 text-sm text-muted">
           <CategoryCell row={row} />
         </td>
-        <td className="px-3 py-2 text-muted">{row.powertrainLabels.join(" · ")}</td>
-        <td
-          className="px-3 py-2 text-right text-muted tabular-nums"
-          title={row.generationCode ?? undefined}
-        >
-          {row.launchYear ?? <span className="text-faint">—</span>}
+        <td className="px-3 py-2.5 text-sm text-muted">
+          {row.powertrainLabels.join(" · ")}
         </td>
-        <td className="px-3 py-2 text-right">
-          <span className="inline-block rounded-full bg-surface-muted px-2 py-0.5 text-xs text-muted tabular-nums">
-            {row.variantCount}
-          </span>
-        </td>
-        <td className="px-3 py-2 pr-2">
-          <div className="flex items-center gap-1.5 whitespace-nowrap">
-            <LifecycleDot status={row.lifecycleStatus} />
-            <span className="text-xs text-faint">
-              {formatDateTH(row.latestChecked) ?? "—"}
-            </span>
-          </div>
-        </td>
-        <td className="py-2 pr-3 text-right">
+        <td className="py-2.5 pr-3 pl-3 text-right whitespace-nowrap">
+          <span className="text-sm text-muted tabular-nums">{row.variantCount} รุ่นย่อย</span>
           <svg
             viewBox="0 0 12 12"
             aria-hidden
-            className={`ml-auto size-3 text-faint transition-transform duration-200 ${expanded ? "rotate-180 text-accent" : ""}`}
+            className={`ml-2 inline size-3 text-faint transition-transform duration-200 ${expanded ? "rotate-180 text-accent" : ""}`}
             fill="none"
             stroke="currentColor"
             strokeWidth="1.5"
@@ -192,33 +165,30 @@ function ExpandableRow({
       {expanded && (
         <tr className="border-b border-border">
           <td aria-hidden />
-          <td colSpan={8} className="px-3 pt-0.5 pb-3">
+          <td colSpan={5} className="px-3 pt-0.5 pb-3">
             <ul className="divide-y divide-border/70">
               {variants.map((v) => (
                 <li key={v.id}>
                   <button
                     type="button"
                     onClick={onOpen}
-                    className="grid w-full cursor-pointer grid-cols-[1fr_auto] items-center gap-x-4 rounded-lg px-1.5 py-2 text-left transition-colors hover:bg-surface-muted"
+                    className="grid w-full cursor-pointer grid-cols-[1fr_auto] items-center gap-x-4 rounded-lg px-1.5 py-2.5 text-left transition-colors hover:bg-surface-muted"
                   >
                     <span className="min-w-0">
-                      <span className="block truncate text-[13.5px] font-medium">
-                        {v.name}
-                      </span>
-                      <span className="block text-xs text-faint">
+                      <span className="block truncate text-sm font-medium">{v.name}</span>
+                      <span className="block text-[13px] text-faint">
                         {/* derivativeName นำหน้า — รุ่นย่อยชื่อซ้ำข้ามแค็บ (Prerunner 2.8 Smart มีทั้ง Smart/Double Cab) ต้องแยกได้ */}
                         {[v.derivativeName, v.powertrainLabel, v.powerText, v.transmissionText]
                           .filter(Boolean)
                           .join(" · ") || "ไม่มีข้อมูลสเปก"}
                       </span>
                     </span>
-                    <span className="text-right text-sm font-semibold tabular-nums">
+                    <span className="text-right text-[15px] font-semibold tabular-nums">
                       {v.price != null ? (
                         formatTHB(v.price)
                       ) : (
-                        <span className="font-normal text-faint">ไม่มีข้อมูล</span>
+                        <span className="text-sm font-normal text-faint">ไม่มีข้อมูล</span>
                       )}
-                      <PriceBar value={v.price} max={priceScaleMax} />
                     </span>
                   </button>
                 </li>
@@ -238,14 +208,8 @@ function CategoryCell({ row }: { row: NameplateRow }) {
   if (!segmentLabel && !bodyLabel) {
     return <span className="text-faint">ไม่มีข้อมูล</span>;
   }
-  if (!segmentLabel) return <span>{bodyLabel}</span>;
-  const showBody = bodyLabel && bodyLabel !== segmentLabel;
-  return (
-    <div>
-      <div>{segmentLabel}</div>
-      {showBody && <div className="text-xs text-faint">{bodyLabel}</div>}
-    </div>
-  );
+  // บรรทัดเดียวจบ — บรรทัดย่อย (เช่น "SUV กลาง/SUV") ซ้ำความหมาย รกโดยไม่จำเป็น (ฟีดแบ็กเบส 2026-07-20)
+  return <span>{segmentLabel ?? bodyLabel}</span>;
 }
 
 export function CarDatabaseExplorer({
@@ -375,19 +339,19 @@ export function CarDatabaseExplorer({
     return s;
   }, [q, filteredNameplates]);
 
-  // สเกลราคาสำหรับ PriceBar — คำนวณจากข้อมูลเต็ม (ไม่ใช่ผลกรอง) ให้ bar นิ่งเทียบกันได้เสมอ
-  const priceScaleMax = useMemo(
-    () =>
-      Math.max(
-        0,
-        ...rows.map((r) => r.priceMax ?? 0),
-        ...variantRows.map((v) => v.price ?? 0),
-      ),
-    [rows, variantRows],
-  );
-
   const hasActiveFilter =
     q.trim() !== "" || bodyType || powertrain || status !== "all" || priceCap != null;
+
+  // วันที่ตรวจล่าสุดของทั้งชุด — แสดงครั้งเดียวเหนือตาราง แทนที่จะซ้ำทุกแถว
+  const latestCheckedAll = useMemo(
+    () =>
+      rows.reduce<string | null>(
+        (max, r) =>
+          r.latestChecked && (!max || r.latestChecked > max) ? r.latestChecked : max,
+        null,
+      ),
+    [rows],
+  );
 
   const shownCount = filteredNameplates.length;
   const totalCount = rows.length;
@@ -519,10 +483,16 @@ export function CarDatabaseExplorer({
         </div>
       </div>
 
-      <p aria-live="polite" className="mt-5 mb-1 flex flex-wrap items-center gap-2 text-xs text-faint">
+      <p aria-live="polite" className="mt-5 mb-1 flex flex-wrap items-center gap-2 text-[13px] text-faint">
         {shownCount} จาก {totalCount} รุ่น ({shownVariantCount} รุ่นย่อย — กดแถวเพื่อกางดู)
         <span aria-hidden>·</span>
-        <span>ราคาป้ายทางการ — หลักฐานทุกราคาอยู่ในหน้าแต่ละรุ่น</span>
+        <span>ราคาป้ายทางการ</span>
+        {latestCheckedAll && (
+          <>
+            <span aria-hidden>·</span>
+            <span>ตรวจล่าสุด {formatDateTH(latestCheckedAll)}</span>
+          </>
+        )}
         {isNavigating && (
           <span className="inline-flex items-center gap-1.5 text-accent">
             <span
@@ -557,9 +527,9 @@ export function CarDatabaseExplorer({
           aria-label="ตารางรุ่นรถ — กดแถวเพื่อกางรุ่นย่อย (เลื่อนแนวนอนได้)"
           className="overflow-x-auto rounded-2xl"
         >
-          <table className="w-full min-w-[820px] text-sm">
+          <table className="w-full min-w-[620px] text-sm">
             <thead>
-              <tr className="border-b border-border text-left text-xs text-faint">
+              <tr className="border-b border-border text-left text-[13px] text-faint">
                 <th scope="col" className="py-2 pr-1 pl-2 text-right font-medium">
                   <span className="sr-only">ลำดับ</span>#
                 </th>
@@ -578,17 +548,12 @@ export function CarDatabaseExplorer({
                     onClick={() => toggleSort("price")}
                     className="-mx-1 rounded px-1 py-2 font-medium hover:text-foreground"
                   >
-                    ราคาป้าย (บาท){sortIndicator("price")}
+                    ราคาเริ่มต้น (บาท){sortIndicator("price")}
                   </button>
                 </th>
                 <th scope="col" className="px-3 py-2 font-medium">ประเภท</th>
                 <th scope="col" className="px-3 py-2 font-medium">ขุมพลัง</th>
-                <th scope="col" className="px-3 py-2 text-right font-medium">ปี</th>
-                <th scope="col" className="px-3 py-2 text-right font-medium">รุ่นย่อย</th>
-                <th scope="col" className="px-3 py-2 pr-2 font-medium">อัปเดต</th>
-                <th scope="col" className="py-2 pr-3">
-                  <span className="sr-only">กางรุ่นย่อย</span>
-                </th>
+                <th scope="col" className="py-2 pr-3 pl-3 text-right font-medium">รุ่นย่อย</th>
               </tr>
             </thead>
             <tbody>
@@ -600,7 +565,6 @@ export function CarDatabaseExplorer({
                   expanded={isExpanded(row.slug)}
                   onToggle={() => toggleExpand(row.slug)}
                   variants={variantsBySlug.get(row.slug) ?? []}
-                  priceScaleMax={priceScaleMax}
                   onOpen={() => goTo(row.slug)}
                   rowClass={rowClass}
                 />
