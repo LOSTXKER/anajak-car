@@ -70,12 +70,6 @@ export default async function Home() {
         <div className="mt-8">
           <HeroSearch />
         </div>
-        {/* เหลือเฉพาะวันที่ตรวจล่าสุด — เบสสั่งตัดจำนวนรุ่น/คำเคลมแหล่งทางการออก (2026-07-20) */}
-        {!isEmpty && latestChecked && (
-          <p className="mt-6 text-[13.5px] text-faint">
-            ตรวจล่าสุด <b className="font-semibold text-foreground">{latestChecked}</b>
-          </p>
-        )}
       </section>
 
       {/* โลโก้แบรนด์ = shortcut เข้าหน้าแบรนด์ */}
