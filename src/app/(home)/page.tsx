@@ -70,20 +70,10 @@ export default async function Home() {
         <div className="mt-8">
           <HeroSearch />
         </div>
-        {!isEmpty && (
-          <p className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[13.5px] text-faint">
-            <span>
-              <b className="font-semibold text-foreground">{stats.nameplates}</b> รุ่น ·{" "}
-              <b className="font-semibold text-foreground">{stats.variants}</b> รุ่นย่อย
-            </span>
-            <span>
-              ทุกราคาอ้าง<b className="font-semibold text-foreground">แหล่งทางการ</b>
-            </span>
-            {latestChecked && (
-              <span>
-                ตรวจล่าสุด <b className="font-semibold text-foreground">{latestChecked}</b>
-              </span>
-            )}
+        {/* เหลือเฉพาะวันที่ตรวจล่าสุด — เบสสั่งตัดจำนวนรุ่น/คำเคลมแหล่งทางการออก (2026-07-20) */}
+        {!isEmpty && latestChecked && (
+          <p className="mt-6 text-[13.5px] text-faint">
+            ตรวจล่าสุด <b className="font-semibold text-foreground">{latestChecked}</b>
           </p>
         )}
       </section>
