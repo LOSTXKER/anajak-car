@@ -64,6 +64,17 @@
 - responsive · เข้าถึงได้ (contrast ผ่าน · aria สำหรับ table/badge)
 - อย่า over-engineer ตอนต้น — วาง token + component เท่าที่หน้าใช้จริง
 
+## 🍎 กฎ "สะอาดแต่แพงขึ้น" (M24 — เบสสั่งลดความรก/ฟิล Apple · ห้าม drift กลับ)
+> หลัก: Confidence not disclaimers · Show don't explain · พูดครั้งเดียว ณ ที่ที่ถูก · badge เฉพาะข้อยกเว้น · ตัวเลข/รูปใหญ่ คำจางลง
+- **UI ห้ามอธิบายตัวเอง:** ตัด subtitle ที่สอนวิธีใช้ก่อนเห็นของจริง (เช่น "ตัวเลข + คือส่วนต่าง…", "เลือกดูราคา สเปก…", footnote สอน hover) · ถ้า UI ต้องมีคู่มือ = UI ผิด
+- **สารความเชื่อมั่นมีบ้านเดียว (พูดครั้งเดียว):** M1 หลักฐาน = landing เสา1 + FAQ ข้อ2 + trust line หน้ารถ + section แหล่งอ้างอิง · M2 freshness = `ตรวจสอบ {วันที่}` เฉพาะหน้าที่โชว์ราคารุ่นย่อย (เป็น anchor ไป `#sources-heading`) · M3 ไม่ใช่ราคาซื้อขายจริง = footer เดียว · M4 confidence = SourcesSection: **uniform ทุกระดับ→1 บรรทัด "ทุกแหล่งความเชื่อมั่นX" ไม่มี badge รายแถว · mixed→ป้ายไทย "สูง/ปานกลาง/ต่ำ"** (เลิก enum อังกฤษ) · **ห้ามพูด M1–M4 ที่อื่น** (ห้าม pill "evidence-first" ค้าง chrome · ห้าม M1 ใน footer/pillar/empty state)
+- **badge เฉพาะข้อยกเว้น:** `LifecycleBadge` CURRENT→null (สถานะปกติเงียบ · แก้ที่ component จุดเดียว) · โชว์เฉพาะ UPCOMING/TRANSITION/DISCONTINUED
+- **ค่าซ้ำแนวตั้งยกขึ้นหัวกลุ่ม:** หน้ารถ spec ที่เท่ากันทุกแถวในกลุ่ม (≥2 แถว) ยกไปต่อท้ายหัวกลุ่ม แถวเหลือเฉพาะส่วนต่าง (ยกเฉพาะเท่ากันเป๊ะ 100% — ไม่ปน entity) · price-ladder ไม่ยก (ลิสต์ข้ามรุ่น spec=identity แถว)
+- **type scale = 7 ขั้น:** xs(decorative aria-hidden เท่านั้น) · **13px = meta token (กฎ T3 ≥13px — วันที่ในแถว/เนื้อ Chip · ไม่ใช่ ad-hoc)** · sm · base(ชื่อแถว) · lg(ราคาแถว) · 2xl(หัว section/metric การ์ด) · h1 4xl→sm:5xl · display 4xl→sm:5xl · **ห้าม 6xl (ล้นจอ 640–1024px) · h1 landing mobile คง 3xl (4xl ล้น 390px)** · h2 เสียงเดียว `text-xl sm:text-2xl` ทุกที่ · ตัวเลข tabular-nums
+- **พื้นผิว:** `bg-surface-muted` = กดได้เท่านั้น · ข้อมูลอ่าน = divide-y พื้นเปล่า · **ห้าม tint ซ้อน tint** (เลิกวงกลมไอคอน accent-soft บนการ์ด) · ไม่มีเงา/border ตอนพัก · `ModelCard` image-forward (รูป=tile กดได้ · text ลอยพื้นเปล่าใต้รูป) · `CarSilhouette` = ภาษาเดียวของ "ยังไม่มีภาพ"
+- **breadcrumb เฉพาะ ≥3 ชั้น** (2 ชั้น = ซ้ำ h1/navbar ตัดทิ้ง) · **เลิกใช้คำ "coverage" บนจอ** (→ "ในฐานข้อมูล"/ตัด) · **empty state สั้น ไม่พ่วงสาร evidence**
+- **⛔ ห้ามเพิ่ม (เบสถอด/critique จับ):** stat band ตัวเลขใหญ่บน landing (= การ์ดสถิติที่เบสถอด M5 — ถ้าอยากได้ต้องให้เบสเคาะเอง) · ห้ามตัดลิงก์ navbar "รุ่นรถทั้งหมด" (ลิงก์ crawlable เดียวไป /cars บน landing)
+
 ## ⚠️ บทเรียนเครื่องมือตรวจภาพ (กันวินิจฉัยผิดซ้ำ — เจ็บมาแล้ว 2026-07-20)
 - **Chrome headless บังคับความกว้างขั้นต่ำ 500px** — `--window-size=390` ได้ viewport 500 จริง (`innerWidth=500`) แล้ว crop ภาพเหลือ 390 → ทุกอย่างดู "เบ้ซ้าย-ตัดขวา" เหมือน layout พังทั้งที่ไม่พัง · ตรวจ mobile < 500px ต้องใช้ **iframe harness** (หน้า HTML กว้าง ≥500 มี `<iframe width=390>` ชี้ localhost แล้ว screenshot ทั้งหน้า) หรือ CDP `Emulation.setDeviceMetricsOverride`
 - ก่อนสรุปว่า "layout พัง" จาก screenshot: เช็ค `innerWidth` จริงก่อนเสมอ (inject script วัดในหน้า repro)

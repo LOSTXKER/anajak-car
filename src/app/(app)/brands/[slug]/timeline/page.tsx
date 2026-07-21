@@ -62,26 +62,26 @@ export default async function BrandTimelinePage({ params }: Props) {
         </ol>
       </nav>
 
-      <header className="pt-6 pb-8">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">ไทม์ไลน์และประวัติ</h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted">
+      <header className="pt-6 pb-10">
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">ไทม์ไลน์และประวัติ</h1>
+        <p className="mt-3 text-sm text-muted">
           {hasEvents
-            ? `${timeline.events.length} เหตุการณ์ที่บันทึกพร้อมหลักฐาน · ครอบคลุมเฉพาะรุ่นใน coverage — ไม่ใช่ประวัติครบทุกเหตุการณ์ของแบรนด์`
-            : `ประวัติ ${detail.name} ในไทยพร้อมแหล่งอ้างอิง`}
+            ? `${timeline.events.length} เหตุการณ์ · เฉพาะรุ่นในฐานข้อมูล`
+            : `ประวัติ ${detail.name} ในไทย`}
         </p>
       </header>
 
       {/* พระเอก: ไทม์ไลน์การเปลี่ยนแปลง */}
       {hasEvents ? (
         <section aria-labelledby="brand-timeline-h" className="pb-12">
-          <h2 id="brand-timeline-h" className="text-lg font-semibold tracking-tight">การเปลี่ยนแปลง</h2>
-          <div className="mt-4 space-y-6">
+          <h2 id="brand-timeline-h" className="text-xl font-semibold tracking-tight sm:text-2xl">การเปลี่ยนแปลง</h2>
+          <div className="mt-6 space-y-8">
             {groups.map((group) => (
               <div key={group.year}>
-                <p className="text-sm font-semibold text-faint tabular-nums">{group.year}</p>
-                <ul className="mt-1 divide-y divide-border border-t border-border">
+                <p className="text-xl font-semibold tabular-nums">{group.year}</p>
+                <ul className="mt-2 divide-y divide-border border-t border-border">
                   {group.events.map((ev) => (
-                    <li key={ev.id} className="py-4">
+                    <li key={ev.id} className="py-5">
                       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <Chip>{CHANGE_TYPE_LABEL[ev.changeType] ?? ev.changeType}</Chip>
@@ -91,11 +91,11 @@ export default async function BrandTimelinePage({ params }: Props) {
                             </Link>
                           )}
                         </div>
-                        <span className="text-xs whitespace-nowrap text-faint">
+                        <span className="text-[13px] whitespace-nowrap text-faint">
                           {formatDateTH(ev.effectiveDate) ?? "ไม่ระบุวันที่"}
                         </span>
                       </div>
-                      <p className="mt-1.5 text-[15px] font-medium">{ev.title}</p>
+                      <p className="mt-2 text-base font-medium">{ev.title}</p>
                       {ev.summary && <p className="mt-1 text-sm text-muted">{ev.summary}</p>}
                       {(ev.beforeValue || ev.afterValue) && (
                         <p className="mt-1 text-sm tabular-nums">
@@ -105,7 +105,7 @@ export default async function BrandTimelinePage({ params }: Props) {
                         </p>
                       )}
                       {ev.evidence && (
-                        <div className="mt-1.5">
+                        <div className="mt-2">
                           <EvidenceLink evidence={ev.evidence} />
                         </div>
                       )}
@@ -115,46 +115,38 @@ export default async function BrandTimelinePage({ params }: Props) {
               </div>
             ))}
           </div>
-          {operationYear != null && (
-            <p className="mt-6 text-sm text-faint">
-              {detail.name} ดำเนินงานในไทยตั้งแต่ {operationYear} — อ่านประวัติแบรนด์ด้านล่าง
-            </p>
-          )}
         </section>
       ) : (
-        <p className="pb-8 text-sm text-muted">ยังไม่มีเหตุการณ์ที่บันทึก — เหตุการณ์จะเพิ่มเมื่อมีหลักฐานทางการ</p>
+        <p className="pb-8 text-sm text-muted">ยังไม่มีเหตุการณ์ที่บันทึก</p>
       )}
 
       {/* ประวัติแบรนด์ในไทย */}
-      <section aria-labelledby="brand-history-h" className="border-t border-border pt-8 pb-4">
-        <h2 id="brand-history-h" className="text-lg font-semibold tracking-tight">ประวัติแบรนด์ในไทย</h2>
+      <section aria-labelledby="brand-history-h" className="border-t border-border pt-10 pb-4">
+        <h2 id="brand-history-h" className="text-xl font-semibold tracking-tight sm:text-2xl">ประวัติแบรนด์ในไทย</h2>
         <dl className="mt-5 grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4">
           <div>
-            <dt className="text-xs text-faint">ดำเนินงานในไทยตั้งแต่</dt>
-            <dd className="mt-1 text-[15px] font-semibold">
+            <dt className="text-[13px] text-faint">ดำเนินงานในไทยตั้งแต่</dt>
+            <dd className="mt-1 text-base font-semibold">
               <DataStatusValue value={operationDate ?? (operationYear != null ? String(operationYear) : null)} />
             </dd>
           </div>
           <div>
-            <dt className="text-xs text-faint">ผู้ผลิต/จัดจำหน่าย</dt>
-            <dd className="mt-1 text-[15px] font-semibold"><DataStatusValue value={detail.distributorName} /></dd>
+            <dt className="text-[13px] text-faint">ผู้ผลิต/จัดจำหน่าย</dt>
+            <dd className="mt-1 text-base font-semibold"><DataStatusValue value={detail.distributorName} /></dd>
           </div>
           <div>
-            <dt className="text-xs text-faint">บริษัทแม่</dt>
-            <dd className="mt-1 text-[15px] font-semibold"><DataStatusValue value={detail.parentCompany} /></dd>
+            <dt className="text-[13px] text-faint">บริษัทแม่</dt>
+            <dd className="mt-1 text-base font-semibold"><DataStatusValue value={detail.parentCompany} /></dd>
           </div>
           <div>
-            <dt className="text-xs text-faint">ประเทศต้นทาง</dt>
-            <dd className="mt-1 text-[15px] font-semibold"><DataStatusValue value={detail.countryOrigin} /></dd>
+            <dt className="text-[13px] text-faint">ประเทศต้นทาง</dt>
+            <dd className="mt-1 text-base font-semibold"><DataStatusValue value={detail.countryOrigin} /></dd>
           </div>
         </dl>
         {detail.channel && <p className="mt-5 max-w-2xl text-sm text-muted">{detail.channel}</p>}
       </section>
 
-      <SourcesSection
-        sources={allSources}
-        subtitle="หลักฐานข้อมูลบริษัทและเหตุการณ์ในหน้านี้ — แหล่งของราคาแต่ละรุ่นอยู่ในหน้าของรุ่นนั้น ๆ"
-      />
+      <SourcesSection sources={allSources} />
     </>
   );
 }

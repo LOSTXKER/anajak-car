@@ -43,33 +43,27 @@ export default async function BrandPriceLadderPage({ params }: Props) {
       </nav>
 
       {/* พระเอก: แกนราคาเดียวทั้งแบรนด์ */}
-      <header className="pt-6 pb-8">
-        <p className="text-sm text-muted">ราคาป้ายทางการทั้งแบรนด์ {detail.name}</p>
-        <p className="mt-1 text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
+      <header className="pt-6 pb-10">
+        <p className="text-sm font-medium text-muted">ราคาป้ายทางการ · {detail.name}</p>
+        <p className="mt-2 text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
           {priceRange ?? "ไม่มีข้อมูล"}
         </p>
-        <p className="mt-3 max-w-3xl text-sm text-muted">
-          {pricedCount} รุ่นย่อยจาก {detail.stats.nameplates} รุ่น · ราคาป้ายทางการ
-          {latestChecked && ` · ตรวจสอบล่าสุด ${latestChecked}`} · ไม่ใช่ราคาซื้อขายจริง ·
-          ตัวเลข + คือส่วนต่างจากขั้นก่อนหน้า
+        <p className="mt-3 text-sm text-faint tabular-nums">
+          {pricedCount} รุ่นย่อย
+          {latestChecked && ` · ตรวจสอบ ${latestChecked}`}
         </p>
       </header>
 
       {pricedCount === 0 ? (
         <p className="pb-16 text-sm text-muted">
-          ยังไม่มีราคาทางการใน coverage ของแบรนด์นี้ — ดูรุ่นได้ที่หน้า{" "}
+          ยังไม่มีราคาทางการของแบรนด์นี้ — ดูรุ่นได้ที่หน้า{" "}
           <Link href={`/brands/${detail.slug}/cars`} className="text-accent hover:underline">รุ่นรถ</Link>
         </p>
       ) : (
-        <div className="pb-8">
+        <div className="pb-16">
           <PriceLadder rows={detail.variantRows} brandSlug={detail.slug} />
         </div>
       )}
-
-      <p className="border-t border-border pt-6 pb-12 text-xs text-faint">
-        แหล่งอ้างอิงและวันที่ของแต่ละราคาอยู่ในหน้าของรุ่นนั้น ๆ · หลักฐานระดับแบรนด์อยู่ในหน้า{" "}
-        <Link href={`/brands/${detail.slug}/timeline`} className="text-accent hover:underline">ไทม์ไลน์และประวัติ</Link>
-      </p>
     </>
   );
 }

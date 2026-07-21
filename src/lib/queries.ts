@@ -120,7 +120,6 @@ export type NameplateDetail = {
   generationCode: string | null;
   generationName: string | null;
   launchYear: number | null;
-  generationSummary: string | null;
   priceMin: number | null;
   priceMax: number | null;
   latestChecked: string | null;
@@ -586,7 +585,6 @@ export const getNameplateDetail = cache(async (slug: string): Promise<NameplateD
     generationCode: currentGeneration?.code ?? null,
     generationName: currentGeneration?.name ?? null,
     launchYear: currentGeneration?.launchYear ?? null,
-    generationSummary: currentGeneration?.summary ?? null,
     priceMin: prices.length ? Math.min(...prices) : null,
     priceMax: prices.length ? Math.max(...prices) : null,
     latestChecked: maxDate(checked),

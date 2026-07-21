@@ -198,6 +198,18 @@
 - [x] Step 5 Verify: lint/build ผ่าน + curl matrix (8×200 · /cars/[s]→308 canonical · 404 ครบ) + screenshot CDP ทุกหน้า light+dark + **แก้บั๊ก mobile drawer: `backdrop-blur` บน navbar สร้าง containing block → fixed drawer ถูกบีบใน 56px → portal drawer ไป body** (drawer เมนูแบรนด์+global ครบ)
 - URL ใหม่: `/brands/[slug]` (home) · `/brands/[slug]/cars` · `/brands/[slug]/cars/[carSlug]` (ย้ายจาก /cars/[slug]) · `/brands/[slug]/price-ladder` · `/brands/[slug]/timeline` · `/cars` (index ข้ามแบรนด์ คงอยู่)
 
+## ✅ Milestone 24: "สะอาดแต่แพงขึ้น" — copy diet + premium visual แบบ Apple (เสร็จ 2026-07-21)
+> เบส: "UXUI ดูรกมาก · text เยอะเกินไปมาก · อยากได้ฟิล Apple" → เลือก "สะอาดแต่แพงขึ้น" (ไม่ปลดล็อกกฎห้าม) · ทั้งเว็บรอบเดียว · ย่อ FAQ + ตัด link farm
+> ที่มา: screenshot เว็บจริงทุกหน้า + audit 4 agents (file:line) + design 2 มุม + adversarial critique · แผนเต็มที่ `~/.claude/plans/uxui-tingly-dream.md`
+- [x] §0 ด่วน: หยุด render `generationSummary` (โน้ต ops ภายในหลุดสาธารณะท้ายหน้ารถ) + ลบ field จาก `queries.ts` (ไม่แตะ DB)
+- [x] "พูดครั้งเดียว" — สาร M1(หลักฐาน)/M2(freshness)/M3(ไม่ใช่ราคาซื้อขายจริง)/M4(confidence) มีบ้านเดียว · ตัดที่ซ้ำ ≥9 ที่ (footer บรรทัด 1 · pill "evidence-first" · pillar ยาว · coverage link farm · badge HIGH ทุกแถว ฯลฯ) · เลิกใช้คำ "coverage" บนจอ
+- [x] badge เฉพาะข้อยกเว้น: `LifecycleBadge` CURRENT→null (เงียบ) · `ConfidenceBadge` uniform→บรรทัดเดียว/mixed→ป้ายไทย · ลบ dead `LifecycleDot`/`FreshnessTag`
+- [x] spec hoist หน้ารถ: spec ที่เท่ากันทุกแถวในกลุ่มยกขึ้นหัวกลุ่ม · แถวเหลือเฉพาะส่วนต่าง (ไม่ทำข้อมูลหาย/ปน entity)
+- [x] premium visual: type scale ใหญ่ขึ้น (h1 4xl→5xl · display · metric การ์ด 2xl · ปีไทม์ไลน์ใหญ่) · spacing กว้างขึ้น · `ModelCard` image-forward + `CarSilhouette` ร่วม · ตัดไอคอนประดับหัว section (landing 3 เสา + Brand Home nav cards + แถบ accent /brands)
+- [x] landing: ~400 คำ → ~140 (ตัด eyebrow/coverage/link farm/upcoming tiles · ย่อ FAQ ครึ่ง คง JSON-LD) · `(home)/loading.tsx` ตรงโครงใหม่
+- [x] verify: lint + build ผ่าน · curl matrix 8×200 + 308 canonical + 404 · SSR `<a href=/cars>` ยังอยู่ (SEO) · FAQ schema valid · ops note หาย · จากราคา→หลักฐาน anchor 1 คลิก · screenshot light+dark + mobile 390 (iframe harness) ทุกหน้า ไม่ overflow
+- ⚠️ กันไว้ไม่ทำ (ให้เบสเคาะ/รอบหน้า): stat band ตัวเลขใหญ่ landing (=การ์ดสถิติที่เบสถอด M5) · identity แบรนด์ซ้อน navbar vs sidebar head · รูป Champ/Revo จริง
+
 ## ถัดไป (ยังไม่เริ่ม)
 
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

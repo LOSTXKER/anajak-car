@@ -11,14 +11,6 @@ export function Sidebar({ nav, topSlot }: { nav: NavGroup[]; topSlot?: ReactNode
       <div className="flex-1 overflow-y-auto px-3 py-3">
         <SidebarNav nav={nav} />
       </div>
-      <div className="shrink-0 border-t border-border px-4 py-3">
-        <span
-          className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-medium text-accent"
-          title="ทุกตัวเลขในระบบผูกแหล่งอ้างอิงที่ตรวจสอบได้"
-        >
-          evidence-first
-        </span>
-      </div>
     </aside>
   );
 }

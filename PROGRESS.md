@@ -1,55 +1,44 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-20 (M23: "แบรนด์=เกม" เต็มรูปแบบ — navbar + brand zone + หน้าใหม่ Brand Home/บันไดราคา/ไทม์ไลน์)
+อัปเดตล่าสุด: 2026-07-21 (M24: "สะอาดแต่แพงขึ้น" — copy diet + premium visual แบบ Apple · ลดความรก/text ทั้งเว็บ)
 
 ## ทำถึงไหน
-**CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
+**CARMETA v1 + ภาษากลาง Phase 0–4 + เว็บโครง "แบรนด์=เกม" (M22–M23) + declutter Apple-grade (M24)** — สเปกภาษากลางใน `VOCABULARY.md` · milestone ครบใน PLAN.md (M0–M24)
 
-ระบบภาษากลาง (ใหม่ — 2026-07-20 เบสอนุมัติ "ทำเลย"):
-- ทุก attribute เก็บ 2 ชั้น: **คำกลาง (enum ล็อกไว้)** ใช้แสดง/กรอง/เทียบ + **ชื่อการตลาดดิบ (`*Raw`/`name`)** ไม่ทิ้ง โชว์เป็น tooltip · ทุกการ map มี EvidenceLink คู่ (รวม 101 แถว) · ไม่รู้ = unknown ไม่เดา
-- ผลจริงใน DB: เครื่องยนต์ 9 ตัวได้ FuelType/Aspiration canonical · **HEV 5 รุ่นแยกจากเกียร์ CVT (ผิด) → E_CVT_POWER_SPLIT** (สร้างแถวใหม่ ไม่ทับแถวที่ ICE แชร์) · กระบะได้ CabType (Derivative) + RideHeightClass (Trim — Prerunner 6 = HIGH_RIDER, 4WD/AWD = not_applicable) · Yaris Ativ ECO_CAR→SUBCOMPACT · chassisType/platformName ทุก generation · gradeCode 23 ตัว + สเปกชาร์จ AC/DC + NEDC ดึงจาก notes · HybridArchitecture (HEV=POWER_SPLIT)
-- ตอบคำถามค้าง 2 ข้อของเบสไปในตัว: ✅ เพิ่ม `MEDIA` ใน EvidenceSourceType (สื่อ 9 แถวย้ายจาก EDITORIAL) · ✅ rename `maxPowerHp→maxPowerPs`
-- ตาราง ADAS (`Feature`/`TrimFeature` + partial unique index) = โครงพร้อม **ยังไม่ seed** — ต้อง research หลักฐานต่อ trim ก่อน
-- สคริปต์ migrate/backfill/verify ทั้งหมดอยู่ `prisma/ops/` (audit trail) · `prisma/ops/verify-vocab.ts` รันซ้ำได้ = 24/24 ผ่าน
+**M24 — ลดความรก/ฟิล Apple (เบสสั่ง "ทำเลย" 2026-07-21)** ทำบน branch `m24-apple-declutter` (ยังไม่ merge main):
+- โจทย์: "UXUI ดูรกมาก · text เยอะเกินไป · อยากได้ฟิล Apple" → เลือก "สะอาดแต่แพงขึ้น" (ไม่ปลดล็อกกฎห้าม gradient/animation) · ทั้งเว็บรอบเดียว · ย่อ FAQ + ตัด link farm
+- วิธีทำ: screenshot เว็บจริงทุกหน้า + audit 4 agents (file:line) + design 2 มุม (copy/visual) + adversarial critique → รวมเป็นแผนเดียว (`~/.claude/plans/uxui-tingly-dream.md`)
+- **§0 ด่วน:** โน้ต ops ภายในหลุดขึ้นเว็บสาธารณะท้ายหน้ารถ ("…ไม่ได้ verify จากแหล่งที่ fetch รอบนี้จึงไม่บันทึก") → หยุด render `generationSummary` + ลบ field จาก `queries.ts` (ไม่แตะ DB)
+- **พูดครั้งเดียว:** สารความเชื่อมั่นเคยพูดซ้ำ ≥9 ที่ → กำหนดบ้านเดียวต่อสาร (M1 หลักฐาน/M2 freshness/M3 ไม่ใช่ราคาซื้อขายจริง/M4 confidence) · ตัด: footer บรรทัด1 · pill "evidence-first" (sidebar) · 3 pillar ยาว · coverage link farm · badge HIGH ทุกแถว → uniform=1 บรรทัด · subtitle สอนใช้ UI ทุกหน้า · เลิกคำ "coverage" บนจอ
+- **badge เฉพาะข้อยกเว้น:** `LifecycleBadge` CURRENT→null · `ConfidenceBadge` uniform/mixed (คำไทย) · ลบ dead `LifecycleDot`/`FreshnessTag`
+- **spec hoist หน้ารถ:** spec ที่เท่ากันทุกแถวในกลุ่ม ยกขึ้นหัวกลุ่ม แถวเหลือเฉพาะส่วนต่าง (เช่น "Revo Standard Cab · ดีเซล · ขับหลัง" + แถว "150 PS · ธรรมดา 6 สปีด") — ไม่ทำข้อมูลหาย/ปน entity
+- **premium visual:** type scale ใหญ่ขึ้น (h1 4xl→5xl · metric การ์ด Brand Home 2xl · ปีไทม์ไลน์ใหญ่ · ราคา display) · spacing กว้าง · `ModelCard` image-forward + `CarSilhouette` ร่วม · ตัดไอคอนประดับหัว section (landing 3 เสา + nav cards + แถบ accent /brands — ละเมิดกฎ LOCKED เดิม)
+- **landing:** ~400 คำ → ~140 (ตัด eyebrow/coverage/link farm/upcoming "เร็วๆ นี้" 8 tiles · ย่อ FAQ ครึ่ง คง JSON-LD) · `(home)/loading.tsx` ตรงโครงใหม่
+- ไฟล์แตะ 20 ไฟล์ · net −198 บรรทัด (357+/555−) · กฎใหม่บันทึกใน DESIGN.md §"สะอาดแต่แพงขึ้น (M24)" กัน drift
 
-ข้อมูล (ของจริง ตรวจแล้ว):
-- Supabase · Toyota 7 nameplate: Corolla Altis (4) · Yaris Ativ (7) · Hilux Travo (18 รวม Travo-e BEV) · **Hilux Champ (6) · Hilux Revo (15 — Standard Cab 6 + Z Edition 9) 🆕 seed 2026-07-20 จาก API ทางการ fetch สด** · Fortuner (10) · bZ4X (2) = **62 variant/62 ราคา** MANUFACTURER_OFFICIAL/HIGH · EvidenceSource 33 (ทางการ 23 · MEDIA 9 · EDITORIAL 1) · EvidenceLink 169 · 0 orphan · GlobalModelFamily "hilux" เชื่อม Travo/Champ/Revo (ตารางนี้เปิดใช้แล้ว)
-- ~~Champ/Revo ยังไม่ seed~~ → **seed แล้ว (M15)**: RideHeightClass.STANDARD ใช้จริง 14 trims · raw API JSON เก็บที่ `prisma/ops/data/hilux-3lines-20260720.json` · endpoint สเปกทางการ: `GET /model/api/car/?series_code=<code>` (+ ราคารวม: `POST /api-service/car/series {"grades":true}`)
-- ⚠️ prisma CLI: รันด้วย `PRISMA_CLI_DIRECT=1` (สลับไป DIRECT_URL 5432 ใน prisma.config.ts — pooler 6543 ทำ CLI ค้าง) · enum/rename ที่มีข้อมูลต้องทำ SQL มือใน `prisma/ops/*.sql` ก่อน push (db push cast เองไม่ได้) · partial unique index ของ TrimFeature สร้างด้วย SQL มือ (db push ไม่ลบ — ตรวจแล้ว)
+ระบบภาษากลาง (2026-07-20 · ไม่เปลี่ยนใน M24):
+- ทุก attribute 2 ชั้น: คำกลาง (enum) + ชื่อการตลาดดิบ (tooltip) · ทุก map มี EvidenceLink · ไม่รู้=unknown
+- ข้อมูลจริง: Toyota 7 nameplate = 62 variant/62 ราคา MANUFACTURER_OFFICIAL/HIGH · EvidenceSource 33 · EvidenceLink 169 · 0 orphan
+- ADAS seed แล้ว (M21): Feature 3 (AEB/ACC/LKA) + TrimFeature 90 known
+- ⚠️ prisma CLI: รันด้วย `PRISMA_CLI_DIRECT=1` · enum/rename ที่มีข้อมูลต้อง SQL มือก่อน push
 
-**โครงเว็บ = "แบรนด์ = เกม" แบบ prydwen (M22→M23 · เบสสั่ง) · deploy: anajak-car.vercel.app**:
-> M22: sidebar=หมวด · รุ่น=character grid · หน้าแรก=landing · M23: navbar บน + แต่ละแบรนด์มี zone/home/เมนูของตัวเอง (แบรนด์=เกม)
-- **Navbar บนสุด (`global-navbar.tsx` · ทุกหน้าโซน app+home):** โลโก้ + `BrandSwitcher` (dropdown สลับแบรนด์) + ลิงก์ "รุ่นรถทั้งหมด" + ThemeToggle · sticky top-0 z-40 h-14
-- **Layout: route group** — `layout.tsx` root minimal · `(home)/` = landing (navbar, ไม่มี sidebar) · `(app)/` = navbar + `(global)/` (sidebar หมวด: /cars, /brands) และ `brands/[slug]/` (brand zone: sidebar เมนูแบรนด์) · `app-shell.tsx` ใช้ร่วม 2 โซน · sidebar sticky `top-14`
-- **`lib/nav.ts`** = เมนู pure data (GLOBAL_NAV + brandNav) · **iconKey string** map ผ่าน NAV_ICONS ฝั่ง client (ห้ามส่ง fn ข้าม boundary) · sidebar/mobile-drawer รับ nav prop
-- **โซนแบรนด์ `/brands/[slug]/*`** (layout: getBrandShell เบา + gate เมนู): **หน้าหลัก** (Brand Home: การ์ดนำทาง 3 ใบตัวเลขจริง + ทางลัดรุ่น + ความเคลื่อนไหวล่าสุด) · **รุ่นรถ** (`/cars` model grid) · **บันไดราคา** (`/price-ladder` บันได 62 ขั้น + หมุดราคา + delta cross-รุ่น · แทน tier list) · **ไทม์ไลน์และประวัติ** (`/timeline` ChangeEvent จัดปี + evidence + dl บริษัท + sources)
-- **หน้ารถย้าย** `/cars/[slug]` → `/brands/[slug]/cars/[carSlug]` · **ลิงก์เก่า 308 redirect** ไป canonical (`getNameplateBrandSlug`) · brand mismatch → redirect · `/cars` (index ข้ามแบรนด์) คงอยู่
-- `/` = landing (M16 hero → `/cars?...`) · mobile = navbar hamburger → drawer เมนูโซนปัจจุบัน (**portal ไป body** กัน backdrop-blur บีบ)
-- ลบ: site-header/landing-header/mobile-topbar/car-database-explorer · ธีม: ขาว/เทาเข้ม · accent #2f56c9/#7c9dfa
-
-บทเรียนดีไซน์ (DESIGN.md): prydwen model (แบรนด์=เกม · รุ่น=character · sidebar=เมนูโซน · หน้าแรก=landing) · **บันไดราคา=หมุดราคาแทนหลอด · ไม่มีคอลัมน์ # · delta ข้ามรุ่นตั้งใจ** · reject gradient/animation/ไอคอนประดับ section · หนึ่งหน้าหนึ่งพระเอก · ความเชื่อมั่นพูดครั้งเดียว
-
-## ตรวจแล้ว (M23 brand zone)
-- lint + production build ผ่าน (9 routes: / · /cars · /cars/[slug](redirect) · /brands · /brands/[slug] + /cars + /cars/[carSlug] + /price-ladder + /timeline)
-- **curl matrix:** 8×200 · **`/cars/hilux-revo`→308** loc canonical ถูก · `/cars/nope`,`/brands/nope`,`/brands/toyota/cars/nope`→404
-- **screenshot CDP** (`scratchpad/shot3.mjs`): navbar+brand switcher · Brand Home การ์ด 3 ใบ+ทางลัด+ความเคลื่อนไหว · บันไดราคา 62 ขั้น+หมุด(฿750k/1M/1.25M/1.5M/1.75M)+delta · timeline จัดปี+evidence+ประวัติ+sources · brand cars grid · light+dark · mobile drawer เมนูแบรนด์+global (active ถูก)
-- **บั๊กที่จับ+แก้:** mobile drawer อยู่ใน navbar `backdrop-blur` → containing block บีบ fixed drawer ใน 56px → **portal ไป body** (บันทึก DESIGN.md บทเรียนเทคนิค M23)
-- **review workflow 15 agents (3 มุม → adversarial verify) → 10 finding ยืนยัน แก้ครบ:** (รากใหญ่) นิยาม "ช่วงราคา/gate" ไม่ตรงกัน 3 ที่ — header ใช้ทุก lifecycle · บันได/gate ใช้ CURRENT/TRANSITION → **แก้ getBrandDetail stats + getBrandShell gate + Brand Home ให้ใช้ชุดเดียว (buyable = price!=null && CURRENT/TRANSITION)** กัน false precision (latent กับ Toyota ที่ CURRENT หมด แต่จะโผล่ตอนมีรุ่นเลิกขาย/แบรนด์ที่ 2) · timeline gate ให้ตรง (events||operationFrom) · drawer "แบรนด์" active ซ้อน → `/brands` เป็น exact · nav landmark ซ้ำ → ตั้งชื่อต่างกัน · BrandSwitcher ตัด role=menu (disclosure) · getBrandShell orderBy presence
-- **⚠️ ต้อง kill server เก่าบน 3105 ก่อน start ใหม่** (EADDRINUSE → curl ไปโดนตัวเก่า) · warm ก่อน screenshot (cold start ติด loading)
+## ตรวจแล้ว (M24)
+- **lint + production build ผ่าน** (9 routes)
+- **curl matrix:** 8×200 · `/cars/hilux-revo`→308 canonical · 404 ครบ · SSR landing มี `<a href="/cars">` (SEO ไม่เสีย) · FAQ JSON-LD valid · โน้ต ops หายจากหน้ารถ · "เร็วๆ นี้"/evidence-first/link farm หายจาก landing
+- **screenshot จริง (localhost:3105) light+dark ทุกหน้า:** landing สะอาด (ไม่มี eyebrow · แบรนด์ live+ดูเพิ่มเติม · 3 เสาไม่มีไอคอน) · /cars การ์ด image-forward ไม่มี badge "ขายอยู่" · Brand Home metric ใหญ่ (7 รุ่น/62 รุ่นย่อย/฿519k–1.97M/7 เหตุการณ์) ไม่มี breadcrumb/ไอคอน · price-ladder meta 2 ชิ้น ไม่มี footnote · timeline ปีใหญ่ · หน้ารถ trust line 2 ชิ้น+anchor · spec hoist ทำงาน · ADAS ไม่มี (ACC)/footnote · "ทุกแหล่งความเชื่อมั่นสูง" บรรทัดเดียว
+- **mobile 390px (iframe harness — เสิร์ฟผ่าน public ชั่วคราวแล้วลบ):** landing/หน้ารถ/timeline ไม่ overflow · h1 พอดี · trust line wrap สวย
+- **adversarial review workflow (2 มุม → verify):** correctness = **0 finding** (spec hoist/uniform confidence/trust-line guard/ลบ generationSummary ผ่านหมด) · เหลือ 1 CONFIRMED (LOW): ตัด link farm ทำหน้ารถไม่มี SSR deep-link ตรงจาก landing (crawl ลึกขึ้น 1 hop · ยังเข้าถึงได้ผ่าน /brands) — เป็น trade-off ที่เบสสั่งตัดเอง · เสนอ follow-up: เพิ่ม `app/sitemap.ts` (ยังไม่ทำ — รอเบสเคาะ domain, prod domain ยังไม่ final)
 
 ## ค้าง / ติดอะไร
-- ~~ADAS 0 แถว~~ → **seed แล้ว (M21)**: Feature 3 (AEB/ACC/LKA) + TrimFeature 90 known + evidence ครบ · section "ระบบช่วยขับขี่" ขึ้นหน้า /cars ทุกรุ่นแล้ว (uniform=สรุปบรรทัด · ต่าง=ตาราง) · ที่เหลือ unknown โดยตั้งใจ: Fortuner AEB/LKA (สเปกไม่มีแถว) + ACC 5 trim (ครูซ "มี" เฉยๆ ไม่ระบุ radar)
-- VOCABULARY Phase 5 backlog: reclassify legacy AWD/FOUR_WD → subtype (ต้องเช็ค spec ทีละรุ่น) · motor type PMSM/induction · `ecoCarPhase` Yaris Ativ รอหลักฐานภาษี
-- dev server: อย่ารันบน 3000 (ชนงาน meecard ของเบส) · 3001 เบสเปิด dev อยู่ — ตอน verify ใช้ `PORT=3105 npm start`
-- **M22+M23 commit + push main แล้ว (เบสสั่ง 2026-07-21): `a36ed1c` M22 · `1cd1bdc` M23 → Vercel auto-deploy** · Champ/Revo ยังไม่มีภาพ (fallback เงารถ)
-- timeline: narrative ประวัติจาก `MarketPresence.notes` ยังไม่ render (ท้าย notes มี comment ภายใน) — v1 โชว์ dl+channel+events+sources · จะเพิ่ม narrative เมื่อ clean notes (ops) แยกเนื้อหาสาธารณะ
-- `(home)/loading.tsx` skeleton ยังเป็นทรงตาราง ไม่เข้ากับ landing (cosmetic ตอน cold load)
-- รูปรถ = ลิขสิทธิ์ Toyota (CREDITS.md ครบ) — ทบทวนสิทธิ์ก่อน production · ยังไม่มี production domain
-- ~~งานยังไม่ commit~~ → **commit + push แล้ว (เบสสั่ง 2026-07-20)**: `a330ea4` เว็บ v1 (M2–M12) + `a01076e` ภาษากลาง (M13–M14) — tree สะอาด
+- **M24 ยังไม่ merge main** — branch `m24-apple-declutter` · รอเบสรีวิว screenshot แล้วค่อย merge + push (กฎห้าม push main ตรง)
+- กันไว้ไม่ทำรอบนี้ (ให้เบสเคาะ/รอบหน้า): stat band ตัวเลขใหญ่ landing (=การ์ดสถิติที่เบสถอด M5) · identity แบรนด์ซ้อน navbar BrandSwitcher vs sidebar head (งาน layout) · รูป Champ/Revo จริง (ตอนนี้ CarSilhouette fallback) · loading.tsx ของ /cars (option)
+- metadata description ยังมีคำ "coverage" (อยู่ `<head>` ไม่ใช่ text บนจอ — ตามแผนไม่แตะ metadata)
+- dev server: อย่ารันบน 3000 (ชนงาน meecard) · verify ใช้ `PORT=3105 npm start` (kill 3105 เก่าก่อน)
+- รูปรถ = ลิขสิทธิ์ Toyota (CREDITS.md) — ทบทวนก่อน production
 
 ## ▶ NEXT (ทำต่อทันที)
-1. รอเบสรีวิว M23 (localhost:3105): navbar+brand switcher · Brand Home การ์ดนำทาง · บันไดราคา · ไทม์ไลน์ · โซนแบรนด์ครบ — โอเคแล้ว commit + push M22+M23
-2. Polish ที่กันไว้ (เสนอเบส): narrative ประวัติหน้า timeline (clean notes) · การ์ด ModelCard image-forward แบบ prydwen · เพิ่มภาพ Champ/Revo · loading.tsx เข้ากับ landing
-3. งานต่อ: หน้า Compare exact entity (เพิ่มเป็นหมวดใน brandNav ได้เลย — sidebar config รองรับ) · ขยาย ADAS (BSM/AHB/LDW) · แบรนด์ที่ 2 (editorial gate VOCABULARY §4 — โครง multi-brand พร้อมแล้ว: brand switcher + zone)
-4. VOCABULARY Phase 5 backlog (ดูหัวข้อ "ค้าง")
+1. รอเบสรีวิว M24 (localhost:3105 หรือ screenshot): landing/cars/brand home/price-ladder/timeline/หน้ารถ — โอเคแล้ว merge `m24-apple-declutter` → main + push (Vercel auto-deploy)
+2. ถ้าเบสอยาก push ธีมต่อ: identity แบรนด์ (ลด navbar switcher หรือ sidebar head ที่ซ้ำ) · การ์ด ModelCard เพิ่มรูป Champ/Revo จริง
+3. งานต่อ (ค้างจาก M23): Compare exact entity (เพิ่มใน brandNav ได้) · ขยาย ADAS (BSM/AHB/LDW) · แบรนด์ที่ 2 (โครง multi-brand พร้อม)
+4. VOCABULARY Phase 5 backlog (ดู PLAN.md ถัดไป)

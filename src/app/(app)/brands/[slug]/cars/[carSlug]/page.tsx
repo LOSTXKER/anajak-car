@@ -41,12 +41,11 @@ export default async function NameplatePage({ params }: Props) {
 
   const priceRange = formatPriceRange(detail.priceMin, detail.priceMax);
   const heroImage = nameplateImage(detail.slug);
-  const variantCount = detail.groups.reduce((n, g) => n + g.rows.length, 0);
 
-  // meta ประจำรุ่น — บรรทัดเดียว เงียบๆ ใต้ชื่อ
+  // meta ประจำรุ่น — บรรทัดเดียว เงียบๆ ใต้ชื่อ · ชื่อ generation ที่คนอ่านได้นำ รหัสดิบ (N80) เป็น fallback
   const metaParts = [
     detail.segment ? (SEGMENT_LABEL[detail.segment] ?? detail.segment) : null,
-    detail.generationCode ?? detail.generationName,
+    detail.generationName ?? detail.generationCode,
     detail.launchYear != null ? `เปิดตัวในไทย ${detail.launchYear}` : null,
   ].filter(Boolean);
 
@@ -96,115 +95,135 @@ export default async function NameplatePage({ params }: Props) {
       <header className="flex flex-col-reverse gap-8 pt-8 pb-12 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 max-w-2xl">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
               <span className="mr-2 font-normal text-muted">{detail.brand}</span>
               {detail.name}
             </h1>
             <LifecycleBadge status={detail.lifecycleStatus} />
           </div>
           {metaParts.length > 0 && (
-            <p className="mt-2.5 text-sm text-muted">{metaParts.join(" · ")}</p>
+            <p className="mt-3 text-sm text-muted">{metaParts.join(" · ")}</p>
           )}
           {detail.summary && (
-            <p className="mt-4 text-[15px] leading-7 text-muted">{detail.summary}</p>
+            <p className="mt-4 text-base leading-7 text-muted">{detail.summary}</p>
           )}
         </div>
         {heroImage && (
           <Image
             src={heroImage.src}
             alt={heroImage.alt}
-            width={360}
-            height={203}
+            width={480}
+            height={270}
             priority
-            className="h-auto w-full max-w-[360px] shrink-0 self-center object-contain sm:self-start"
+            className="h-auto w-full max-w-[440px] shrink-0 self-center object-contain sm:self-start"
           />
         )}
       </header>
 
       {/* บันไดราคา — ราคาเป็นพระเอกหนึ่งเดียวของหน้า */}
-      <section aria-labelledby="variants-heading" className="border-t border-border pt-10 pb-14">
+      <section aria-labelledby="variants-heading" className="border-t border-border pt-12 pb-16">
         <h2 id="variants-heading" className="text-sm font-medium text-muted">
           ราคาป้ายทางการ
         </h2>
         <p className="mt-2 text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
           <DataStatusValue value={priceRange} />
         </p>
-        <p className="mt-3 text-sm text-faint">
-          {variantCount} รุ่นย่อย
-          {trustLine && <> · {trustLine}</>}
-          {detail.latestChecked && <> · ตรวจสอบล่าสุด {formatDateTH(detail.latestChecked)}</>}
-          {" · "}
-          <a href="#sources-heading" className="text-accent hover:underline">
-            แหล่งอ้างอิง
-          </a>
-          {" · "}
-          <span>ไม่ใช่ราคาซื้อขายจริง</span>
-        </p>
+        {/* ความเชื่อมั่นพูดครั้งเดียว: trust line + วันที่ (anchor ไปแหล่งอ้างอิง 1 คลิก) · ชนิดราคาอยู่ footer */}
+        {(trustLine || detail.latestChecked) && (
+          <p className="mt-3 text-sm text-faint">
+            {trustLine}
+            {trustLine && detail.latestChecked && " · "}
+            {detail.latestChecked && (
+              <a href="#sources-heading" className="text-accent hover:underline">
+                ตรวจสอบ {formatDateTH(detail.latestChecked)}
+              </a>
+            )}
+          </p>
+        )}
 
         {detail.groups.length === 0 ? (
           <p className="mt-10 text-sm text-muted">ยังไม่มีข้อมูลรุ่นย่อยของรุ่นนี้</p>
         ) : (
-          detail.groups.map((group) => (
-            <div key={group.key} className="mt-10">
-              <h3 className="text-[15px] font-semibold">
-                {group.label || (BODY_TYPE_LABEL[group.bodyType] ?? group.bodyType)}
-              </h3>
-              <ol className="mt-1 max-w-3xl divide-y divide-border">
-                {group.rows.map((row, i) => {
-                  const specLine = [
-                    row.powertrainText,
-                    row.powerText,
-                    row.transmissionText,
-                    row.drivetrain
-                      ? (DRIVETRAIN_LABEL[row.drivetrain] ?? row.drivetrain)
-                      : null,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ");
-                  const prev = i > 0 ? group.rows[i - 1] : null;
-                  const delta =
-                    row.price != null && prev?.price != null
-                      ? row.price - prev.price
-                      : null;
-                  return (
-                    <li
-                      key={row.id}
-                      className="flex items-baseline justify-between gap-6 py-4"
-                    >
-                      <div className="min-w-0">
-                        <div className="text-[15px] font-medium">{row.name}</div>
-                        {specLine && (
+          detail.groups.map((group) => {
+            // spec ที่เท่ากันเป๊ะทุกแถวในกลุ่ม (≥2 แถว) ยกขึ้นหัวกลุ่ม · แถวเหลือเฉพาะส่วนต่าง
+            // (ไม่ทำให้ข้อมูลหาย — แค่ย้ายระดับที่พูด · DESIGN.md "ค่าที่ซ้ำทุกแถวยกขึ้น section")
+            const specFields = [
+              (r: (typeof group.rows)[number]) => r.powertrainText,
+              (r: (typeof group.rows)[number]) => r.powerText,
+              (r: (typeof group.rows)[number]) => r.transmissionText,
+              (r: (typeof group.rows)[number]) =>
+                r.drivetrain ? (DRIVETRAIN_LABEL[r.drivetrain] ?? r.drivetrain) : null,
+            ];
+            const shared = specFields.map((f) => {
+              if (group.rows.length < 2) return null;
+              const first = f(group.rows[0]);
+              return first != null && group.rows.every((r) => f(r) === first) ? first : null;
+            });
+            const groupSpec = shared.filter(Boolean).join(" · ");
+            return (
+              <div key={group.key} className="mt-10">
+                <h3 className="text-sm font-medium text-muted">
+                  {group.label || (BODY_TYPE_LABEL[group.bodyType] ?? group.bodyType)}
+                  {groupSpec && (
+                    <span className="font-normal text-faint"> · {groupSpec}</span>
+                  )}
+                </h3>
+                <ol className="mt-2 max-w-3xl divide-y divide-border">
+                  {group.rows.map((row, i) => {
+                    const rowSpec = specFields
+                      .map((f, fi) => (shared[fi] ? null : f(row)))
+                      .filter(Boolean)
+                      .join(" · ");
+                    const prev = i > 0 ? group.rows[i - 1] : null;
+                    const delta =
+                      row.price != null && prev?.price != null
+                        ? row.price - prev.price
+                        : null;
+                    return (
+                      <li
+                        key={row.id}
+                        className="flex items-baseline justify-between gap-6 py-5"
+                      >
+                        <div className="min-w-0">
                           <div
-                            className="mt-1 text-[13px] text-faint"
-                            title={row.engineText ?? undefined}
+                            className="text-base font-medium"
+                            title={rowSpec ? undefined : (row.engineText ?? undefined)}
                           >
-                            {specLine}
+                            {row.name}
                           </div>
-                        )}
-                      </div>
-                      <div className="shrink-0 text-right">
-                        {row.price != null ? (
-                          <>
-                            <div className="text-lg font-semibold tabular-nums">
-                              {formatTHB(row.price)}
+                          {rowSpec && (
+                            <div
+                              className="mt-1 text-[13px] text-faint"
+                              title={row.engineText ?? undefined}
+                            >
+                              {rowSpec}
                             </div>
-                            {delta != null && delta > 0 && (
-                              /* ส่วนต่างจากขั้นก่อนหน้า — ตอบคำถามจริงของคนเลือกrรุ่น: จ่ายเพิ่มเท่าไหร่ */
-                              <div className="mt-0.5 text-xs text-faint tabular-nums">
-                                +{formatTHB(delta)}
+                          )}
+                        </div>
+                        <div className="shrink-0 text-right">
+                          {row.price != null ? (
+                            <>
+                              <div className="text-lg font-semibold tabular-nums">
+                                {formatTHB(row.price)}
                               </div>
-                            )}
-                          </>
-                        ) : (
-                          <span className="text-sm text-faint">ไม่มีข้อมูล</span>
-                        )}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-          ))
+                              {delta != null && delta > 0 && (
+                                /* ส่วนต่างจากขั้นก่อนหน้า — ตอบคำถามจริงของคนเลือกรุ่น: จ่ายเพิ่มเท่าไหร่ */
+                                <div className="mt-0.5 text-sm text-faint tabular-nums">
+                                  +{formatTHB(delta)}
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-sm text-faint">ไม่มีข้อมูล</span>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+            );
+          })
         )}
       </section>
 
@@ -226,39 +245,34 @@ export default async function NameplatePage({ params }: Props) {
               ? "text-faint"
               : "text-faint italic";
         return (
-          <section aria-labelledby="adas-heading" className="border-t border-border pt-10 pb-14">
-            <h2 id="adas-heading" className="text-xl font-semibold tracking-tight">
+          <section aria-labelledby="adas-heading" className="border-t border-border pt-12 pb-16">
+            <h2 id="adas-heading" className="text-xl font-semibold tracking-tight sm:text-2xl">
               ระบบช่วยขับขี่
             </h2>
             {uniform ? (
-              <ul className="mt-4 max-w-3xl space-y-2">
+              <ul className="mt-6 max-w-3xl space-y-2.5">
                 {features.map((f) => {
                   const v = trims[0].values.find((x) => x.key === f.key)!;
+                  // ชื่อการตลาด (ถ้ามี) รวมเข้า tooltip ตามกฎ product — ไม่โชว์เป็น text ต่อแถว
+                  const tip = [f.definition, v.has ? v.marketing : null].filter(Boolean).join(" — ");
                   return (
-                    <li key={f.key} className="flex items-baseline gap-3 text-[15px]">
+                    <li key={f.key} className="flex items-baseline gap-3 text-base">
                       <span className={statusClass(v.has)}>{statusText(v.has)}</span>
-                      <span title={f.definition ?? undefined}>
-                        {f.nameTh} <span className="text-faint">({f.key})</span>
-                      </span>
-                      {v.marketing && v.has && (
-                        <span className="text-sm text-faint" title={v.marketing}>
-                          — {v.marketing.split(":")[0]}
-                        </span>
-                      )}
+                      <span title={tip || undefined}>{f.nameTh}</span>
                     </li>
                   );
                 })}
                 <li className="pt-1 text-[13px] text-faint">ทุกรุ่นย่อยเหมือนกันทั้งรุ่น</li>
               </ul>
             ) : (
-              <div className="mt-4 overflow-x-auto">
+              <div className="mt-6 overflow-x-auto">
                 <table className="w-full max-w-3xl text-sm">
                   <thead>
                     <tr className="border-b border-border text-left text-[13px] text-faint">
                       <th scope="col" className="py-2 pr-3 font-medium">รุ่นย่อย/เกรด</th>
                       {features.map((f) => (
                         <th key={f.key} scope="col" className="px-3 py-2 font-medium" title={f.definition ?? undefined}>
-                          {f.nameTh} <span className="font-normal">({f.key})</span>
+                          {f.nameTh}
                         </th>
                       ))}
                     </tr>
@@ -278,26 +292,22 @@ export default async function NameplatePage({ params }: Props) {
                 </table>
               </div>
             )}
-            <p className="mt-3 text-[13px] text-faint">
-              ตามตารางสเปกทางการ toyota.co.th ต่อรุ่นย่อย — ค่าที่สเปกไม่ระบุแสดงเป็น
-              &ldquo;ยังไม่ยืนยัน&rdquo; (ไม่ใช่ &ldquo;ไม่มี&rdquo;) · ชื่อระบบทางการค้าดูได้จาก tooltip
-            </p>
           </section>
         );
       })()}
 
       {detail.changeEvents.length > 0 && (
-        <section aria-labelledby="timeline-heading" className="border-t border-border pt-10 pb-14">
-          <h2 id="timeline-heading" className="text-xl font-semibold tracking-tight">
+        <section aria-labelledby="timeline-heading" className="border-t border-border pt-12 pb-16">
+          <h2 id="timeline-heading" className="text-xl font-semibold tracking-tight sm:text-2xl">
             ไทม์ไลน์การเปลี่ยนแปลง
           </h2>
-          <ol className="mt-2 max-w-3xl divide-y divide-border">
+          <ol className="mt-4 max-w-3xl divide-y divide-border">
             {detail.changeEvents.map((event) => (
-              <li key={event.id} className="py-4">
+              <li key={event.id} className="py-5">
                 <div className="flex flex-wrap items-center gap-2">
                   <Chip>{CHANGE_TYPE_LABEL[event.changeType] ?? event.changeType}</Chip>
                   <span className="font-medium">{event.title}</span>
-                  <span className="ml-auto text-xs whitespace-nowrap text-faint">
+                  <span className="ml-auto text-[13px] whitespace-nowrap text-faint">
                     {formatDateTH(event.effectiveDate) ?? "ไม่ระบุวันที่"}
                   </span>
                 </div>
@@ -320,15 +330,9 @@ export default async function NameplatePage({ params }: Props) {
         </section>
       )}
 
-      <div className="border-t border-border pt-10">
+      <div className="border-t border-border pt-12">
         <SourcesSection sources={detail.sources} />
       </div>
-
-      {detail.generationSummary && (
-        <p className="max-w-3xl border-t border-border pt-6 pb-14 text-sm leading-6 text-faint">
-          {detail.generationSummary}
-        </p>
-      )}
     </>
   );
 }

@@ -17,7 +17,6 @@ export type NavGroup = { header?: string; items: NavItem[] };
 export const GLOBAL_NAV: NavGroup[] = [
   { items: [{ href: "/", label: "หน้าแรก", iconKey: "home", match: "exact" }] },
   {
-    header: "ฐานข้อมูล",
     items: [
       { href: "/cars", label: "รุ่นรถทั้งหมด", iconKey: "cars", match: "prefix" },
       // exact — ไม่งั้น prefix จะ active ตอนอยู่โซนแบรนด์ (/brands/[slug]/*) ซ้อนกับเมนูแบรนด์
@@ -53,6 +52,6 @@ export function brandNav(
   }
   return [
     { items: [{ href: `/brands/${slug}`, label: "หน้าหลัก", iconKey: "home", match: "exact" }] },
-    { header: "ฐานข้อมูล", items },
+    { items },
   ];
 }

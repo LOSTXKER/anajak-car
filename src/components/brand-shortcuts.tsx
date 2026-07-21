@@ -74,49 +74,31 @@ export function BrandMark({
   );
 }
 
+// landing โชว์เฉพาะแบรนด์ที่ใช้ได้จริง + "ดูเพิ่มเติม" — upcoming เล่าที่หน้า /brands ที่เดียว
 export function BrandShortcuts({ brands }: { brands: BrandTile[] }) {
-  // แบรนด์ที่เข้า coverage แล้วต้องหายจากรายการ "เร็วๆ นี้" อัตโนมัติ
-  const liveNames = new Set(brands.map((b) => b.name.toLowerCase()));
-  const upcoming = UPCOMING_BRANDS.filter((name) => !liveNames.has(name.toLowerCase()));
-
   return (
     <nav aria-label="เลือกแบรนด์" className="flex flex-wrap justify-center gap-3">
       {brands.map((brand) => (
         <Link
           key={brand.slug}
           href={`/brands/${brand.slug}`}
-          className="flex w-[96px] flex-col items-center gap-2.5 rounded-2xl bg-accent-soft px-2 py-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
+          className="flex w-[108px] flex-col items-center gap-3 rounded-2xl bg-surface-muted px-2 py-5 transition-all hover:-translate-y-0.5 hover:bg-accent-soft hover:shadow-md"
         >
-          <BrandMark name={brand.name} />
-          <span className="text-xs font-semibold text-foreground">{brand.name}</span>
+          <BrandMark name={brand.name} size={52} />
+          <span className="text-sm font-semibold text-foreground">{brand.name}</span>
         </Link>
-      ))}
-      {upcoming.map((name) => (
-        <div
-          key={name}
-          title="ยังไม่อยู่ใน coverage — กำลังทยอยเก็บข้อมูลพร้อมหลักฐาน"
-          className="flex w-[96px] flex-col items-center gap-2.5 rounded-2xl px-2 py-4"
-        >
-          {/* dim เฉพาะโลโก้ (decorative, alt="") — ไม่แตะ opacity ของ container กัน text-muted/text-faint หลุด AA (เคยแก้แล้ว) */}
-          <span className="opacity-45">
-            <BrandMark name={name} />
-          </span>
-          <span className="text-xs font-medium text-muted">{name}</span>
-          {/* label ที่เห็นได้จริง ไม่ใช่แค่ title (mouse-only) — คีย์บอร์ด/touch/screen reader เข้าถึงได้ */}
-          <span className="text-[10px] text-faint">เร็วๆ นี้</span>
-        </div>
       ))}
       <Link
         href="/brands"
-        className="flex w-[96px] flex-col items-center justify-center gap-2.5 rounded-2xl px-2 py-4 transition-all hover:-translate-y-0.5"
+        className="flex w-[108px] flex-col items-center justify-center gap-3 rounded-2xl px-2 py-5 transition-all hover:-translate-y-0.5"
       >
         <span
           aria-hidden
-          className="flex size-11 items-center justify-center rounded-full bg-accent-soft text-xl font-medium text-accent"
+          className="flex size-[52px] items-center justify-center rounded-full bg-surface-muted text-xl font-medium text-accent"
         >
           →
         </span>
-        <span className="text-xs font-semibold text-accent">ดูเพิ่มเติม</span>
+        <span className="text-sm font-semibold text-accent">ดูเพิ่มเติม</span>
       </Link>
     </nav>
   );

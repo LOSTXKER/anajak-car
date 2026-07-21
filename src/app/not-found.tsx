@@ -6,7 +6,7 @@ export default function NotFound() {
       <p className="text-xs font-medium tracking-[0.22em] text-faint uppercase">404</p>
       <h1 className="mt-3 text-2xl font-semibold tracking-tight">ไม่พบหน้าที่ต้องการ</h1>
       <p className="mt-2 max-w-md text-sm text-muted">
-        รุ่นรถหรือหน้าที่คุณเปิดอาจยังไม่อยู่ใน coverage ของฐานข้อมูล
+        รุ่นรถหรือหน้าที่คุณเปิดอาจยังไม่อยู่ในฐานข้อมูล
       </p>
       <Link
         href="/"

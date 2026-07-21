@@ -17,17 +17,11 @@ export default async function CarsPage() {
   return (
     <>
       <header className="pt-8 pb-6">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">รุ่นรถทั้งหมด</h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted">
-          ทุกรุ่นที่มีข้อมูลตรวจสอบแล้ว {stats.nameplates} รุ่น · {stats.variants} รุ่นย่อย —
-          เลือกดูราคาป้ายทางการ สเปก และรุ่นย่อยของแต่ละรุ่น
-        </p>
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">รุ่นรถทั้งหมด</h1>
       </header>
 
       {stats.nameplates === 0 ? (
-        <p className="py-20 text-center text-sm text-muted">
-          กำลังเตรียมข้อมูลชุดแรก — ทุกตัวเลขต้องมีหลักฐานอ้างอิงก่อนแสดง
-        </p>
+        <p className="py-20 text-center text-sm text-muted">กำลังเตรียมข้อมูลชุดแรก</p>
       ) : (
         <div className="pb-12">
           <Suspense>

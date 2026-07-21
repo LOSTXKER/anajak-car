@@ -86,8 +86,8 @@ export function PriceLadder({
   filtered.forEach((r, i) => {
     while (markPtr < marks.length && (r.price as number) >= marks[markPtr]) {
       items.push(
-        <li key={`mark-${marks[markPtr]}`} className="flex items-center gap-2 py-1.5" aria-hidden>
-          <span className="text-[11px] font-medium tracking-wide text-faint tabular-nums">
+        <li key={`mark-${marks[markPtr]}`} className="flex items-center gap-3 py-4" aria-hidden>
+          <span className="text-xs font-semibold tracking-wide text-faint tabular-nums">
             {formatTHB(marks[markPtr])}
           </span>
           <span className="h-px flex-1 bg-border" />
@@ -109,19 +109,19 @@ export function PriceLadder({
       <li key={r.id}>
         <Link
           href={`/brands/${brandSlug}/cars/${r.nameplateSlug}`}
-          className="flex items-start justify-between gap-4 py-3 transition-colors hover:bg-surface-muted"
+          className="-mx-3 flex items-start justify-between gap-4 rounded-xl px-3 py-4 transition-colors hover:bg-surface-muted"
         >
           <div className="min-w-0">
-            <p className="truncate text-[15px]">
+            <p className="truncate text-base">
               <span className="font-medium">{r.nameplateName}</span>
               <span className="text-muted"> · {r.name}</span>
             </p>
             <p className="mt-0.5 text-[13px] text-faint">{specLine}</p>
           </div>
           <div className="shrink-0 text-right">
-            <p className="text-[15px] font-semibold tabular-nums">{formatTHB(r.price as number)}</p>
+            <p className="text-lg font-semibold tabular-nums">{formatTHB(r.price as number)}</p>
             {delta > 0 && (
-              <p className="text-xs text-faint tabular-nums">+{formatTHB(delta)}</p>
+              <p className="text-sm text-faint tabular-nums">+{formatTHB(delta)}</p>
             )}
           </div>
         </Link>
@@ -149,11 +149,12 @@ export function PriceLadder({
         )}
       </div>
 
-      <div className="mt-5 flex items-center justify-between">
-        <p className="text-sm text-faint">
-          แสดง <span className="font-medium text-foreground">{filtered.length}</span> จาก {priced.length} รุ่นย่อย
-        </p>
-        {hasFilter && (
+      {/* แถบนับ + ล้างตัวกรอง — โผล่เฉพาะตอนกรองจริง (ไม่งั้น "62 จาก 62" คือ noise) */}
+      {hasFilter && (
+        <div className="mt-5 flex items-center justify-between">
+          <p className="text-sm text-faint">
+            แสดง <span className="font-medium text-foreground">{filtered.length}</span> จาก {priced.length} รุ่นย่อย
+          </p>
           <button
             type="button"
             onClick={() => {
@@ -164,13 +165,13 @@ export function PriceLadder({
           >
             ล้างตัวกรอง
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {filtered.length === 0 ? (
         <p className="mt-8 text-center text-sm text-muted">ไม่มีรุ่นย่อยตรงตามตัวกรอง</p>
       ) : (
-        <ol className="mt-3 max-w-3xl divide-y divide-border">{items}</ol>
+        <ol className="mt-6 max-w-3xl divide-y divide-border">{items}</ol>
       )}
     </div>
   );

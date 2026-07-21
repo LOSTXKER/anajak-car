@@ -46,6 +46,13 @@ export const CONFIDENCE_LABEL: Record<string, string> = {
   LOW: "ความเชื่อมั่นต่ำ",
 };
 
+// คำสั้นสำหรับป้ายบนจอ (เลี่ยง enum อังกฤษ HIGH/MEDIUM/LOW) · title/sr-only ยังใช้ CONFIDENCE_LABEL เต็ม
+export const CONFIDENCE_SHORT: Record<string, string> = {
+  HIGH: "สูง",
+  MEDIUM: "ปานกลาง",
+  LOW: "ต่ำ",
+};
+
 export const SOURCE_TYPE_LABEL: Record<string, string> = {
   MANUFACTURER_OFFICIAL: "ผู้ผลิตทางการ",
   GOVERNMENT: "หน่วยงานรัฐ",
