@@ -1,7 +1,7 @@
 # CARMETA — DESIGN (หลักการ + token + สถานะปัจจุบัน)
 
 > AI ยึดก่อนงาน UI · เว็บ data-dense ที่ต้อง "อ่านง่าย เชื่อถือได้ ทันสมัย"
-> ธีม: minimal ทันสมัยแบบ apple / tesla — สะอาด มีที่ว่าง คมชัด · ยืมโครงข้อมูลจาก data-tracker (op.gg/dotabuff) แต่ **ไม่ลอกหน้าตา**
+> ~~ธีม: minimal ทันสมัยแบบ apple / tesla · ยืมโครง data-tracker แต่ไม่ลอกหน้าตา~~ → **เบสเปิดทิศใหม่ 2026-07-21: อยากได้แนว data-tracker / market-data จริงๆ** (ดู §ทิศทางรอบใหม่ ล่างสุด — รอ mockup เทียบก่อน implement)
 
 ## ⚠️ กติกาของไฟล์นี้ (อ่านก่อนแก้ — กัน design space หดจนงานจืด)
 - ไฟล์นี้เก็บ 3 อย่างเท่านั้น: **หลักการถาวร · token · สถานะปัจจุบัน** — ไม่ใช่สมุดจดคำห้าม
@@ -41,7 +41,7 @@
 - **อย่าใส่ข้อมูลซ้ำ:** ค่าที่ซ้ำทุกแถว (วันที่/แหล่งเดียวกัน) ยกขึ้นพูดที่ระดับ section
 
 ## สถานะปัจจุบัน (โครงที่เลือกแล้ว ณ 2026-07-20 — ทบทวนได้เมื่อเบสเปิดทิศใหม่)
-- **ทิศ visual ล่าสุด:** "สะอาดแต่แพงขึ้น" — copy diet + premium แบบ Apple (M24) · ทิศที่ลองแล้วเบสไม่เอา: op.gg tracker เต็มตัว (T1) · panel dashboard (T2) · โครง "แบรนด์=เกม" แบบ prydwen (M23)
+- **ทิศ visual บนโค้ด main (M21):** minimal โทนเดิม T3 · ~~ทิศ M22-M24 (sidebar prydwen + Apple polish)~~ ถูกรื้อออกจาก main แล้ว (เก็บที่ branch `archive/m22-m24-sidebar-apple`) · ทิศที่ลองแล้วเบสไม่เอา (07-20): op.gg tracker เต็มตัว (T1) · panel dashboard (T2)
 - **Hero หน้าแรก = search-first:** ช่องค้นหาใหญ่คือพระเอก + ใต้ช่อง = ชิปหมวดที่ผูก filter จริงเท่านั้น · hero จบที่ชิป (เบสตัดข้อความใต้ชิป — จำนวนรุ่น/คำเคลมแหล่ง/วันที่ตรวจ — ออก 07-20) · ส่งเงื่อนไขเข้าตารางผ่าน URL param (`?q=/&body=/&pt=/&cap=`) แชร์ลิงก์ผลกรองได้ · ช่องค้นหาในตารางซ่อนบนหน้าแรก
 - **ตารางหน้าแรก = รุ่นรถล้วน:** แถวรุ่นคลิก = เข้า `/cars/[slug]` (ที่เดียวที่แสดงรุ่นย่อย/บันไดราคา) · คอลัมน์ท้าย "x รุ่นย่อย ›" บอกความลึก · ค้นหายังครอบชื่อรุ่นย่อย (variantRows เป็น haystack) · คอลัมน์น้อย (# · รุ่น · ราคาเริ่มต้น · ประเภท · ขุมพลัง · รุ่นย่อย▾) · ราคาแถวสรุป = "เริ่มต้น" ตัวเดียว · เนื้อหาหลัก ≥14px, meta ≥13px · ของที่ลองแล้วเบสไม่เอา: แถวกดกางรุ่นย่อย · PriceBar หลอดราคาในตาราง · ช่วง min–max ในแถวสรุป · แบรนด์จางใต้ชื่อรายแถว
 - **ตอนนี้ไม่ใช้ (เบสเลือกทาง minimal 07-19):** gradient · aurora/เอฟเฟกต์พื้นหลัง · แอนิเมชันเข้าฉาก · ไอคอนประดับหัว section · ฟอนต์นอกจาก Geist+Noto Sans Thai
@@ -60,3 +60,14 @@
 ## ⚠️ บทเรียนเครื่องมือตรวจภาพ (กันวินิจฉัยผิดซ้ำ — เจ็บมาแล้ว 2026-07-20)
 - **Chrome headless บังคับความกว้างขั้นต่ำ 500px** — `--window-size=390` ได้ viewport 500 จริง (`innerWidth=500`) แล้ว crop ภาพเหลือ 390 → ทุกอย่างดู "เบ้ซ้าย-ตัดขวา" เหมือน layout พังทั้งที่ไม่พัง · ตรวจ mobile < 500px ต้องใช้ **iframe harness** (หน้า HTML กว้าง ≥500 มี `<iframe width=390>` ชี้ localhost แล้ว screenshot ทั้งหน้า) หรือ CDP `Emulation.setDeviceMetricsOverride`
 - ก่อนสรุปว่า "layout พัง" จาก screenshot: เช็ค `innerWidth` จริงก่อนเสมอ (inject script วัดในหน้า repro)
+
+## 🧭 ทิศทางรอบใหม่ (เบสชี้ 2026-07-21 — ยังไม่ implement · ต้องทำ mockup เทียบก่อน)
+เบสส่ง reference 7 เว็บ "อยากได้ประมาณนี้":
+- https://www.dotabuff.com · https://dota2protracker.com · https://op.gg/lol/champions · https://tracker.gg/lol (เกม stat-tracker)
+- https://www.prydwen.gg/star-rail (game wiki/DB)
+- https://www.coinbase.com/explore · https://coinmarketcap.com (ตารางตลาด: ราคา + %เปลี่ยนแปลง เขียว/แดง + sparkline)
+
+**สิ่งที่ 7 เว็บมีร่วมกัน (observation — ให้ mockup รอบใหม่ใช้):** ตาราง/กริดข้อมูลแน่นเป็นพระเอกตั้งแต่ fold แรก · ตัวเลข + %change สีเขียว/แดง + sparkline ต่อแถว · dark theme เป็นหลัก · nav แบบ utilitarian (sidebar/top-bar เรียบ) · หน้า entity ลึกมี stat block ใหญ่
+**นัยต่อของเดิม:** ทิศ "Apple minimal" และกฎ "ยืมโครงแต่ไม่ลอกหน้าตา tracker" = **superseded** · โครง sidebar แบบ prydwen เคยลองแล้ว (M22-M24 — ถูกรื้อออกจาก main ตอนตัดสินใจทำ car2 · เก็บกันหายที่ branch `archive/m22-m24-sidebar-apple`) — เบสยังชี้ prydwen ใน reference → ให้ mockup ตัดสินว่าฟื้นท่าไหน ไม่เดาเอง
+**สถานะโค้ดบน main ตอนนี้ = M21** (hero search-first + ตารางรุ่นรถล้วน + ADAS) — §สถานะปัจจุบันด้านบนตรงกับโค้ดนี้
+**ขั้นต่อไป (ตามกติกาหัวไฟล์):** ทำหน้าเทียบ 2-3 ทิศจาก reference จริง (เช่น A=op.gg/dotabuff stat-tracker · B=coinmarketcap market table · C=prydwen wiki hybrid) → เบสเลือก → ค่อย implement ทั้งเว็บ

@@ -23,7 +23,7 @@
 ## Anti-references (แรงบันดาลใจโครงสร้าง — ห้ามลอก UI)
 - dotabuff / dota2protracker / op.gg / tracker.gg — entity DB + history + cohort/sample/freshness + repeat-use loop
 - JATO (automotive spec business) · KBB (price range + methodology)
-- ⚠️ ยืม "วิธีจัดโครงข้อมูล + แสดง context/sample/freshness" ไม่ใช่หน้าตา · ธีมของเรา = minimal ทันสมัยแบบ apple/tesla (ดู DESIGN.md)
+- ⚠️ ~~ยืมโครงไม่ใช่หน้าตา · ธีม = minimal apple/tesla~~ → **เบสเปิดทิศใหม่ 2026-07-21: เอาหน้าตาแนว data-tracker/market ด้วย** (reference 7 เว็บ + ขั้นตอน mockup เทียบ → DESIGN.md §ทิศทางรอบใหม่) · ที่ยังถือ: อย่าลอก 1:1 จนไม่มีตัวตน CARMETA + กฎเหล็กผลิตภัณฑ์ด้านล่างไม่เปลี่ยน
 
 ## กฎเหล็กของผลิตภัณฑ์ (ห้ามละเมิดตอนสร้าง)
 - ไม่ประกาศ "รถคันไหนดีที่สุด" ด้วยคะแนนเดียว (รถไม่มี win rate เป็นกลาง)
