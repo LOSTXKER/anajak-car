@@ -11,7 +11,7 @@
 - คำสัญญา: รถใน Coverage มีประวัติ/เจเนอเรชัน/การเปลี่ยนแปลง/ราคา ครบตามหลักฐานที่ตรวจสอบได้
 - ลำดับผลิตภัณฑ์: (1) Car Database → (2) Price Tracker → (3) Compare/Research → (4) Ownership/Marketplace (ตามหลัง trust)
 
-## หลักคิดจาก data-tracker (ยืม "แนวคิด" ไม่ลอกหน้าตา)
+## หลักคิดจาก data-tracker
 6 แกน: **Entity · Version · Cohort · History · Sample · Freshness**
 | data tracker | CARMETA |
 |---|---|
@@ -20,7 +20,7 @@
 | Build | Trim, Powertrain, ชุดอุปกรณ์ |
 | Match history | Price observation, Listing snapshot, Change event |
 
-## Anti-references (แรงบันดาลใจโครงสร้าง — ห้ามลอก UI)
+## References (แรงบันดาลใจทั้งโครงสร้างและหน้าตา — เบสเปิดทาง 07-21)
 - dotabuff / dota2protracker / op.gg / tracker.gg — entity DB + history + cohort/sample/freshness + repeat-use loop
 - JATO (automotive spec business) · KBB (price range + methodology)
 - ⚠️ ~~ยืมโครงไม่ใช่หน้าตา · ธีม = minimal apple/tesla~~ → **เบสเปิดทิศใหม่ 2026-07-21: เอาหน้าตาแนว data-tracker/market ด้วย** (reference 7 เว็บ + ขั้นตอน mockup เทียบ → DESIGN.md §ทิศทางรอบใหม่) · ที่ยังถือ: อย่าลอก 1:1 จนไม่มีตัวตน CARMETA + กฎเหล็กผลิตภัณฑ์ด้านล่างไม่เปลี่ยน
