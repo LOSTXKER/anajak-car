@@ -139,14 +139,17 @@ export function StatTile({
   label,
   value,
   sub,
+  accent = false,
 }: {
   label: string;
   value: React.ReactNode;
   sub?: string;
+  /** ขอบสีบน accent — ใช้เน้น tile พระเอก (เช่น ราคา) ตามลุคทิศ B (เบสเลือก 2026-07-23) */
+  accent?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-surface-muted px-4 py-3">
-      <div className="text-xs text-faint">{label}</div>
+    <div className={`rounded-xl border border-border bg-background px-4 py-3 ${accent ? "border-t-2 border-t-accent" : "bg-surface-muted"}`}>
+      <div className={`text-xs ${accent ? "text-accent" : "text-faint"}`}>{label}</div>
       <div className="mt-1 text-lg font-semibold text-foreground">{value}</div>
       {sub && <div className="mt-0.5 text-[11px] text-faint">{sub}</div>}
     </div>

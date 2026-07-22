@@ -14,7 +14,7 @@ export function NameplateAbout({ detail, tree }: { detail: NameplateDetail; tree
       {/* เกี่ยวกับรุ่นนี้ */}
       {(detail.summary || gen) && (
         <section aria-labelledby="about-heading">
-          <h2 id="about-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight">เกี่ยวกับรุ่นนี้</h2>
+          <h2 id="about-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">เกี่ยวกับรุ่นนี้</h2>
           {detail.summary && <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted">{detail.summary}</p>}
           {gen && (
             <dl className="mt-4 max-w-2xl">
@@ -30,7 +30,7 @@ export function NameplateAbout({ detail, tree }: { detail: NameplateDetail; tree
 
       {/* ไทม์ไลน์และประวัติ */}
       <section aria-labelledby="timeline-heading">
-        <h2 id="timeline-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight">ไทม์ไลน์และประวัติ</h2>
+        <h2 id="timeline-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">ไทม์ไลน์และประวัติ</h2>
         {hasTimeline ? (
           <ol className="mt-4 max-w-3xl border-l border-border">
             {detail.changeEvents.map((e) => (
@@ -51,7 +51,7 @@ export function NameplateAbout({ detail, tree }: { detail: NameplateDetail; tree
 
       {/* แหล่งอ้างอิง */}
       <section aria-labelledby="sources-heading" className="border-t border-border pt-8">
-        <h2 id="sources-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight">แหล่งอ้างอิง</h2>
+        <h2 id="sources-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">แหล่งอ้างอิง</h2>
         <p className="mt-1.5 text-sm text-faint">{detail.sources.length} แหล่ง — หลักฐานราคาและข้อมูลในหน้านี้</p>
         <ul className="mt-3 max-w-3xl divide-y divide-border">
           {detail.sources.map((s) => (

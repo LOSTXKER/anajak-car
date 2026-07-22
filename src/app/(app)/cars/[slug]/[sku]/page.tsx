@@ -107,7 +107,7 @@ export default async function SkuPage({ params }: Props) {
 
       {/* สเปก */}
       <section aria-labelledby="spec-heading" className="mt-10">
-        <h2 id="spec-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight">สเปก</h2>
+        <h2 id="spec-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">สเปก</h2>
         <dl className="mt-3 max-w-2xl">
           <SpecRow label="ขุมพลัง">{v.powertrainText}</SpecRow>
           {v.engineText && <SpecRow label="เครื่องยนต์"><span className="text-[13px]">{v.engineText}</span></SpecRow>}
@@ -151,7 +151,7 @@ export default async function SkuPage({ params }: Props) {
 
       {/* ประวัติราคา (append-only — โชว์ทุก observation ไม่ทับอดีต) */}
       <section aria-labelledby="price-history-heading" className="mt-10">
-        <h2 id="price-history-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight">ประวัติราคา</h2>
+        <h2 id="price-history-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">ประวัติราคา</h2>
         {v.priceHistory.length > 0 ? (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full max-w-2xl min-w-[480px] text-sm">
@@ -185,7 +185,7 @@ export default async function SkuPage({ params }: Props) {
 
       {/* ADAS ของ trim นี้ */}
       <section aria-labelledby="adas-heading" className="mt-10">
-        <h2 id="adas-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight">ระบบช่วยขับขี่</h2>
+        <h2 id="adas-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">ระบบช่วยขับขี่</h2>
         {adasRow ? (
           <>
             <ul className="mt-3 max-w-3xl space-y-2">
@@ -212,7 +212,7 @@ export default async function SkuPage({ params }: Props) {
 
       {/* แหล่งอ้างอิง (ระดับรุ่น — หลักฐานเฉพาะราคา SKU นี้อยู่ในตารางประวัติราคา) */}
       <section aria-labelledby="sku-sources-heading" className="mt-12 border-t border-border pt-8">
-        <h2 id="sku-sources-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight">แหล่งอ้างอิง</h2>
+        <h2 id="sku-sources-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">แหล่งอ้างอิง</h2>
         <p className="mt-1.5 text-sm text-faint">{detail.sources.length} แหล่ง — หลักฐานราคาและข้อมูลของ {tree.brand} {tree.name}</p>
         <ul className="mt-3 max-w-3xl divide-y divide-border">
           {detail.sources.map((s) => (

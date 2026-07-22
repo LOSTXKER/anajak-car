@@ -65,8 +65,8 @@ export default async function NameplatePage({ params }: Props) {
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            <StatTile label="ราคาป้าย (ต่ำสุด)" value={<span className="tnum">{detail.priceMin != null ? formatTHB(detail.priceMin) : "—"}</span>} />
-            <StatTile label="ราคาป้าย (สูงสุด)" value={<span className="tnum">{detail.priceMax != null ? formatTHB(detail.priceMax) : "—"}</span>} />
+            <StatTile accent label="ราคาป้าย (ต่ำสุด)" value={<span className="tnum">{detail.priceMin != null ? formatTHB(detail.priceMin) : "—"}</span>} />
+            <StatTile accent label="ราคาป้าย (สูงสุด)" value={<span className="tnum">{detail.priceMax != null ? formatTHB(detail.priceMax) : "—"}</span>} />
             <StatTile label="รุ่นย่อย" value={<span className="tnum">{variantCount}</span>} sub={`${gen?.derivatives.length ?? 0} ตัวถัง`} />
             <StatTile label="ระบบช่วยขับขี่" value={adasCount > 0 ? <span className="tnum">{adasCount}</span> : <span className="text-faint">—</span>} sub={adasCount > 0 ? "ฟีเจอร์ที่ติดตาม" : "ยังไม่มีข้อมูล"} />
           </div>
