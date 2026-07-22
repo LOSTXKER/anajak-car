@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { BrandTile } from "@/lib/queries";
-import { brandLogo, brandLogoDark } from "@/lib/images";
+import { brandLogo } from "@/lib/images";
 
 // แบรนด์ที่วางแผนเก็บข้อมูลถัดไป — แสดงเป็น tile ปิดไว้ ไม่เปิดหน้า thin (กฎ product)
 export const UPCOMING_BRANDS = [
@@ -15,8 +15,8 @@ export const UPCOMING_BRANDS = [
 ];
 
 // โลโก้จริงสีเต็มเสมอ (ที่มาใน public/logos/CREDITS.md) · ไม่มีไฟล์ → monogram
-// บางแบรนด์ (Nissan/Mazda/Mitsubishi) ใช้สีดำ/เทาเป็นหลัก จมหายบนพื้นมืด — สลับเป็นเวอร์ชัน dark-safe
-// ด้วย CSS ล้วน (.theme-logo-light/dark เดียวกับไอคอน CARMETA เอง กัน hydration mismatch)
+// light-only: คุมด้วย "ความสูง" (ไม่บีบสี่เหลี่ยม) — wordmark กว้าง (ISUZU/MAZDA/Ford) จึงโชว์เต็มตามสัดส่วน
+// height ≈ size·0.7, กว้างได้ถึง size·1.75 (ตรงกับ mockup ~30px สูง / ~74px กว้าง ที่ size=44)
 export function BrandMark({
   name,
   size = 44,
@@ -25,41 +25,14 @@ export function BrandMark({
   size?: number;
 }) {
   const logo = brandLogo(name);
-  const logoDark = brandLogoDark(name);
-  if (logo && logoDark) {
-    return (
-      <span className="relative inline-flex shrink-0" style={{ width: size, height: size }}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- โลโก้เป็นไฟล์ local ที่ next/image ไม่ optimize อยู่แล้ว */}
-        <img
-          src={logo}
-          alt=""
-          width={size}
-          height={size}
-          className="theme-logo-light absolute inset-0 object-contain"
-          style={{ width: size, height: size }}
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={logoDark}
-          alt=""
-          width={size}
-          height={size}
-          className="theme-logo-dark absolute inset-0 object-contain"
-          style={{ width: size, height: size }}
-        />
-      </span>
-    );
-  }
   if (logo) {
     return (
       // eslint-disable-next-line @next/next/no-img-element -- โลโก้เป็น SVG local ที่ next/image ไม่ optimize อยู่แล้ว
       <img
         src={logo}
         alt=""
-        width={size}
-        height={size}
         className="object-contain"
-        style={{ width: size, height: size }}
+        style={{ height: size * 0.7, width: "auto", maxWidth: size * 1.75 }}
       />
     );
   }
