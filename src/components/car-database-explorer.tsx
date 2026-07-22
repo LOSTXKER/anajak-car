@@ -1,16 +1,12 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { NameplateRow, VariantIndexRow } from "@/lib/queries";
-import { BODY_TYPE_LABEL, SEGMENT_LABEL } from "@/lib/labels";
-import { formatDateTH, formatTHB } from "@/lib/format";
-import { nameplateImage } from "@/lib/images";
-import { LifecycleBadge, PowertrainDots } from "@/components/badges";
+import { BODY_TYPE_LABEL } from "@/lib/labels";
+import { formatDateTH } from "@/lib/format";
+import { NameplateTable, type SortKey } from "@/components/nameplate-table";
 
-type SortKey = "name" | "price" | "year" | "variants";
 type StatusFilter = "all" | "CURRENT" | "DISCONTINUED";
 
 // ตัวกรองแบบ dropdown — แพตเทิร์นมาตรฐานของเว็บตารางข้อมูล (กะทัดรัด · state ที่เลือกเห็นชัดบนตัวปุ่ม)
@@ -61,45 +57,6 @@ function FilterSelect({
       </svg>
     </label>
   );
-}
-
-function CarThumb({ slug }: { slug: string }) {
-  const image = nameplateImage(slug);
-  if (!image) {
-    return (
-      <span
-        aria-hidden
-        className="flex h-8 w-14 shrink-0 items-center justify-center rounded-lg bg-surface-muted"
-      >
-        <svg viewBox="0 0 48 24" className="h-3.5 w-7 text-faint" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M6 17h-2v-4l4-1 5-6h14l6 6h7a3 3 0 0 1 3 3v2h-3" />
-          <circle cx="14" cy="17" r="3" />
-          <circle cx="36" cy="17" r="3" />
-          <path d="M17 17h16" />
-        </svg>
-      </span>
-    );
-  }
-  return (
-    <Image
-      src={image.src}
-      alt=""
-      width={56}
-      height={32}
-      className="h-8 w-14 shrink-0 rounded-lg bg-surface-muted object-contain transition-transform duration-300 group-hover:scale-110"
-    />
-  );
-}
-
-// เซกเมนต์กับตัวถังมักซ้ำความหมายกัน (เช่น PPV/PPV, กระบะ/กระบะ) — แสดงครั้งเดียวเมื่อข้อความตรงกัน
-function CategoryCell({ row }: { row: NameplateRow }) {
-  const segmentLabel = row.segment ? (SEGMENT_LABEL[row.segment] ?? row.segment) : null;
-  const bodyLabel = row.bodyTypes.map((bt) => BODY_TYPE_LABEL[bt] ?? bt).join(" · ");
-  if (!segmentLabel && !bodyLabel) {
-    return <span className="text-faint">ไม่มีข้อมูล</span>;
-  }
-  // บรรทัดเดียวจบ — บรรทัดย่อย (เช่น "SUV กลาง/SUV") ซ้ำความหมาย รกโดยไม่จำเป็น (ฟีดแบ็กเบส 2026-07-20)
-  return <span>{segmentLabel ?? bodyLabel}</span>;
 }
 
 export function CarDatabaseExplorer({
@@ -256,24 +213,9 @@ export function CarDatabaseExplorer({
     }
   }
 
-  function sortIndicator(key: SortKey) {
-    if (sortKey !== key)
-      return <span aria-hidden className="ml-0.5 text-faint opacity-50">⇅</span>;
-    return <span aria-hidden className="ml-0.5 text-accent">{sortAsc ? "↑" : "↓"}</span>;
-  }
-
-  function ariaSort(key: SortKey): "ascending" | "descending" | undefined {
-    if (sortKey !== key) return undefined;
-    return sortAsc ? "ascending" : "descending";
-  }
-
   function goTo(slug: string) {
     startNavigation(() => router.push(`/cars/${slug}`));
   }
-
-  const rowClass = `group cursor-pointer border-b border-border transition-colors last:border-b-0 hover:bg-surface-muted ${
-    isNavigating ? "opacity-60" : ""
-  }`;
 
   return (
     <section aria-label="ตารางฐานข้อมูลรถ" className="pb-20">
@@ -386,112 +328,14 @@ export function CarDatabaseExplorer({
           )}
         </div>
       ) : (
-        <div
-          tabIndex={0}
-          role="region"
-          aria-label="ตารางรุ่นรถ — กดแถวเพื่อกางรุ่นย่อย (เลื่อนแนวนอนได้)"
-          className="overflow-x-auto rounded-2xl"
-        >
-          <table className="w-full min-w-[620px] text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-[13px] text-faint">
-                <th scope="col" className="py-2 pr-1 pl-2 text-right font-medium">
-                  <span className="sr-only">ลำดับ</span>#
-                </th>
-                <th scope="col" aria-sort={ariaSort("name")} className="px-3 py-1.5 font-medium">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("name")}
-                    className="-mx-1 rounded px-1 py-2 font-medium hover:text-foreground"
-                  >
-                    รุ่น{sortIndicator("name")}
-                  </button>
-                </th>
-                <th scope="col" aria-sort={ariaSort("price")} className="px-3 py-1.5 text-right font-medium">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("price")}
-                    className="-mx-1 rounded px-1 py-2 font-medium hover:text-foreground"
-                  >
-                    ราคาเริ่มต้น (บาท){sortIndicator("price")}
-                  </button>
-                </th>
-                <th scope="col" className="px-3 py-2 font-medium">ประเภท</th>
-                <th scope="col" className="px-3 py-2 font-medium">ขุมพลัง</th>
-                <th scope="col" aria-sort={ariaSort("year")} className="px-3 py-2 text-right font-medium">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("year")}
-                    className="-mx-1 rounded px-1 py-2 font-medium hover:text-foreground"
-                  >
-                    ปี{sortIndicator("year")}
-                  </button>
-                </th>
-                <th scope="col" aria-sort={ariaSort("variants")} className="py-2 pr-3 pl-3 text-right font-medium">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("variants")}
-                    className="-mx-1 rounded px-1 py-2 font-medium hover:text-foreground"
-                  >
-                    รุ่นย่อย{sortIndicator("variants")}
-                  </button>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredNameplates.map((row, i) => (
-                <tr key={row.slug} onClick={() => goTo(row.slug)} className={rowClass}>
-                  <td className="py-2.5 pr-1 pl-2 text-right text-[13px] text-faint tabular-nums">
-                    {i + 1}
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex items-center gap-3">
-                      <CarThumb slug={row.slug} />
-                      <Link
-                        href={`/cars/${row.slug}`}
-                        className="text-[15px] font-semibold text-foreground group-hover:text-accent"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {row.name}
-                      </Link>
-                      {/* ป้ายสถานะเฉพาะที่ต่างจากค่าปกติ (ขายอยู่ทั้งตาราง = noise) */}
-                      {row.lifecycleStatus !== "CURRENT" && (
-                        <LifecycleBadge status={row.lifecycleStatus} />
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-3 py-2.5 text-right whitespace-nowrap">
-                    {row.priceMin != null ? (
-                      <span className="tnum text-base font-semibold">
-                        {formatTHB(row.priceMin)}
-                      </span>
-                    ) : (
-                      <span className="text-sm text-faint">ไม่มีข้อมูล</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5 text-sm text-muted">
-                    <CategoryCell row={row} />
-                  </td>
-                  <td className="px-3 py-2.5 text-sm text-muted">
-                    <PowertrainDots labels={row.powertrainLabels} />
-                  </td>
-                  <td
-                    className="tnum px-3 py-2.5 text-right text-sm text-muted"
-                    title={row.generationCode ?? undefined}
-                  >
-                    {row.launchYear ?? <span className="text-faint">—</span>}
-                  </td>
-                  <td className="py-2.5 pr-3 pl-3 text-right whitespace-nowrap">
-                    <span className="tnum text-sm text-muted">{row.variantCount}</span>
-                    <span aria-hidden className="ml-1.5 text-faint transition-colors group-hover:text-accent">
-                      ›
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <NameplateTable
+          rows={filteredNameplates}
+          sortKey={sortKey}
+          sortAsc={sortAsc}
+          onToggleSort={toggleSort}
+          onRowClick={goTo}
+          isNavigating={isNavigating}
+        />
       )}
     </section>
   );
