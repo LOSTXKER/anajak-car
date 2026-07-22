@@ -16,7 +16,7 @@ export default async function BrandLayout({
   const brand = navIndex.find((b) => b.slug === slug);
   if (!brand) notFound();
   return (
-    <AppShell sidebar={<BrandSidebar brand={{ slug: brand.slug, name: brand.name }} nameplates={brand.nameplates} />}>
+    <AppShell sidebar={<BrandSidebar brand={{ slug: brand.slug, name: brand.name }} />}>
       {children}
     </AppShell>
   );

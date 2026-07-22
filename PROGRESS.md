@@ -62,7 +62,8 @@
 ## 🧭 M25 หน้ารุ่นเป็น TAB + แยก navbar(กลาง)/sidebar(แบรนด์) ชัด (2026-07-22 — branch `redesign/m25-sidebar-tabs` · ref prydwen.gg tabs)
 เบสส่ง prydwen เป็น ref (แคปเก็บแล้ว) → หน้ารุ่นเป็น tab · **แล้วเบสเคาะ split สุดท้าย: navbar = เครื่องมือกลางใช้ร่วมทั้งเว็บ · sidebar = ทางลัดของแบรนด์นั้นๆ เท่านั้น** (ตรงคำขอแรกสุด)
 - **navbar เครื่องมือกลาง** (`global-navbar.tsx`): logo + สลับแบรนด์ + ค้นหา + จัดอันดับ + เทียบรุ่น(เร็วๆนี้) + แบรนด์ — ข้ามแบรนด์ ใช้ทั้งเว็บ · อยู่ `(app)/layout`
-- **sidebar ประจำแบรนด์** (`brand-sidebar.tsx`): ภาพรวมแบรนด์ + **รายชื่อรุ่นของแบรนด์** (ทางลัดกระโดดรุ่น · LifecycleDot · active) — โชว์เฉพาะโซนแบรนด์/รุ่น (zone layout brands/[slug], cars/[slug] จ่าย) · โซนไม่ผูกแบรนด์ (`/tierlist`,`/brands` index ใน `(plain)`) = ไม่มี sidebar เต็มกว้าง
+- **sidebar ประจำแบรนด์ = เมนูเนื้อหาแบรนด์ "1 หน้า 1 เรื่อง"** (`brand-sidebar.tsx` · แบบหมวดใน prydwen · **ไม่ใช่ลิสต์ชื่อรุ่น** — เบสแก้รอบสุดท้าย): **ภาพรวม · รุ่นรถ · ไทม์ไลน์และประวัติ · แหล่งอ้างอิง** (แต่ละอันเป็นหน้าแยกจริง) · โชว์เฉพาะโซนแบรนด์/รุ่น · โซนไม่ผูกแบรนด์ (`/tierlist`,`/brands` index) = ไม่มี sidebar
+- **หน้าแบรนด์แตกเป็น 4 หน้า** (1 เรื่อง/หน้า): `/brands/[slug]` ภาพรวม(ตัวตน+KPI+ทางเข้า) · `/models` (การ์ดรุ่น+explorer · filter ย้ายมาที่นี่) · `/timeline` (getBrandTimeline · Toyota 7 เหตุการณ์) · `/sources`
 - **หน้ารุ่นเป็น tab** (`nameplate-tabs.tsx` client): ภาพรวม / ราคา·รุ่นย่อย / สเปก / ADAS / ไทม์ไลน์ — hero อยู่บน แท็บสลับ client · **ยุบ route เจน/ตัวถัง/รุ่นย่อย/timeline (M24) เข้า tab แล้วลบ** · slugs/getNameplateTree ยังใช้
 - mobile drawer = ทางลัดรุ่นแบรนด์ปัจจุบัน + เมนูกลาง (หน้าแรก/แบรนด์/จัดอันดับ)
 - verify: lint+tsc+build · เปิดจริง 3105 — navbar เครื่องมือกลางทุกหน้า · sidebar รุ่นโชว์เฉพาะ brand/car (active ถูก) · tierlist เต็มกว้างไม่มี sidebar · tab สลับ 5 แท็บ · brand Cards · slug ผิด=404 · mobile

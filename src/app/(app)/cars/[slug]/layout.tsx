@@ -16,7 +16,7 @@ export default async function CarLayout({
   if (!detail) notFound();
   const brand = navIndex.find((b) => b.slug === detail.brandSlug);
   return (
-    <AppShell sidebar={brand ? <BrandSidebar brand={{ slug: brand.slug, name: brand.name }} nameplates={brand.nameplates} /> : undefined}>
+    <AppShell sidebar={brand ? <BrandSidebar brand={{ slug: brand.slug, name: brand.name }} /> : undefined}>
       {children}
     </AppShell>
   );
