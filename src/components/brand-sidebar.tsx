@@ -14,7 +14,8 @@ export function BrandSidebar({ brand }: { brand: { slug: string; name: string } 
   const pathname = usePathname();
   const base = `/brands/${brand.slug}`;
   const items: Item[] = [
-    { href: base, label: "ภาพรวมและรุ่นรถ", match: "exact", icon: <svg {...svg()}><path d="M3 13.5h18M5 13.5l1.8-4.2A2 2 0 0 1 8.6 8h6.8a2 2 0 0 1 1.8 1.3l1.8 4.2" /><circle cx="7.5" cy="17" r="1.6" /><circle cx="16.5" cy="17" r="1.6" /></svg> },
+    { href: base, label: "ภาพรวม", match: "exact", icon: <svg {...svg()}><circle cx="12" cy="12" r="9" /><path d="M12 8h.01M11 12h1v4h1" /></svg> },
+    { href: `${base}/models`, label: "รุ่นรถ", match: "prefix", icon: <svg {...svg()}><path d="M3 13.5h18M5 13.5l1.8-4.2A2 2 0 0 1 8.6 8h6.8a2 2 0 0 1 1.8 1.3l1.8 4.2" /><circle cx="7.5" cy="17" r="1.6" /><circle cx="16.5" cy="17" r="1.6" /></svg> },
     { href: `${base}/timeline`, label: "ไทม์ไลน์และประวัติ", match: "prefix", icon: <svg {...svg()}><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3.2 1.8" /></svg> },
     { href: `${base}/sources`, label: "แหล่งอ้างอิง", match: "prefix", icon: <svg {...svg()}><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H18a2 2 0 0 1 2 2v12.5a1.5 1.5 0 0 1-1.5 1.5H6a2 2 0 0 1-2-2z" /><path d="M8 8h8M8 12h8M8 16h5" /></svg> },
   ];
