@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavBrand } from "@/lib/queries";
 import { BrandMark } from "@/components/brand-shortcuts";
+import { LifecycleDot } from "@/components/badges";
 
 // hamburger + drawer สำหรับ mobile (<lg) — แบรนด์ปัจจุบัน (รายชื่อรุ่น = ทางลัดข้ามรุ่น) + เมนูกลาง
 // drawer เลื่อนด้วย transform (interaction ไม่ใช่ entrance animation) + a11y ครบ (portal/trap/esc)
@@ -125,40 +126,43 @@ export function MobileNavDrawer({ navIndex }: { navIndex: NavBrand[] }) {
                 </button>
               </div>
               <div className="flex-1 space-y-4 overflow-y-auto px-3 pb-4">
+                {/* ทางลัดของแบรนด์ปัจจุบัน (= เนื้อ sidebar) */}
+                {brand && (
+                  <div>
+                    <Link href={`/brands/${brand.slug}`} onClick={close} className="mb-1 flex items-center gap-2.5 rounded-lg px-3 py-2 hover:bg-surface-muted">
+                      <BrandMark name={brand.name} size={20} />
+                      <span className="text-[13px] font-semibold tracking-wide text-foreground uppercase">{brand.name}</span>
+                    </Link>
+                    <ul className="flex flex-col gap-0.5">
+                      {brand.nameplates.map((np) => {
+                        const active = pathname === `/cars/${np.slug}`;
+                        return (
+                          <li key={np.slug}>
+                            <Link href={`/cars/${np.slug}`} onClick={close} aria-current={active ? "page" : undefined}
+                              className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${active ? "bg-accent-soft font-medium text-accent" : "text-muted hover:bg-surface-muted hover:text-foreground"}`}>
+                              <LifecycleDot status={np.lifecycleStatus} />
+                              <span className="truncate">{np.name}</span>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+                {brand && <div className="border-t border-border" />}
+                {/* เครื่องมือกลาง */}
                 <nav aria-label="เมนูหลัก" className="flex flex-col gap-0.5">
                   {[
                     { href: "/", label: "หน้าแรก" },
-                    { href: "/#database", label: "รุ่นรถทั้งหมด" },
-                    { href: "/brands", label: "แบรนด์" },
+                    { href: "/brands", label: "แบรนด์ทั้งหมด" },
                     { href: "/tierlist", label: "จัดอันดับ" },
-                  ].map((l) => {
-                    const active = pathname === l.href.split("#")[0];
-                    return (
-                      <Link key={l.label} href={l.href} onClick={close} aria-current={active ? "page" : undefined}
-                        className={`rounded-lg px-3 py-2 text-sm transition-colors ${active ? "bg-accent-soft font-medium text-accent" : "text-muted hover:bg-surface-muted hover:text-foreground"}`}>
-                        {l.label}
-                      </Link>
-                    );
-                  })}
+                  ].map((l) => (
+                    <Link key={l.label} href={l.href} onClick={close}
+                      className="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground">
+                      {l.label}
+                    </Link>
+                  ))}
                 </nav>
-                <div className="border-t border-border" />
-                <div>
-                  <p className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-faint uppercase">แบรนด์</p>
-                  <ul className="flex flex-col gap-0.5">
-                    {navIndex.map((b) => {
-                      const active = brand?.slug === b.slug;
-                      return (
-                        <li key={b.slug}>
-                          <Link href={`/brands/${b.slug}`} onClick={close} aria-current={active ? "page" : undefined}
-                            className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${active ? "bg-accent-soft font-medium text-accent" : "text-muted hover:bg-surface-muted hover:text-foreground"}`}>
-                            <BrandMark name={b.name} size={18} />
-                            <span className="truncate">{b.name}</span>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
               </div>
             </div>
           </>,

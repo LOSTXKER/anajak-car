@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
-import { getNameplateDetail } from "@/lib/queries";
+import { getNameplateDetail, getNavIndex } from "@/lib/queries";
+import { AppShell } from "@/components/app-shell";
+import { BrandSidebar } from "@/components/brand-sidebar";
 
-// guard 404 สำหรับรุ่นที่ไม่มีจริง (ตั้งแต่ layout · status ถูก) — shell/sidebar อยู่ (app)/layout แล้ว
+// โซนรุ่นรถ — sidebar ทางลัดรุ่นของแบรนด์เจ้าของรุ่นนี้ (หาแบรนด์จาก detail.brandSlug ใน navIndex)
 export default async function CarLayout({
   children,
   params,
@@ -10,7 +12,12 @@ export default async function CarLayout({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const detail = await getNameplateDetail(slug);
+  const [detail, navIndex] = await Promise.all([getNameplateDetail(slug), getNavIndex()]);
   if (!detail) notFound();
-  return <>{children}</>;
+  const brand = navIndex.find((b) => b.slug === detail.brandSlug);
+  return (
+    <AppShell sidebar={brand ? <BrandSidebar brand={{ slug: brand.slug, name: brand.name }} nameplates={brand.nameplates} /> : undefined}>
+      {children}
+    </AppShell>
+  );
 }

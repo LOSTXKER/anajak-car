@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import { getNavIndex } from "@/lib/queries";
+import { AppShell } from "@/components/app-shell";
+import { BrandSidebar } from "@/components/brand-sidebar";
 
-// guard 404 สำหรับแบรนด์ที่ไม่มีจริง (ตั้งแต่ layout · status ถูก) — shell/sidebar อยู่ (app)/layout แล้ว
+// โซนแบรนด์ — sidebar ทางลัดรุ่นของแบรนด์นี้ (จาก navIndex · cache dedupe กับ navbar)
 export default async function BrandLayout({
   children,
   params,
@@ -11,6 +13,11 @@ export default async function BrandLayout({
 }) {
   const { slug } = await params;
   const navIndex = await getNavIndex();
-  if (!navIndex.find((b) => b.slug === slug)) notFound();
-  return <>{children}</>;
+  const brand = navIndex.find((b) => b.slug === slug);
+  if (!brand) notFound();
+  return (
+    <AppShell sidebar={<BrandSidebar brand={{ slug: brand.slug, name: brand.name }} nameplates={brand.nameplates} />}>
+      {children}
+    </AppShell>
+  );
 }

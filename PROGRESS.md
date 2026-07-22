@@ -59,12 +59,13 @@
 - verify: lint+tsc+build ผ่าน · เปิดจริง 3105 ทุกหน้า (hub/gen/deriv/trim/timeline/tierlist/brand) · slug รุ่น/tierlist ผิด = 404 · หน้า thin = 200+placeholder · filter URL รอด · ไม่มี raw enum หลุด (ตรวจแล้ว)
 - ⚠️ known issue เล็ก: **deep invalid key** (เช่น `/gen/9999`, bad deriv/trim) เรนเดอร์หน้า 404 ถูก **แต่ HTTP status = 200** (soft-404 — Next.js: notFound จาก nested page ไม่ set 404 เหมือนจาก layout) · ผู้ใช้เห็นหน้า "ไม่พบ" ปกติ · แก้เต็มต้องเพิ่ม layout validate ต่อชั้น (ยังไม่ทำ — กระทบแค่ URL ที่พิมพ์มั่ว/ลิงก์เสีย)
 
-## 🧭 M25 SIDEBAR หมวดกลาง + TAB (2026-07-22 — branch `redesign/m25-sidebar-tabs` · ตาม reference prydwen.gg/star-rail)
-เบสส่ง prydwen เป็น reference → **sidebar หลักอันเดียว(หมวด) + brand switcher บนหัว sidebar · หน้ารุ่นยุบเป็น tab** (แคป prydwen เก็บแล้ว)
-- **sidebar global** (`app-sidebar.tsx`): switcher บนหัว + หมวด หน้าแรก · ฐานข้อมูล(รุ่นรถ/แบรนด์) · จัดอันดับ · เครื่องมือ(เทียบรุ่น เร็วๆนี้) — **ย้ายขึ้น `(app)/layout` ใช้เหมือนกันทุกหน้า** (เลิก sidebar ประจำแบรนด์ · ลบ `brand-sidebar.tsx`) · zone layout เหลือแค่ guard 404
-- **navbar เรียบลง**: เหลือ logo + ค้นหา (switcher/ลิงก์ย้ายไป sidebar) · mobile drawer = หมวด + รายชื่อแบรนด์
-- **หน้ารุ่นเป็น tab** (`nameplate-tabs.tsx` client): ภาพรวม / ราคา·รุ่นย่อย / สเปก / ADAS / ไทม์ไลน์ — hero อยู่บน แท็บสลับ client · **ยุบ route เจน/ตัวถัง/รุ่นย่อย/timeline (M24) เข้า tab แล้วลบ** · slugs/getNameplateTree ยังใช้ (คีย์ในตาราง)
-- verify: lint+tsc+build · เปิดจริง 3105 — sidebar หมวดขึ้นทุกหน้า(active ถูก·switcher ปรับตามหน้า) · tab สลับได้ 5 แท็บ · brand Cards · tierlist · slug ผิด=404 · mobile (tab scroll + drawer หมวด)
+## 🧭 M25 หน้ารุ่นเป็น TAB + แยก navbar(กลาง)/sidebar(แบรนด์) ชัด (2026-07-22 — branch `redesign/m25-sidebar-tabs` · ref prydwen.gg tabs)
+เบสส่ง prydwen เป็น ref (แคปเก็บแล้ว) → หน้ารุ่นเป็น tab · **แล้วเบสเคาะ split สุดท้าย: navbar = เครื่องมือกลางใช้ร่วมทั้งเว็บ · sidebar = ทางลัดของแบรนด์นั้นๆ เท่านั้น** (ตรงคำขอแรกสุด)
+- **navbar เครื่องมือกลาง** (`global-navbar.tsx`): logo + สลับแบรนด์ + ค้นหา + จัดอันดับ + เทียบรุ่น(เร็วๆนี้) + แบรนด์ — ข้ามแบรนด์ ใช้ทั้งเว็บ · อยู่ `(app)/layout`
+- **sidebar ประจำแบรนด์** (`brand-sidebar.tsx`): ภาพรวมแบรนด์ + **รายชื่อรุ่นของแบรนด์** (ทางลัดกระโดดรุ่น · LifecycleDot · active) — โชว์เฉพาะโซนแบรนด์/รุ่น (zone layout brands/[slug], cars/[slug] จ่าย) · โซนไม่ผูกแบรนด์ (`/tierlist`,`/brands` index ใน `(plain)`) = ไม่มี sidebar เต็มกว้าง
+- **หน้ารุ่นเป็น tab** (`nameplate-tabs.tsx` client): ภาพรวม / ราคา·รุ่นย่อย / สเปก / ADAS / ไทม์ไลน์ — hero อยู่บน แท็บสลับ client · **ยุบ route เจน/ตัวถัง/รุ่นย่อย/timeline (M24) เข้า tab แล้วลบ** · slugs/getNameplateTree ยังใช้
+- mobile drawer = ทางลัดรุ่นแบรนด์ปัจจุบัน + เมนูกลาง (หน้าแรก/แบรนด์/จัดอันดับ)
+- verify: lint+tsc+build · เปิดจริง 3105 — navbar เครื่องมือกลางทุกหน้า · sidebar รุ่นโชว์เฉพาะ brand/car (active ถูก) · tierlist เต็มกว้างไม่มี sidebar · tab สลับ 5 แท็บ · brand Cards · slug ผิด=404 · mobile
 
 ## ▶ NEXT (ทำต่อทันที)
 1. **รอเบสรีวิว M25 บน preview** → ถ้า OK merge M23+M24+M25 → main + deploy · ลบ branch mockup (m23/m24) + โฟลเดอร์ dev
