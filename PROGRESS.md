@@ -1,7 +1,15 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-22 (**M25 sidebar หมวดกลาง + หน้ารุ่นเป็น tab (แบบ prydwen.gg) — เสร็จ branch `redesign/m25-sidebar-tabs`** · ต่อยอด M24) · เบสสั่งตาม reference prydwen: sidebar หลักอันเดียว(หมวด)+brand switcher บนหัว · หน้ารุ่นยุบเป็น tab
+อัปเดตล่าสุด: 2026-07-22 (**M25e SKU-first + M26 เพิ่มแบรนด์ Tesla/Benz — เสร็จ branch `redesign/m25-sidebar-tabs`**)
+
+## รอบล่าสุด (M25e + M26 — เบสเคาะแล้วทำเลย)
+- **SKU-first**: กดรุ่น → `/cars/[slug]` = หน้าเลือกรุ่นย่อย (การ์ด SKU จัดกลุ่มตามตัวถัง) → `/cars/[slug]/[sku]` = 1 SKU (สเปกเต็ม + **ประวัติราคา** append-only + ADAS ของ trim + switcher สลับรุ่นพี่น้อง) · tab หน้ารุ่นเหลือ 3 (ภาพรวม/เทียบรุ่นย่อย/ไทม์ไลน์) · skuKey = derived slug ไม่แตะ schema (`variantKey` ใน slugs.ts + `selectVariant` ใน queries.ts)
+- **แบรนด์ใหม่ 2**: Tesla (Model 3 ×4 SKU, Model Y ×3) + Mercedes-Benz (C-Class ×5, E-Class ×3, S-Class ×2, GLC ×5 รวม Coupé, EQS ×1) = 7 nameplate / 23 SKU · research ผ่าน workflow 15 agents ทุกราคา cross-check สื่อไทย · seed: `prisma/ops/phase7-seed-tesla-benz.ts` (+7b backfill links, sanity) · raw: `prisma/ops/data/research-tesla-benz-20260722.json` · ค่าที่แหล่งขัดแย้ง (แบต/กำลัง Tesla LR·Perf, ระยะ Model Y RWD, แบต PHEV Benz) = **unknown ไม่เดา** จดใน notes · Tesla Model 3 ราคาจากสื่อ (ทางการ 403) = MEDIA/MEDIUM · ที่เหลือ MANUFACTURER_OFFICIAL/HIGH
+- verify แล้ว: lint+build ผ่าน · `verify-vocab.ts` **33/33 ✅** · เปิดจริง (port 3001) ทุกหน้าใหม่ 200 + ลิงก์ SKU ทุกอันเข้าได้ + screenshot จริง · commit `75e2005` (Part A) + Part B รอ commit
+- ค้าง: โลโก้ Tesla/Benz (ตอนนี้ fallback ตัวอักษร) + รูปรถ · sku มั่ว = soft-404 (โชว์หน้า 404 ถูกแต่ HTTP 200 — ข้อจำกัด streaming + loading.tsx ของ [slug]) · เบสรีวิว → merge
+
+(ก่อนหน้า: M25 sidebar หมวดกลาง + หน้ารุ่นเป็น tab แบบ prydwen — sidebar หลักอันเดียว(หมวด)+brand switcher บนหัว)
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
