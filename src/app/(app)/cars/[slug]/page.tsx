@@ -52,7 +52,7 @@ export default async function NameplatePage({ params }: Props) {
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              <span className="mr-2 font-normal text-muted">{detail.brand}</span>{detail.name}
+              <span className="mr-2 font-normal text-muted">{detail.brand}</span><span className="text-accent">{detail.name}</span>
             </h1>
             <LifecycleBadge status={detail.lifecycleStatus} />
           </div>

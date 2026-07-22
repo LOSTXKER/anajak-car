@@ -70,7 +70,7 @@ export default async function SkuPage({ params }: Props) {
       <header className="pt-6">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            <span className="mr-2 font-normal text-muted">{tree.brand} {tree.name}</span>{v.name}
+            <span className="mr-2 font-normal text-muted">{tree.brand} {tree.name}</span><span className="text-accent">{v.name}</span>
           </h1>
           <LifecycleBadge status={detail.lifecycleStatus} />
         </div>
