@@ -1,7 +1,7 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-22 (**M23 inner-shell — implement เสร็จบน branch `redesign/m23-inner-shell` (ยังไม่ merge)**: หน้าในได้ navbar เครื่องมือกลาง + sidebar ประจำแบรนด์ · เบสเลือก **Variant A "เมนู"** จากหน้าเทียบ 3 แบบ (mockup branch `mockup/m23-shell-compare`) · หน้าแรกคงเดิมเป๊ะ)
+อัปเดตล่าสุด: 2026-07-22 (**M24 แยกหน้าตามลำดับชั้น + redesign + Tierlist — implement เสร็จ branch `redesign/m24-entity-split` (ยังไม่ merge)** · ต่อยอด M23) · เบสเลือกจาก mockup: หน้ารุ่น **Dense** · หน้าแบรนด์ **Cards** · Tierlist **Editorial S/A/B/C**
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
@@ -50,8 +50,17 @@
 - **ไฟล์ใหม่**: `(home)/layout.tsx` `(app)/layout.tsx` `(app)/(plain)/layout.tsx` `(app)/brands/[slug]/layout.tsx` `(app)/cars/[slug]/layout.tsx` `(app)/not-found.tsx` + loading ต่อโซน · components: `app-shell` `global-navbar` `brand-sidebar` `brand-switcher` `mobile-nav-drawer`
 - verify: lint+tsc+build ผ่าน · เปิดจริง 3105 — หน้าแรกเหมือนเดิม · /brands (navbar เปล่า) · /brands/toyota + /cars/* (navbar+sidebar) · 404 ถูก (แบรนด์/รุ่นไม่มี→notFound จาก layout) · **สัญญา filter URL รอด** (`?body/pt/q` ยัง pre-apply) · anchor เลื่อนพ้น navbar · mobile drawer (iframe harness 400px) ครบ
 
+## 🗂️ M24 ENTITY-SPLIT + REDESIGN + TIERLIST (2026-07-22 — branch `redesign/m24-entity-split`)
+เบสสั่ง "รื้อ UXUI: แยกข้อมูลแต่ละหน้า + สวยขึ้น + Tierlist" → mockup รวม (branch `mockup/m24-compare`) → เบสเลือก Dense/Cards/Editorial
+- **แยกหน้าตามลำดับชั้น (nested ใต้ /cars/[slug])**: `/gen/[launchYear]` (Generation) · `/gen/[gen]/[deriv]` (Derivative+Phase inline) · `/gen/[gen]/[deriv]/[trim]` (Trim/Variant — leaf รวยสุด: สเปกเต็ม+BEV+evidence) · `/timeline` (Change Timeline) — ทุกหน้าใช้ M23 shell (sidebar/navbar) · **หน้า thin ตอบ 200 + placeholder ซื่อสัตย์** (มิติ/facelift/model year = "ไม่มีข้อมูล/รอข้อมูล" ไม่ปลอมเลข)
+- **query ใหม่**: `getNameplateTree` (คงชั้น gen→deriv→phase→trim→variant · `src/lib/slugs.ts` gen key=launchYear) + selectors + `getBrandTimeline` · ขยาย `getNameplateDetail` มีสเปก BEV (specExtras: motor/battery/range/charging — known เท่านั้น)
+- **redesign**: หน้ารุ่น `/cars/[slug]` = **Dense** (stat tiles + PricePositionBar + ตารางเทียบ + BEV block จาก data จริง + generation strip ลิงก์หน้าย่อย) · หน้าแบรนด์ `/brands/[slug]` = **Cards** (KPI row + การ์ดรุ่น + brand timeline) คง CarDatabaseExplorer + สัญญา filter · primitives ใหม่ใน `badges.tsx` (StatTile/SpecRow/PricePositionBar/PendingBlock) · label ใหม่ CAB_TYPE/RIDE_HEIGHT/CHASSIS (กัน raw enum หลุด)
+- **Tierlist Editorial** (`/tierlist` + `/tierlist/[slug]` โซน (plain)): S/A/B/C ติดป้าย "ความเห็นบรรณาธิการ" + byline + เหตุผล + หลักฐานต่ออันดับ · **เก็บเป็น config `src/lib/editorial-tiers.ts` (ไม่แตะ schema — แยก opinion จาก Fact tables · เบสแก้ไฟล์นี้เพื่อจัด tier)** · navbar เพิ่มลิงก์ "จัดอันดับ" · sidebar route-aware (หน้าย่อยโชว์ "← กลับหน้ารุ่น")
+- verify: lint+tsc+build ผ่าน · เปิดจริง 3105 ทุกหน้า (hub/gen/deriv/trim/timeline/tierlist/brand) · slug รุ่น/tierlist ผิด = 404 · หน้า thin = 200+placeholder · filter URL รอด · ไม่มี raw enum หลุด (ตรวจแล้ว)
+- ⚠️ known issue เล็ก: **deep invalid key** (เช่น `/gen/9999`, bad deriv/trim) เรนเดอร์หน้า 404 ถูก **แต่ HTTP status = 200** (soft-404 — Next.js: notFound จาก nested page ไม่ set 404 เหมือนจาก layout) · ผู้ใช้เห็นหน้า "ไม่พบ" ปกติ · แก้เต็มต้องเพิ่ม layout validate ต่อชั้น (ยังไม่ทำ — กระทบแค่ URL ที่พิมพ์มั่ว/ลิงก์เสีย)
+
 ## ▶ NEXT (ทำต่อทันที)
-1. **รอเบสรีวิว M23 บน branch** (หรือ preview) → merge→main + deploy · ถ้า OK ลบ branch `mockup/m23-shell-compare` + โฟลเดอร์ dev บน mockup ทิ้ง
-2. เกลาเพิ่มถ้าเบสสั่ง: scroll-spy ไฮไลต์หัวข้อที่กำลังดู (sidebar Variant A) · breadcrumb ปรับ/ตัด · mobile ตาราง→การ์ด
-3. หน้ารุ่น (/cars) ใส่ data รวยขึ้น (strip-plot การกระจายราคา) · **เทียบรุ่น (Compare)** — ทำจริงแล้วเปลี่ยนปุ่ม navbar จาก disabled เป็นลิงก์ · รูปจริง Champ/Revo
+1. **รอเบสรีวิว M24 บน preview** → merge M23+M24 → main + deploy · ถ้า OK ลบ branch mockup (m23/m24) + โฟลเดอร์ dev
+2. เกลาถ้าเบสสั่ง: soft-404 status (เพิ่ม gen/deriv layout validate) · scroll-spy sidebar · Tierlist Data-driven (เพิ่มอีกหมวดในหน้า /tierlist) · เทียบรุ่น (Compare) เปลี่ยนปุ่ม navbar เป็นลิงก์
+3. เติมข้อมูลให้หน้าย่อยรวยขึ้น: มิติตัวถัง (L×W×H) · ประวัติเจน/facelift · รูปจริง Champ/Revo
 4. งานเดิมค้าง: ขยาย ADAS (BSM/AHB/LDW) · VOCABULARY Phase 5 · แบรนด์ที่ 2 (editorial gate)

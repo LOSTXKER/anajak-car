@@ -25,10 +25,16 @@ export function GlobalNavbar({ navIndex }: { navIndex: NavBrand[] }) {
 
         <nav aria-label="เครื่องมือ" className="flex items-center gap-1 sm:gap-2">
           <NavSearch />
+          <Link
+            href="/tierlist"
+            className="hidden rounded-full px-3 py-1.5 text-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground sm:inline-block"
+          >
+            จัดอันดับ
+          </Link>
           <span
             title="กำลังพัฒนา — เทียบรุ่นย่อยระดับเดียวกัน (เร็วๆ นี้)"
             aria-disabled="true"
-            className="hidden cursor-not-allowed items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-faint sm:inline-flex"
+            className="hidden cursor-not-allowed items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-faint lg:inline-flex"
           >
             เทียบรุ่น
             <span className="rounded-full bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium">เร็วๆ นี้</span>

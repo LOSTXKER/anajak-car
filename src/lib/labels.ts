@@ -74,6 +74,25 @@ export const DRIVETRAIN_LABEL: Record<string, string> = {
   FOUR_WD: "4WD",
 };
 
+// ป้ายชนิดแค็บกระบะ (CabType enum) · NOT_APPLICABLE = ไม่ใช่กระบะ → ไม่แสดง
+export const CAB_TYPE_LABEL: Record<string, string> = {
+  SINGLE_CAB: "ตอนเดียว",
+  EXTENDED_CAB: "แค็บ (ตอนครึ่ง)",
+  DOUBLE_CAB: "4 ประตู",
+};
+
+// ป้ายระดับความสูงกระบะ 2WD (RideHeightClass) · NOT_APPLICABLE (4WD/ไม่ใช่กระบะ) → ไม่แสดง
+export const RIDE_HEIGHT_LABEL: Record<string, string> = {
+  STANDARD: "ตัวเตี้ย",
+  HIGH_RIDER: "ยกสูง (Hi-Rider)",
+};
+
+// ป้ายโครงสร้างตัวถัง (ChassisType)
+export const CHASSIS_TYPE_LABEL: Record<string, string> = {
+  BODY_ON_FRAME: "บอดี้ออนเฟรม",
+  UNIBODY: "ยูนิบอดี้",
+};
+
 // ป้ายชนิดเชื้อเพลิง (คำกลาง — FuelType enum · VOCABULARY.md §3: ห้ามใช้ free text บนหน้าเว็บ/filter)
 export const FUEL_TYPE_LABEL: Record<string, string> = {
   DIESEL: "ดีเซล",

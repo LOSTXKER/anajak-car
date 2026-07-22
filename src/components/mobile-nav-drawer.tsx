@@ -161,6 +161,7 @@ export function MobileNavDrawer({ navIndex }: { navIndex: NavBrand[] }) {
                 <nav aria-label="เมนูหลัก" className="flex flex-col gap-0.5">
                   <Link href="/" onClick={close} className="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground">หน้าแรก</Link>
                   <Link href="/brands" onClick={close} className="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground">แบรนด์ทั้งหมด</Link>
+                  <Link href="/tierlist" onClick={close} className="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground">จัดอันดับ</Link>
                 </nav>
               </div>
             </div>

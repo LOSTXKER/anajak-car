@@ -2,17 +2,21 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getNameplateDetail } from "@/lib/queries";
-import {
-  BODY_TYPE_LABEL,
-  CHANGE_TYPE_LABEL,
-  DRIVETRAIN_LABEL,
-  SEGMENT_LABEL,
-} from "@/lib/labels";
+import { getNameplateDetail, getNameplateTree, type TreeVariant } from "@/lib/queries";
+import { BODY_TYPE_LABEL, CHANGE_TYPE_LABEL, DRIVETRAIN_LABEL, SEGMENT_LABEL } from "@/lib/labels";
 import { SourcesSection } from "@/components/sources-section";
 import { nameplateImage } from "@/lib/images";
-import { formatDateTH, formatPriceRange, formatTHB } from "@/lib/format";
-import { Chip, DataStatusValue, EvidenceLink, LifecycleBadge } from "@/components/badges";
+import { formatDateTH, formatTHB } from "@/lib/format";
+import {
+  Chip,
+  DataStatusValue,
+  LifecycleBadge,
+  PendingBlock,
+  PowertrainDots,
+  PricePositionBar,
+  StatTile,
+  ptDotClass,
+} from "@/components/badges";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +25,6 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const detail = await getNameplateDetail(slug);
-  // โยน 404 ตั้งแต่ชั้น metadata — ถ้ารอโยนใน page ตอน stream ไปแล้ว status จะค้างเป็น 200
   if (!detail) notFound();
   return {
     title: `${detail.brand} ${detail.name} — ราคาและสเปก`,
@@ -29,202 +32,196 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// รวมสเปก BEV จากรุ่นย่อย (known เท่านั้น) — คืน null ถ้าไม่ใช่รถไฟฟ้า
+function bevSpecRows(variants: TreeVariant[]): [string, string][] | null {
+  const bev = variants.filter((v) => v.powertrainType === "BEV" || v.motorKw != null);
+  if (bev.length === 0) return null;
+  const uniq = (xs: (string | null)[]) => [...new Set(xs.filter((x): x is string => !!x))];
+  const motors = uniq(bev.map((v) => (v.motorKw != null ? `${v.motorKw} kW` : null)));
+  const batteries = uniq(bev.map((v) => (v.batteryKwh != null ? `${v.batteryKwh} kWh` : null)));
+  const ranges = uniq(bev.map((v) => (v.rangeKm != null ? `${v.rangeKm} กม.${v.rangeStandard ? ` (${v.rangeStandard})` : ""}` : null)));
+  const ac = uniq(bev.map((v) => (v.acKw != null ? `AC ${v.acKw} kW` : null)));
+  const dc = uniq(bev.map((v) => (v.dcKw != null ? `DC ${v.dcKw} kW` : null)));
+  const charge = [...ac, ...dc].join(" · ");
+  const rows: [string, string][] = [];
+  if (motors.length) rows.push(["กำลังมอเตอร์", motors.join(" · ")]);
+  if (batteries.length) rows.push(["ความจุแบตเตอรี่", batteries.join(" · ")]);
+  if (ranges.length) rows.push(["ระยะทางต่อชาร์จ", ranges.join(" · ")]);
+  if (charge) rows.push(["การชาร์จ", charge]);
+  return rows.length ? rows : null;
+}
+
 export default async function NameplatePage({ params }: Props) {
   const { slug } = await params;
-  const detail = await getNameplateDetail(slug);
-  if (!detail) notFound();
+  const [detail, tree] = await Promise.all([getNameplateDetail(slug), getNameplateTree(slug)]);
+  if (!detail || !tree) notFound();
 
-  const priceRange = formatPriceRange(detail.priceMin, detail.priceMax);
+  const gen = tree.generations[0] ?? null;
   const heroImage = nameplateImage(detail.slug);
-  const variantCount = detail.groups.reduce((n, g) => n + g.rows.length, 0);
+  const genKey = gen?.key;
 
-  // meta ประจำรุ่น — บรรทัดเดียว เงียบๆ ใต้ชื่อ
-  const metaParts = [
-    detail.segment ? (SEGMENT_LABEL[detail.segment] ?? detail.segment) : null,
-    detail.generationCode ?? detail.generationName,
-    detail.launchYear != null ? `เปิดตัวในไทย ${detail.launchYear}` : null,
-  ].filter(Boolean);
+  // แถวรุ่นย่อย (จาก tree — มีคีย์ลิงก์หน้ารุ่นย่อย) เรียงตามราคา
+  const rows = gen
+    ? gen.derivatives.flatMap((d) =>
+        d.trims.flatMap((t) =>
+          t.variants.map((v) => ({
+            v,
+            derivKey: d.key,
+            trimKey: t.key,
+            derivLabel: d.name || (BODY_TYPE_LABEL[d.bodyType] ?? d.bodyType),
+          })),
+        ),
+      )
+    : [];
+  rows.sort((a, b) => (a.v.price ?? Infinity) - (b.v.price ?? Infinity));
 
-  // ความเชื่อมั่นพูดครั้งเดียว: ถ้าหลักฐานราคาทั้งหมดมาจากผู้เผยแพร่เดียว/ระดับเดียว ให้สรุปเป็นประโยค
-  // แทนการติดป้าย HIGH ซ้ำทุกแถว (แหล่งรายรุ่นเปิดดูได้ที่ท้ายหน้าเสมอ)
-  const priceEvidences = detail.groups.flatMap((g) =>
-    g.rows.map((r) => r.evidence).filter(Boolean),
-  );
-  const publishers = [
-    ...new Set(priceEvidences.map((e) => e!.publisher).filter(Boolean)),
-  ] as string[];
-  const allOfficialHigh = priceEvidences.every(
-    (e) => e!.sourceType === "MANUFACTURER_OFFICIAL" && e!.confidence === "HIGH",
-  );
-  const trustLine =
-    publishers.length === 1
-      ? `ทุกราคาอ้างอิง ${publishers[0]}${allOfficialHigh ? " (แหล่งทางการ)" : ""}`
-      : publishers.length > 1
-        ? `อ้างอิง ${publishers.length} แหล่ง${allOfficialHigh ? " (ทางการทั้งหมด)" : " — ดูรายแหล่งท้ายหน้า"}`
-        : null;
+  const variantCount = rows.length;
+  const powertrains = [...new Set(rows.map((r) => r.v.powertrainText))];
+  const adasCount = detail.adas?.features.length ?? 0;
+  const bevRows = bevSpecRows(rows.map((r) => r.v));
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-      <nav aria-label="breadcrumb" className="pt-8 text-sm text-faint">
+    <div className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
+      <nav aria-label="breadcrumb" className="pt-6 text-sm text-faint">
         <ol className="flex flex-wrap items-center gap-1.5">
-          <li>
-            <Link href="/" className="transition-colors hover:text-foreground">
-              ฐานข้อมูลรถ
-            </Link>
-          </li>
+          <li><Link href="/" className="hover:text-foreground">ฐานข้อมูลรถ</Link></li>
           <li aria-hidden>›</li>
-          <li>
-            <Link
-              href={`/brands/${detail.brandSlug}`}
-              className="text-muted transition-colors hover:text-foreground"
-            >
-              {detail.brand}
-            </Link>
-          </li>
+          <li><Link href={`/brands/${detail.brandSlug}`} className="text-muted hover:text-foreground">{detail.brand}</Link></li>
           <li aria-hidden>›</li>
-          <li aria-current="page" className="font-medium text-foreground">
-            {detail.name}
-          </li>
+          <li aria-current="page" className="font-medium text-foreground">{detail.name}</li>
         </ol>
       </nav>
 
-      <header className="flex flex-col-reverse gap-8 pt-8 pb-12 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0 max-w-2xl">
+      {/* hero — stat tiles */}
+      <header className="grid gap-6 pt-6 pb-8 lg:grid-cols-[1fr_320px]">
+        <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              <span className="mr-2 font-normal text-muted">{detail.brand}</span>
-              {detail.name}
+              <span className="mr-2 font-normal text-muted">{detail.brand}</span>{detail.name}
             </h1>
             <LifecycleBadge status={detail.lifecycleStatus} />
           </div>
-          {metaParts.length > 0 && (
-            <p className="mt-2.5 text-sm text-muted">{metaParts.join(" · ")}</p>
+          <p className="mt-2 text-sm text-muted">
+            {[
+              detail.segment ? (SEGMENT_LABEL[detail.segment] ?? detail.segment) : null,
+              detail.generationCode ?? detail.generationName,
+              detail.launchYear != null ? `เปิดตัวในไทย ${detail.launchYear}` : null,
+            ].filter(Boolean).join(" · ")}
+          </p>
+          {detail.summary && <p className="mt-4 max-w-2xl text-[15px] leading-7 text-muted">{detail.summary}</p>}
+
+          <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            <StatTile label="ราคาป้าย (ต่ำสุด)" value={<span className="tnum">{detail.priceMin != null ? formatTHB(detail.priceMin) : "—"}</span>} />
+            <StatTile label="ราคาป้าย (สูงสุด)" value={<span className="tnum">{detail.priceMax != null ? formatTHB(detail.priceMax) : "—"}</span>} />
+            <StatTile label="รุ่นย่อย" value={<span className="tnum">{variantCount}</span>} sub={`${gen?.derivatives.length ?? 0} ตัวถัง`} />
+            <StatTile label="ระบบช่วยขับขี่" value={<span className="tnum">{adasCount}</span>} sub="ฟีเจอร์ที่ติดตาม" />
+          </div>
+          {detail.priceMin != null && detail.priceMax != null && detail.priceMin !== detail.priceMax && (
+            <div className="mt-4 max-w-md"><PricePositionBar min={detail.priceMin} max={detail.priceMax} value={detail.priceMin} /></div>
           )}
-          {detail.summary && (
-            <p className="mt-4 text-[15px] leading-7 text-muted">{detail.summary}</p>
-          )}
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-faint">
+            <PowertrainDots labels={powertrains} />
+            {detail.latestChecked && <span className="tnum">· ตรวจสอบล่าสุด {formatDateTH(detail.latestChecked)}</span>}
+          </div>
         </div>
         {heroImage && (
-          <Image
-            src={heroImage.src}
-            alt={heroImage.alt}
-            width={360}
-            height={203}
-            priority
-            className="h-auto w-full max-w-[360px] shrink-0 self-center object-contain sm:self-start"
-          />
+          <div className="flex items-center justify-center rounded-2xl border border-border bg-surface-muted/40 p-4">
+            <Image src={heroImage.src} alt={heroImage.alt} width={300} height={169} priority className="h-auto w-full max-w-[300px] object-contain" />
+          </div>
         )}
       </header>
 
-      {/* บันไดราคา — ราคาเป็นพระเอกหนึ่งเดียวของหน้า */}
-      <section aria-labelledby="variants-heading" className="border-t border-border pt-10 pb-14">
-        <h2 id="variants-heading" className="scroll-mt-20 text-sm font-medium text-muted">
-          ราคาป้ายทางการ
-        </h2>
-        <p className="mt-2 text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
-          <DataStatusValue value={priceRange} />
-        </p>
-        <p className="mt-3 text-sm text-faint">
-          {variantCount} รุ่นย่อย
-          {trustLine && <> · {trustLine}</>}
-          {detail.latestChecked && <> · ตรวจสอบล่าสุด {formatDateTH(detail.latestChecked)}</>}
-          {" · "}
-          <a href="#sources-heading" className="text-accent hover:underline">
-            แหล่งอ้างอิง
-          </a>
-          {" · "}
-          <span>ไม่ใช่ราคาซื้อขายจริง</span>
-        </p>
+      {/* variant comparison table */}
+      <section aria-labelledby="variants-heading" className="border-t border-border pt-8">
+        <h2 id="variants-heading" className="scroll-mt-20 text-xl font-semibold tracking-tight">เทียบรุ่นย่อยและราคา</h2>
+        <p className="mt-1 text-sm text-faint">ราคาป้ายทางการ · ไม่ใช่ราคาซื้อขายจริง · กดแถวเพื่อดูสเปกเต็มของรุ่นย่อย</p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[720px] text-sm">
+            <thead>
+              <tr className="border-b border-border text-left text-[13px] text-faint">
+                <th className="py-2 pr-3 font-medium">รุ่นย่อย</th>
+                <th className="px-3 py-2 font-medium">ตัวถัง</th>
+                <th className="px-3 py-2 font-medium">ขุมพลัง</th>
+                <th className="px-3 py-2 font-medium">กำลัง</th>
+                <th className="px-3 py-2 font-medium">เกียร์ · ขับ</th>
+                <th className="px-3 py-2 text-right font-medium">ราคาป้าย</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(({ v, derivKey, trimKey, derivLabel }) => {
+                const href = genKey ? `/cars/${slug}/gen/${genKey}/${derivKey}/${trimKey}` : undefined;
+                const Cell = href
+                  ? ({ children, className }: { children: React.ReactNode; className?: string }) => (
+                      <td className={className}><Link href={href} className="block">{children}</Link></td>
+                    )
+                  : ({ children, className }: { children: React.ReactNode; className?: string }) => <td className={className}>{children}</td>;
+                return (
+                  <tr key={v.id} className="border-b border-border last:border-b-0 hover:bg-surface-muted/50">
+                    <Cell className="py-2.5 pr-3 font-medium">{v.name}</Cell>
+                    <Cell className="px-3 py-2.5 text-muted">{derivLabel}</Cell>
+                    <td className="px-3 py-2.5">
+                      <span className="inline-flex items-center gap-1.5">
+                        <span aria-hidden className={`inline-block size-2 rounded-full ${ptDotClass(v.powertrainText)}`} />{v.powertrainText}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 tnum text-muted">{v.powerText ?? "—"}</td>
+                    <td className="px-3 py-2.5 text-muted">
+                      {[v.transmissionText, v.drivetrain ? (DRIVETRAIN_LABEL[v.drivetrain] ?? v.drivetrain) : null].filter(Boolean).join(" · ") || "—"}
+                    </td>
+                    <td className="px-3 py-2.5 text-right">
+                      {v.price != null ? <span className="font-semibold tnum">{formatTHB(v.price)}</span> : <span className="text-faint">ไม่มีข้อมูล</span>}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-        {detail.groups.length === 0 ? (
-          <p className="mt-10 text-sm text-muted">ยังไม่มีข้อมูลรุ่นย่อยของรุ่นนี้</p>
+      {/* powertrain block */}
+      <section aria-labelledby="powertrain-heading" className="border-t border-border pt-8 mt-10">
+        <h2 id="powertrain-heading" className="text-xl font-semibold tracking-tight">ขุมพลังและสมรรถนะ</h2>
+        {bevRows ? (
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {bevRows.map(([k, v]) => (
+              <div key={k} className="rounded-xl border border-border bg-surface-muted px-3 py-2.5">
+                <div className="text-[11px] text-faint">{k}</div>
+                <div className="mt-0.5 text-sm font-semibold text-foreground tnum">{v}</div>
+              </div>
+            ))}
+          </div>
         ) : (
-          detail.groups.map((group) => (
-            <div key={group.key} className="mt-10">
-              <h3 className="text-[15px] font-semibold">
-                {group.label || (BODY_TYPE_LABEL[group.bodyType] ?? group.bodyType)}
-              </h3>
-              <ol className="mt-1 max-w-3xl divide-y divide-border">
-                {group.rows.map((row, i) => {
-                  const specLine = [
-                    row.powertrainText,
-                    row.powerText,
-                    row.transmissionText,
-                    row.drivetrain
-                      ? (DRIVETRAIN_LABEL[row.drivetrain] ?? row.drivetrain)
-                      : null,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ");
-                  const prev = i > 0 ? group.rows[i - 1] : null;
-                  const delta =
-                    row.price != null && prev?.price != null
-                      ? row.price - prev.price
-                      : null;
-                  return (
-                    <li
-                      key={row.id}
-                      className="flex items-baseline justify-between gap-6 py-4"
-                    >
-                      <div className="min-w-0">
-                        <div className="text-[15px] font-medium">{row.name}</div>
-                        {specLine && (
-                          <div
-                            className="mt-1 text-[13px] text-faint"
-                            title={row.engineText ?? undefined}
-                          >
-                            {specLine}
-                          </div>
-                        )}
-                      </div>
-                      <div className="shrink-0 text-right">
-                        {row.price != null ? (
-                          <>
-                            <div className="text-lg font-semibold tabular-nums">
-                              {formatTHB(row.price)}
-                            </div>
-                            {delta != null && delta > 0 && (
-                              /* ส่วนต่างจากขั้นก่อนหน้า — ตอบคำถามจริงของคนเลือกrรุ่น: จ่ายเพิ่มเท่าไหร่ */
-                              <div className="mt-0.5 text-xs text-faint tabular-nums">
-                                +{formatTHB(delta)}
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          <span className="text-sm text-faint">ไม่มีข้อมูล</span>
-                        )}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-          ))
+          <p className="mt-4 max-w-2xl text-[15px] leading-7 text-muted">{powertrains.join(" · ")} — กำลัง/เกียร์/ระบบขับ อยู่ในตารางด้านบน · รายละเอียดต่อรุ่นย่อยกดที่แถว</p>
         )}
       </section>
 
-      {/* ระบบช่วยขับขี่ (ADAS) — จาก TrimFeature ตามสเปกทางการต่อรุ่นย่อย (VOCABULARY.md Phase 4)
-          กฎ §3 ข้อ 7: คำกลางนำ ชื่อการตลาดเป็น tooltip · ห้าม badge "มีชุด Toyota Safety Sense" รวมๆ
-          อย่าซ้ำ: ถ้าทุกเกรดเหมือนกันหมด สรุปบรรทัดเดียว ไม่กางตาราง */}
+      {/* generation strip */}
+      {gen && (
+        <section aria-labelledby="gen-heading" className="border-t border-border pt-8 mt-10">
+          <h2 id="gen-heading" className="text-xl font-semibold tracking-tight">โครงสร้างรุ่น</h2>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <Link href={`/cars/${slug}/gen/${gen.key}`} className="rounded-full bg-accent-soft px-3.5 py-1.5 text-sm font-medium text-accent hover:opacity-90">
+              เจน {gen.launchYear ?? gen.key} →
+            </Link>
+            {gen.derivatives.map((d) => (
+              <Link key={d.key} href={`/cars/${slug}/gen/${gen.key}/${d.key}`} className="rounded-full border border-border px-3.5 py-1.5 text-sm text-muted hover:border-accent hover:text-foreground">
+                {d.name || (BODY_TYPE_LABEL[d.bodyType] ?? d.bodyType)}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ADAS */}
       {detail.adas && detail.adas.trims.length > 0 && (() => {
         const { features, trims } = detail.adas;
-        const uniform = features.every((f) => {
-          const vals = trims.map((t) => t.values.find((v) => v.key === f.key)?.has);
-          return new Set(vals.map(String)).size === 1;
-        });
-        const statusText = (has: boolean | null) =>
-          has === true ? "มี" : has === false ? "ไม่มี" : "ยังไม่ยืนยัน";
-        const statusClass = (has: boolean | null) =>
-          has === true
-            ? "text-success font-medium"
-            : has === false
-              ? "text-faint"
-              : "text-faint italic";
+        const uniform = features.every((f) => new Set(trims.map((t) => String(t.values.find((v) => v.key === f.key)?.has))).size === 1);
+        const statusText = (has: boolean | null) => (has === true ? "มี" : has === false ? "ไม่มี" : "ยังไม่ยืนยัน");
+        const statusClass = (has: boolean | null) => (has === true ? "text-success font-medium" : has === false ? "text-faint" : "text-faint italic");
         return (
-          <section aria-labelledby="adas-heading" className="border-t border-border pt-10 pb-14">
-            <h2 id="adas-heading" className="scroll-mt-20 text-xl font-semibold tracking-tight">
-              ระบบช่วยขับขี่
-            </h2>
+          <section aria-labelledby="adas-heading" className="border-t border-border pt-8 mt-10">
+            <h2 id="adas-heading" className="scroll-mt-20 text-xl font-semibold tracking-tight">ระบบช่วยขับขี่</h2>
             {uniform ? (
               <ul className="mt-4 max-w-3xl space-y-2">
                 {features.map((f) => {
@@ -232,14 +229,7 @@ export default async function NameplatePage({ params }: Props) {
                   return (
                     <li key={f.key} className="flex items-baseline gap-3 text-[15px]">
                       <span className={statusClass(v.has)}>{statusText(v.has)}</span>
-                      <span title={f.definition ?? undefined}>
-                        {f.nameTh} <span className="text-faint">({f.key})</span>
-                      </span>
-                      {v.marketing && v.has && (
-                        <span className="text-sm text-faint" title={v.marketing}>
-                          — {v.marketing.split(":")[0]}
-                        </span>
-                      )}
+                      <span title={f.definition ?? undefined}>{f.nameTh} <span className="text-faint">({f.key})</span></span>
                     </li>
                   );
                 })}
@@ -252,9 +242,7 @@ export default async function NameplatePage({ params }: Props) {
                     <tr className="border-b border-border text-left text-[13px] text-faint">
                       <th scope="col" className="py-2 pr-3 font-medium">รุ่นย่อย/เกรด</th>
                       {features.map((f) => (
-                        <th key={f.key} scope="col" className="px-3 py-2 font-medium" title={f.definition ?? undefined}>
-                          {f.nameTh} <span className="font-normal">({f.key})</span>
-                        </th>
+                        <th key={f.key} scope="col" className="px-3 py-2 font-medium" title={f.definition ?? undefined}>{f.nameTh} <span className="font-normal">({f.key})</span></th>
                       ))}
                     </tr>
                   </thead>
@@ -262,67 +250,46 @@ export default async function NameplatePage({ params }: Props) {
                     {trims.map((t) => (
                       <tr key={t.label} className="border-b border-border last:border-b-0">
                         <td className="py-2.5 pr-3 font-medium">{t.label}</td>
-                        {t.values.map((v) => (
-                          <td key={v.key} className="px-3 py-2.5" title={v.marketing ?? undefined}>
-                            <span className={statusClass(v.has)}>{statusText(v.has)}</span>
-                          </td>
-                        ))}
+                        {t.values.map((v) => <td key={v.key} className="px-3 py-2.5" title={v.marketing ?? undefined}><span className={statusClass(v.has)}>{statusText(v.has)}</span></td>)}
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             )}
-            <p className="mt-3 text-[13px] text-faint">
-              ตามตารางสเปกทางการ toyota.co.th ต่อรุ่นย่อย — ค่าที่สเปกไม่ระบุแสดงเป็น
-              &ldquo;ยังไม่ยืนยัน&rdquo; (ไม่ใช่ &ldquo;ไม่มี&rdquo;) · ชื่อระบบทางการค้าดูได้จาก tooltip
-            </p>
+            <p className="mt-3 text-[13px] text-faint">ตามตารางสเปกทางการต่อรุ่นย่อย — ค่าที่สเปกไม่ระบุ = &ldquo;ยังไม่ยืนยัน&rdquo; (ไม่ใช่ &ldquo;ไม่มี&rdquo;)</p>
           </section>
         );
       })()}
 
-      {detail.changeEvents.length > 0 && (
-        <section aria-labelledby="timeline-heading" className="border-t border-border pt-10 pb-14">
-          <h2 id="timeline-heading" className="scroll-mt-20 text-xl font-semibold tracking-tight">
-            ไทม์ไลน์การเปลี่ยนแปลง
-          </h2>
-          <ol className="mt-2 max-w-3xl divide-y divide-border">
-            {detail.changeEvents.map((event) => (
-              <li key={event.id} className="py-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Chip>{CHANGE_TYPE_LABEL[event.changeType] ?? event.changeType}</Chip>
-                  <span className="font-medium">{event.title}</span>
-                  <span className="ml-auto text-xs whitespace-nowrap text-faint">
-                    {formatDateTH(event.effectiveDate) ?? "ไม่ระบุวันที่"}
-                  </span>
-                </div>
-                {event.summary && (
-                  <p className="mt-1.5 text-sm text-muted">{event.summary}</p>
-                )}
-                {(event.beforeValue || event.afterValue) && (
-                  <p className="mt-1 text-sm text-muted tabular-nums">
-                    {event.beforeValue ?? "—"} → {event.afterValue ?? "—"}
-                  </p>
-                )}
-                {event.evidence && (
-                  <div className="mt-2">
-                    <EvidenceLink evidence={event.evidence} />
-                  </div>
-                )}
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
+      {/* timeline preview / dimensions placeholder */}
+      <section aria-labelledby="timeline-heading" className="border-t border-border pt-8 mt-10">
+        <h2 id="timeline-heading" className="scroll-mt-20 text-xl font-semibold tracking-tight">ไทม์ไลน์การเปลี่ยนแปลง</h2>
+        {detail.changeEvents.length > 0 ? (
+          <>
+            <ol className="mt-4 max-w-3xl space-y-3">
+              {detail.changeEvents.slice(0, 3).map((e) => (
+                <li key={e.id} className="flex items-baseline gap-3">
+                  <span className="tnum shrink-0 text-xs text-faint">{formatDateTH(e.effectiveDate) ?? "—"}</span>
+                  <Chip>{CHANGE_TYPE_LABEL[e.changeType] ?? e.changeType}</Chip>
+                  <span className="text-sm font-medium">{e.title}</span>
+                </li>
+              ))}
+            </ol>
+            <Link href={`/cars/${slug}/timeline`} className="mt-4 inline-block text-sm text-accent hover:underline">ดูไทม์ไลน์ทั้งหมด ({detail.changeEvents.length}) →</Link>
+          </>
+        ) : (
+          <div className="mt-4 max-w-xl"><PendingBlock title="ยังไม่มีบันทึกการเปลี่ยนแปลง" reason="จะเพิ่มเมื่อมีเหตุการณ์ที่มีหลักฐาน (เปิดตัว/ปรับราคา/เฟซลิฟต์)" /></div>
+        )}
+        <div className="mt-6 max-w-xl"><PendingBlock title="รอข้อมูลมิติตัวถังและน้ำหนัก" reason="ยาว × กว้าง × สูง · ระยะฐานล้อ · น้ำหนัก — จะเพิ่มพร้อมแหล่งอ้างอิง" /></div>
+      </section>
 
-      <div className="border-t border-border pt-10">
+      <div className="border-t border-border pt-8 mt-10">
         <SourcesSection sources={detail.sources} />
       </div>
 
       {detail.generationSummary && (
-        <p className="max-w-3xl border-t border-border pt-6 pb-14 text-sm leading-6 text-faint">
-          {detail.generationSummary}
-        </p>
+        <p className="max-w-3xl border-t border-border pt-6 text-sm leading-6 text-faint"><DataStatusValue value={detail.generationSummary} /></p>
       )}
     </div>
   );

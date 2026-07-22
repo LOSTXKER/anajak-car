@@ -19,7 +19,10 @@ export function BrandSidebar({
   const pathname = usePathname();
   const brandHref = `/brands/${brand.slug}`;
   const onBrandPage = pathname === brandHref;
-  const onCarPage = pathname.startsWith("/cars/");
+  // "ในหน้านี้" (จุดยึด) โชว์เฉพาะหน้า hub รุ่น (/cars/[slug]) เท่านั้น — หน้าย่อย (gen/deriv/trim/timeline) anchor ไม่มี
+  const onCarHub = /^\/cars\/[^/]+$/.test(pathname);
+  const carMatch = pathname.match(/^\/cars\/([^/]+)/);
+  const carSlug = carMatch ? carMatch[1] : null;
 
   const rowBase = "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors";
   const rowIdle = "text-muted hover:bg-surface-muted hover:text-foreground";
@@ -58,7 +61,7 @@ export function BrandSidebar({
           )}
         </div>
 
-        {onCarPage && (
+        {onCarHub && (
           <div className="flex flex-col gap-1">
             <p className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-faint uppercase">
               ในหน้านี้
@@ -67,6 +70,14 @@ export function BrandSidebar({
             {hasAdas && <a href="#adas-heading" className={`${rowBase} ${rowIdle}`}>ระบบช่วยขับขี่</a>}
             {hasTimeline && <a href="#timeline-heading" className={`${rowBase} ${rowIdle}`}>ไทม์ไลน์</a>}
             <a href="#sources-heading" className={`${rowBase} ${rowIdle}`}>แหล่งอ้างอิง</a>
+          </div>
+        )}
+
+        {/* หน้าย่อยของรุ่น (เจน/ตัวถัง/รุ่นย่อย/ไทม์ไลน์) — ลิงก์กลับหน้ารุ่น */}
+        {carSlug && !onCarHub && (
+          <div className="flex flex-col gap-1">
+            <Link href={`/cars/${carSlug}`} className={`${rowBase} ${rowIdle}`}>← กลับหน้ารุ่น</Link>
+            <Link href={`/cars/${carSlug}/timeline`} className={`${rowBase} ${rowIdle}`}>ไทม์ไลน์</Link>
           </div>
         )}
       </nav>
