@@ -7,8 +7,8 @@ import { SEGMENT_LABEL } from "@/lib/labels";
 import { formatDateTH, formatTHB } from "@/lib/format";
 import { nameplateImage } from "@/lib/images";
 import { LifecycleBadge, PowertrainDots, PricePositionBar, StatTile } from "@/components/badges";
-import { NameplateTabs } from "@/components/nameplate-tabs";
-import { SkuSelectorGrid } from "@/components/sku-selector-grid";
+import { SkuTable } from "@/components/sku-table";
+import { NameplateAbout } from "@/components/nameplate-about";
 
 export const dynamic = "force-dynamic";
 
@@ -68,7 +68,7 @@ export default async function NameplatePage({ params }: Props) {
             <StatTile label="ราคาป้าย (ต่ำสุด)" value={<span className="tnum">{detail.priceMin != null ? formatTHB(detail.priceMin) : "—"}</span>} />
             <StatTile label="ราคาป้าย (สูงสุด)" value={<span className="tnum">{detail.priceMax != null ? formatTHB(detail.priceMax) : "—"}</span>} />
             <StatTile label="รุ่นย่อย" value={<span className="tnum">{variantCount}</span>} sub={`${gen?.derivatives.length ?? 0} ตัวถัง`} />
-            <StatTile label="ระบบช่วยขับขี่" value={<span className="tnum">{adasCount}</span>} sub="ฟีเจอร์ที่ติดตาม" />
+            <StatTile label="ระบบช่วยขับขี่" value={adasCount > 0 ? <span className="tnum">{adasCount}</span> : <span className="text-faint">—</span>} sub={adasCount > 0 ? "ฟีเจอร์ที่ติดตาม" : "ยังไม่มีข้อมูล"} />
           </div>
           {detail.priceMin != null && detail.priceMax != null && detail.priceMin !== detail.priceMax && (
             <div className="mt-4 max-w-md"><PricePositionBar min={detail.priceMin} max={detail.priceMax} value={detail.priceMin} /></div>
@@ -85,8 +85,8 @@ export default async function NameplatePage({ params }: Props) {
         )}
       </header>
 
-      <SkuSelectorGrid tree={tree} />
-      <NameplateTabs detail={detail} tree={tree} />
+      <SkuTable tree={tree} />
+      <NameplateAbout detail={detail} tree={tree} />
     </div>
   );
 }
