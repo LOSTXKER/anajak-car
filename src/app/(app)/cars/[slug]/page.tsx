@@ -50,10 +50,9 @@ export default async function NameplatePage({ params }: Props) {
       {/* hero */}
       <header className="grid gap-6 pt-6 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              <span className="mr-2 font-normal text-muted">{detail.brand}</span><span className="text-accent">{detail.name}</span>
-            </h1>
+          <p className="text-[13px] font-medium tracking-widest text-faint uppercase">{detail.brand}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-3">
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{detail.name}</h1>
             <LifecycleBadge status={detail.lifecycleStatus} />
           </div>
           <p className="mt-2 text-sm text-muted">

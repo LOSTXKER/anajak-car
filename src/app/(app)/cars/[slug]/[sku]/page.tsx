@@ -68,10 +68,9 @@ export default async function SkuPage({ params }: Props) {
 
       {/* hero */}
       <header className="pt-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            <span className="mr-2 font-normal text-muted">{tree.brand} {tree.name}</span><span className="text-accent">{v.name}</span>
-          </h1>
+        <p className="text-[13px] font-medium tracking-widest text-faint uppercase">{tree.brand} {tree.name}</p>
+        <div className="mt-1 flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{v.name}</h1>
           <LifecycleBadge status={detail.lifecycleStatus} />
         </div>
         <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-muted">
