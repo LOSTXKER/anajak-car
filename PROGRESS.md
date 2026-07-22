@@ -1,7 +1,7 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-22 (**M22 redesign — implement แล้วบน branch**: Kanit + light-only + hero typewriter + ตารางเกลา · ทุกหน้าเข้าชุด)
+อัปเดตล่าสุด: 2026-07-22 (**M22+M22b redesign — merge เข้า main (local) แล้ว รอ push**: Kanit + light-only + typewriter + ตารางเกลา + แตก NameplateTable · เบสสั่ง deploy แต่ push main ถูก safety guard บล็อก → เบสรัน `git push origin main` เอง)
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
