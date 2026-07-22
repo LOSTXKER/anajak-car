@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { NameplateDetail, NameplateTree, TreeVariant } from "@/lib/queries";
+import Link from "next/link";
+import type { NameplateDetail, NameplateTree } from "@/lib/queries";
 import { BODY_TYPE_LABEL, CHANGE_TYPE_LABEL, CHASSIS_TYPE_LABEL, DRIVETRAIN_LABEL } from "@/lib/labels";
 import { formatDateTH, formatPriceRange, formatTHB } from "@/lib/format";
 import {
@@ -13,54 +14,31 @@ import {
   ptDotClass,
 } from "@/components/badges";
 
-// ── หน้ารุ่น (nameplate) แบบ TAB (ยุบ เจน/ตัวถัง/รุ่นย่อย/ไทม์ไลน์ เข้าแท็บเดียว · แบบ prydwen) ──
-type TabKey = "overview" | "prices" | "specs" | "adas" | "timeline";
+// ── หน้ารุ่น (nameplate) แบบ TAB — ระดับ nameplate เท่านั้น (M25e: สเปก/ADAS ย้ายไปหน้า SKU /cars/[slug]/[sku]) ──
+type TabKey = "overview" | "compare" | "timeline";
 
 function TabIcon({ k, className }: { k: TabKey; className?: string }) {
   const c = className ?? "size-[18px]";
   const p = { viewBox: "0 0 24 24", className: c, fill: "none" as const, stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
   if (k === "overview") return <svg {...p}><circle cx="12" cy="12" r="9" /><path d="M12 8h.01M11 12h1v4h1" /></svg>;
-  if (k === "prices") return <svg {...p}><path d="M4 19.5h4.5v-4h4.5v-4h4.5v-4H22" /></svg>;
-  if (k === "specs") return <svg {...p}><path d="M4 6h16M4 12h16M4 18h10" /></svg>;
-  if (k === "adas") return <svg {...p}><path d="M12 3l7 3v6c0 4-3 6.5-7 9-4-2.5-7-5-7-9V6z" /></svg>;
+  if (k === "compare") return <svg {...p}><path d="M4 19.5h4.5v-4h4.5v-4h4.5v-4H22" /></svg>;
   return <svg {...p}><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3.2 1.8" /></svg>;
 }
 
-const bevSpecs = (variants: TreeVariant[]): [string, string][] | null => {
-  const bev = variants.filter((v) => v.powertrainType === "BEV" || v.motorKw != null);
-  if (bev.length === 0) return null;
-  const uniq = (xs: (string | null)[]) => [...new Set(xs.filter((x): x is string => !!x))];
-  const rows: [string, string][] = [];
-  const motors = uniq(bev.map((v) => (v.motorKw != null ? `${v.motorKw} kW` : null)));
-  const batts = uniq(bev.map((v) => (v.batteryKwh != null ? `${v.batteryKwh} kWh` : null)));
-  const ranges = uniq(bev.map((v) => (v.rangeKm != null ? `${v.rangeKm} กม.${v.rangeStandard ? ` (${v.rangeStandard})` : ""}` : null)));
-  const charge = [...uniq(bev.map((v) => (v.acKw != null ? `AC ${v.acKw} kW` : null))), ...uniq(bev.map((v) => (v.dcKw != null ? `DC ${v.dcKw} kW` : null)))].join(" · ");
-  if (motors.length) rows.push(["กำลังมอเตอร์", motors.join(" · ")]);
-  if (batts.length) rows.push(["ความจุแบตเตอรี่", batts.join(" · ")]);
-  if (ranges.length) rows.push(["ระยะทางต่อชาร์จ", ranges.join(" · ")]);
-  if (charge) rows.push(["การชาร์จ", charge]);
-  return rows.length ? rows : null;
-};
-
 export function NameplateTabs({ detail, tree }: { detail: NameplateDetail; tree: NameplateTree }) {
   const gen = tree.generations[0] ?? null;
-  const allVariants = gen ? gen.derivatives.flatMap((d) => d.trims.flatMap((t) => t.variants)) : [];
-  const bev = bevSpecs(allVariants);
 
   const hasTimeline = detail.changeEvents.length > 0;
-  const hasAdas = Boolean(detail.adas && detail.adas.trims.length > 0);
 
   const TABS: { key: TabKey; label: string }[] = [
     { key: "overview", label: "ภาพรวม" },
-    { key: "prices", label: "ราคา · รุ่นย่อย" },
-    { key: "specs", label: "สเปก" },
-    { key: "adas", label: "ระบบช่วยขับขี่" },
+    { key: "compare", label: "เทียบรุ่นย่อย" },
     { key: "timeline", label: "ไทม์ไลน์" },
   ];
   const [tab, setTab] = useState<TabKey>("overview");
 
   return (
-    <div className="mt-8">
+    <div className="mt-10">
       {/* tab bar */}
       <div role="tablist" aria-label="ข้อมูลรุ่น" className="flex gap-1 overflow-x-auto border-b border-border">
         {TABS.map((t) => {
@@ -98,7 +76,7 @@ export function NameplateTabs({ detail, tree }: { detail: NameplateDetail; tree:
                 </dl>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {gen.derivatives.map((d) => (
-                    <button key={d.key} onClick={() => setTab("prices")} className="rounded-full border border-border px-3.5 py-1.5 text-sm text-muted transition-colors hover:border-accent hover:text-foreground">
+                    <button key={d.key} onClick={() => setTab("compare")} className="rounded-full border border-border px-3.5 py-1.5 text-sm text-muted transition-colors hover:border-accent hover:text-foreground">
                       {d.name || (BODY_TYPE_LABEL[d.bodyType] ?? d.bodyType)}
                     </button>
                   ))}
@@ -109,8 +87,8 @@ export function NameplateTabs({ detail, tree }: { detail: NameplateDetail; tree:
           </div>
         )}
 
-        {/* ── ราคา · รุ่นย่อย ── */}
-        {tab === "prices" && gen && (
+        {/* ── เทียบรุ่นย่อย (ตารางราคาข้าม SKU — สเปกเต็มรายคันอยู่ในหน้า SKU) ── */}
+        {tab === "compare" && gen && (
           <div className="space-y-8">
             {gen.derivatives.map((d) => (
               <section key={d.key}>
@@ -132,7 +110,9 @@ export function NameplateTabs({ detail, tree }: { detail: NameplateDetail; tree:
                     <tbody>
                       {d.trims.flatMap((t) => t.variants).map((v) => (
                         <tr key={v.id} className="border-b border-border last:border-b-0">
-                          <td className="py-2.5 pr-3 font-medium">{v.name}</td>
+                          <td className="py-2.5 pr-3 font-medium">
+                            <Link href={`/cars/${tree.slug}/${v.skuKey}`} className="hover:text-accent hover:underline">{v.name}</Link>
+                          </td>
                           <td className="px-3 py-2.5"><span className="inline-flex items-center gap-1.5"><span aria-hidden className={`inline-block size-2 rounded-full ${ptDotClass(v.powertrainText)}`} />{v.powertrainText}</span></td>
                           <td className="px-3 py-2.5 tnum text-muted">{v.powerText ?? "—"}</td>
                           <td className="px-3 py-2.5 text-muted">{[v.transmissionText, v.drivetrain ? (DRIVETRAIN_LABEL[v.drivetrain] ?? v.drivetrain) : null].filter(Boolean).join(" · ") || "—"}</td>
@@ -144,86 +124,8 @@ export function NameplateTabs({ detail, tree }: { detail: NameplateDetail; tree:
                 </div>
               </section>
             ))}
-            <p className="text-[13px] text-faint">ราคาป้ายทางการ ไม่ใช่ราคาซื้อขายจริง · แหล่งอ้างอิงต่อรุ่นอยู่ในแท็บสเปก/ท้ายหน้า</p>
+            <p className="text-[13px] text-faint">ราคาป้ายทางการ ไม่ใช่ราคาซื้อขายจริง · กดชื่อรุ่นย่อยเพื่อดูสเปกเต็มและหลักฐานราคา</p>
           </div>
-        )}
-
-        {/* ── สเปก ── */}
-        {tab === "specs" && (
-          <div className="space-y-8">
-            {bev && (
-              <section>
-                <h2 className="text-lg font-semibold tracking-tight">ขุมพลังไฟฟ้า</h2>
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {bev.map(([k, v]) => (
-                    <div key={k} className="rounded-xl border border-border bg-surface-muted px-3 py-2.5">
-                      <div className="text-[11px] text-faint">{k}</div>
-                      <div className="mt-0.5 text-sm font-semibold text-foreground tnum">{v}</div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-            {gen && (
-              <section>
-                <h2 className="text-lg font-semibold tracking-tight">สเปกรุ่นย่อย</h2>
-                <div className="mt-3 space-y-4">
-                  {gen.derivatives.flatMap((d) => d.trims.flatMap((t) => t.variants)).map((v) => (
-                    <div key={v.id} className="rounded-2xl border border-border p-4">
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <span className="font-semibold">{v.name}</span>
-                        <span className="text-lg font-semibold tnum">{v.price != null ? formatTHB(v.price) : <span className="text-sm text-faint">ไม่มีข้อมูล</span>}</span>
-                      </div>
-                      <dl className="mt-3 max-w-2xl">
-                        <SpecRow label="ขุมพลัง">{v.powertrainText}</SpecRow>
-                        {v.engineText && <SpecRow label="เครื่องยนต์"><span className="text-[13px]">{v.engineText}</span></SpecRow>}
-                        {v.powerText && <SpecRow label="กำลัง"><span className="tnum">{v.powerText}</span></SpecRow>}
-                        <SpecRow label="เกียร์"><DataStatusValue value={v.transmissionText} /></SpecRow>
-                        <SpecRow label="ระบบขับเคลื่อน"><DataStatusValue value={v.drivetrain ? (DRIVETRAIN_LABEL[v.drivetrain] ?? v.drivetrain) : null} /></SpecRow>
-                        <SpecRow label="ที่นั่ง"><span className="tnum"><DataStatusValue value={v.seatCount} /></span></SpecRow>
-                        <SpecRow label="รหัสเกรด"><span className="tnum text-xs"><DataStatusValue value={v.gradeCode} /></span></SpecRow>
-                      </dl>
-                      {v.evidence && <div className="mt-2 flex items-center gap-2 text-xs text-faint"><span>ที่มาราคา:</span> <EvidenceLink evidence={v.evidence} />{v.priceAsOf && <span className="tnum">· ณ {formatDateTH(v.priceAsOf)}</span>}</div>}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-            <div className="max-w-xl"><PendingBlock title="รอข้อมูลมิติตัวถังและน้ำหนัก" reason="ยาว × กว้าง × สูง · ระยะฐานล้อ · น้ำหนัก — จะเพิ่มพร้อมแหล่งอ้างอิง" /></div>
-          </div>
-        )}
-
-        {/* ── ADAS ── */}
-        {tab === "adas" && (
-          hasAdas ? (() => {
-            const { features, trims } = detail.adas!;
-            const uniform = features.every((f) => new Set(trims.map((t) => String(t.values.find((v) => v.key === f.key)?.has))).size === 1);
-            const statusText = (has: boolean | null) => (has === true ? "มี" : has === false ? "ไม่มี" : "ยังไม่ยืนยัน");
-            const statusClass = (has: boolean | null) => (has === true ? "text-success font-medium" : has === false ? "text-faint" : "text-faint italic");
-            return (
-              <div>
-                {uniform ? (
-                  <ul className="max-w-3xl space-y-2">
-                    {features.map((f) => {
-                      const v = trims[0].values.find((x) => x.key === f.key)!;
-                      return <li key={f.key} className="flex items-baseline gap-3 text-[15px]"><span className={statusClass(v.has)}>{statusText(v.has)}</span><span title={f.definition ?? undefined}>{f.nameTh} <span className="text-faint">({f.key})</span></span></li>;
-                    })}
-                    <li className="pt-1 text-[13px] text-faint">ทุกรุ่นย่อยเหมือนกันทั้งรุ่น</li>
-                  </ul>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full max-w-3xl text-sm">
-                      <thead><tr className="border-b border-border text-left text-[13px] text-faint"><th className="py-2 pr-3 font-medium">รุ่นย่อย/เกรด</th>{features.map((f) => <th key={f.key} className="px-3 py-2 font-medium" title={f.definition ?? undefined}>{f.nameTh} <span className="font-normal">({f.key})</span></th>)}</tr></thead>
-                      <tbody>{trims.map((t) => <tr key={t.label} className="border-b border-border last:border-b-0"><td className="py-2.5 pr-3 font-medium">{t.label}</td>{t.values.map((v) => <td key={v.key} className="px-3 py-2.5" title={v.marketing ?? undefined}><span className={statusClass(v.has)}>{statusText(v.has)}</span></td>)}</tr>)}</tbody>
-                    </table>
-                  </div>
-                )}
-                <p className="mt-3 text-[13px] text-faint">ตามตารางสเปกทางการต่อรุ่นย่อย — ค่าที่สเปกไม่ระบุ = &ldquo;ยังไม่ยืนยัน&rdquo; (ไม่ใช่ &ldquo;ไม่มี&rdquo;)</p>
-              </div>
-            );
-          })() : (
-            <div className="max-w-xl"><PendingBlock title="ยังไม่มีข้อมูลระบบช่วยขับขี่ที่ยืนยัน" reason="สเปกทางการของรุ่นนี้ยังไม่ระบุ AEB/ACC/LKA ต่อรุ่นย่อย" /></div>
-          )
         )}
 
         {/* ── ไทม์ไลน์ ── */}

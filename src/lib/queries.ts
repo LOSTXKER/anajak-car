@@ -4,7 +4,7 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { ASPIRATION_LABEL, FUEL_TYPE_LABEL, powertrainLabel } from "@/lib/labels";
-import { generationKey, derivativeKey, trimKey, dedupeKeys } from "@/lib/slugs";
+import { generationKey, derivativeKey, trimKey, variantKey, dedupeKeys } from "@/lib/slugs";
 
 export type ConfidenceLevel = "HIGH" | "MEDIUM" | "LOW";
 
@@ -794,7 +794,14 @@ export const getNavIndex = cache(async (): Promise<NavBrand[]> => {
 
 // ── ต้นไม้ตัวตนรถ (คงชั้น Generation→Derivative→Phase→Trim→Variant) สำหรับหน้าย่อย §7.4–7.5 ──
 // ต่างจาก flattenVariants ที่ยุบชั้น — อันนี้เก็บโครงเพื่อทำหน้าเจน/ตัวถัง/รุ่นย่อยแยก · reuse helper เดิม
-export type TreeVariant = VariantRow;
+// ประวัติราคา (append-only observation) — โชว์ทุกแถวในหน้า SKU ไม่ทับอดีต
+export type PriceHistoryRow = {
+  amount: number | null;
+  observedDate: string;
+  effectiveFrom: string | null;
+  evidence: EvidenceRef;
+};
+export type TreeVariant = VariantRow & { skuKey: string; priceHistory: PriceHistoryRow[] };
 export type TreeTrim = {
   key: string;
   name: string;
@@ -857,6 +864,19 @@ export const getNameplateTree = cache(async (slug: string): Promise<NameplateTre
   const generations: TreeGeneration[] = nameplate.generations.map((generation, gi) => {
     // ตัวถังของเจนนี้ · คีย์ dedupe ต่อเจน
     const derivKeys = dedupeKeys(generation.derivatives, (d, i) => derivativeKey(d, i));
+    // คีย์ SKU dedupe ระดับทั้งเจน (ชื่อ trim ซ้ำข้ามตัวถังได้) — ต้อง filter เหมือนตอน map จริงเป๊ะ ให้ index ตรงกัน
+    const genFlat = generation.derivatives.flatMap((derivative) => {
+      const phase = derivative.phases.find((p) => p.effectiveTo == null) ?? derivative.phases[0] ?? null;
+      return (phase?.trims ?? [])
+        .filter((t) => t.effectiveTo == null)
+        .flatMap((trim) =>
+          trim.variantRevisions.filter((v) => v.effectiveTo == null).map((variant) => ({ variant, trim })),
+        );
+    });
+    const skuKeyByVariantId = new Map<string, string>();
+    for (const [fv, key] of dedupeKeys(genFlat, (fv, i) => variantKey(fv.variant, fv.trim, i))) {
+      skuKeyByVariantId.set(fv.variant.id, key);
+    }
     const derivatives: TreeDerivative[] = generation.derivatives.map((derivative) => {
       const phase = derivative.phases.find((p) => p.effectiveTo == null) ?? derivative.phases[0] ?? null;
       const rawTrims = (phase?.trims ?? []).filter((t) => t.effectiveTo == null);
@@ -883,6 +903,13 @@ export const getNameplateTree = cache(async (slug: string): Promise<NameplateTre
               priceAsOf: obs ? (obs.effectiveFrom ?? obs.observedDate).toISOString() : null,
               evidence: obs ? toEvidenceRef(obs.evidenceSource) : null,
               ...specExtras(flat),
+              skuKey: skuKeyByVariantId.get(variant.id) ?? variant.id,
+              priceHistory: variant.officialPriceObservations.map((o) => ({
+                amount: o.amount != null ? Number(o.amount) : null,
+                observedDate: o.observedDate.toISOString(),
+                effectiveFrom: o.effectiveFrom?.toISOString() ?? null,
+                evidence: toEvidenceRef(o.evidenceSource),
+              })),
             };
           });
         const range = priceRangeOf(variants.map((v) => v.price));
@@ -953,6 +980,21 @@ export function selectDerivative(gen: TreeGeneration, derivKey: string): TreeDer
 }
 export function selectTrim(deriv: TreeDerivative, tKey: string): TreeTrim | null {
   return deriv.trims.find((t) => t.key === tKey) ?? null;
+}
+// หา SKU (variant) ตามคีย์ในเจนปัจจุบัน — คืน context ทั้งสาย ไว้ทำ breadcrumb/สลับรุ่นพี่น้อง
+export function selectVariant(
+  tree: NameplateTree,
+  skuKey: string,
+): { variant: TreeVariant; trim: TreeTrim; derivative: TreeDerivative; generation: TreeGeneration } | null {
+  const gen = tree.generations[0];
+  if (!gen) return null;
+  for (const derivative of gen.derivatives) {
+    for (const trim of derivative.trims) {
+      const variant = trim.variants.find((v) => v.skuKey === skuKey);
+      if (variant) return { variant, trim, derivative, generation: gen };
+    }
+  }
+  return null;
 }
 
 // ── ไทม์ไลน์ระดับแบรนด์ — รวม change event ของทุก nameplate ในแบรนด์ (§7.2) ──

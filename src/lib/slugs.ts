@@ -33,6 +33,13 @@ export function trimKey(trim: { standardName: string | null; name: string }, ind
   return base || `t${index + 1}`;
 }
 
+// รุ่นย่อยขายจริง (SKU): ชื่อ variant ก่อน (เช่น "Travo Smart Cab 2.4 Entry") ไม่มีก็ใช้ชื่อ trim
+// dedupe ระดับทั้ง nameplate (ไม่ใช่ต่อ trim) — คีย์ต้องไม่ชนกันใน /cars/[slug]/*
+export function variantKey(v: { name: string | null }, trim: { name: string }, index = 0): string {
+  const base = slugify(v.name ?? trim.name);
+  return base || `v${index + 1}`;
+}
+
 // กันคีย์ชนกันในพาเรนต์เดียว — เติมเลขต่อท้ายตัวที่ซ้ำ (t, t-2, t-3)
 export function dedupeKeys<T>(items: T[], keyOf: (item: T, index: number) => string): Map<T, string> {
   const seen = new Map<string, number>();

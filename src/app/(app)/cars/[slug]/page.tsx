@@ -8,6 +8,7 @@ import { formatDateTH, formatTHB } from "@/lib/format";
 import { nameplateImage } from "@/lib/images";
 import { LifecycleBadge, PowertrainDots, PricePositionBar, StatTile } from "@/components/badges";
 import { NameplateTabs } from "@/components/nameplate-tabs";
+import { SkuSelectorGrid } from "@/components/sku-selector-grid";
 
 export const dynamic = "force-dynamic";
 
@@ -84,6 +85,7 @@ export default async function NameplatePage({ params }: Props) {
         )}
       </header>
 
+      <SkuSelectorGrid tree={tree} />
       <NameplateTabs detail={detail} tree={tree} />
     </div>
   );
