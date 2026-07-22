@@ -1,7 +1,7 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-22 (**M24 แยกหน้าตามลำดับชั้น + redesign + Tierlist — implement เสร็จ branch `redesign/m24-entity-split` (ยังไม่ merge)** · ต่อยอด M23) · เบสเลือกจาก mockup: หน้ารุ่น **Dense** · หน้าแบรนด์ **Cards** · Tierlist **Editorial S/A/B/C**
+อัปเดตล่าสุด: 2026-07-22 (**M25 sidebar หมวดกลาง + หน้ารุ่นเป็น tab (แบบ prydwen.gg) — เสร็จ branch `redesign/m25-sidebar-tabs`** · ต่อยอด M24) · เบสสั่งตาม reference prydwen: sidebar หลักอันเดียว(หมวด)+brand switcher บนหัว · หน้ารุ่นยุบเป็น tab
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
@@ -59,8 +59,15 @@
 - verify: lint+tsc+build ผ่าน · เปิดจริง 3105 ทุกหน้า (hub/gen/deriv/trim/timeline/tierlist/brand) · slug รุ่น/tierlist ผิด = 404 · หน้า thin = 200+placeholder · filter URL รอด · ไม่มี raw enum หลุด (ตรวจแล้ว)
 - ⚠️ known issue เล็ก: **deep invalid key** (เช่น `/gen/9999`, bad deriv/trim) เรนเดอร์หน้า 404 ถูก **แต่ HTTP status = 200** (soft-404 — Next.js: notFound จาก nested page ไม่ set 404 เหมือนจาก layout) · ผู้ใช้เห็นหน้า "ไม่พบ" ปกติ · แก้เต็มต้องเพิ่ม layout validate ต่อชั้น (ยังไม่ทำ — กระทบแค่ URL ที่พิมพ์มั่ว/ลิงก์เสีย)
 
+## 🧭 M25 SIDEBAR หมวดกลาง + TAB (2026-07-22 — branch `redesign/m25-sidebar-tabs` · ตาม reference prydwen.gg/star-rail)
+เบสส่ง prydwen เป็น reference → **sidebar หลักอันเดียว(หมวด) + brand switcher บนหัว sidebar · หน้ารุ่นยุบเป็น tab** (แคป prydwen เก็บแล้ว)
+- **sidebar global** (`app-sidebar.tsx`): switcher บนหัว + หมวด หน้าแรก · ฐานข้อมูล(รุ่นรถ/แบรนด์) · จัดอันดับ · เครื่องมือ(เทียบรุ่น เร็วๆนี้) — **ย้ายขึ้น `(app)/layout` ใช้เหมือนกันทุกหน้า** (เลิก sidebar ประจำแบรนด์ · ลบ `brand-sidebar.tsx`) · zone layout เหลือแค่ guard 404
+- **navbar เรียบลง**: เหลือ logo + ค้นหา (switcher/ลิงก์ย้ายไป sidebar) · mobile drawer = หมวด + รายชื่อแบรนด์
+- **หน้ารุ่นเป็น tab** (`nameplate-tabs.tsx` client): ภาพรวม / ราคา·รุ่นย่อย / สเปก / ADAS / ไทม์ไลน์ — hero อยู่บน แท็บสลับ client · **ยุบ route เจน/ตัวถัง/รุ่นย่อย/timeline (M24) เข้า tab แล้วลบ** · slugs/getNameplateTree ยังใช้ (คีย์ในตาราง)
+- verify: lint+tsc+build · เปิดจริง 3105 — sidebar หมวดขึ้นทุกหน้า(active ถูก·switcher ปรับตามหน้า) · tab สลับได้ 5 แท็บ · brand Cards · tierlist · slug ผิด=404 · mobile (tab scroll + drawer หมวด)
+
 ## ▶ NEXT (ทำต่อทันที)
-1. **รอเบสรีวิว M24 บน preview** → merge M23+M24 → main + deploy · ถ้า OK ลบ branch mockup (m23/m24) + โฟลเดอร์ dev
+1. **รอเบสรีวิว M25 บน preview** → ถ้า OK merge M23+M24+M25 → main + deploy · ลบ branch mockup (m23/m24) + โฟลเดอร์ dev
 2. เกลาถ้าเบสสั่ง: soft-404 status (เพิ่ม gen/deriv layout validate) · scroll-spy sidebar · Tierlist Data-driven (เพิ่มอีกหมวดในหน้า /tierlist) · เทียบรุ่น (Compare) เปลี่ยนปุ่ม navbar เป็นลิงก์
 3. เติมข้อมูลให้หน้าย่อยรวยขึ้น: มิติตัวถัง (L×W×H) · ประวัติเจน/facelift · รูปจริง Champ/Revo
 4. งานเดิมค้าง: ขยาย ADAS (BSM/AHB/LDW) · VOCABULARY Phase 5 · แบรนด์ที่ 2 (editorial gate)
