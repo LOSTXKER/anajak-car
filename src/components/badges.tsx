@@ -10,6 +10,30 @@ export function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
+// สีตามหมวดขุมพลัง — สื่อ "หมวด" ไม่ใช่คะแนนรถ · ต้องมีข้อความคู่เสมอ (a11y) · token --pt-* ใน globals.css
+export function ptDotClass(label: string): string {
+  if (label.includes("EV") || label.includes("ไฟฟ้า") || label.includes("ไฮโดรเจน")) return "bg-pt-ev";
+  if (label.includes("ไฮบริด")) return "bg-pt-hybrid";
+  if (label.includes("ดีเซล")) return "bg-pt-diesel";
+  if (label.includes("เบนซิน") || label.includes("สันดาป")) return "bg-pt-petrol";
+  return "bg-faint";
+}
+
+/** ขุมพลัง = จุดสีตามหมวด + ข้อความ (สแกนไว) — ใช้ร่วมตาราง/หน้ารุ่น */
+export function PowertrainDots({ labels }: { labels: string[] }) {
+  return (
+    <span className="inline-flex flex-wrap items-center gap-x-1 gap-y-1">
+      {labels.map((l, i) => (
+        <span key={l} className="inline-flex items-center whitespace-nowrap">
+          {i > 0 && <span className="mx-1 text-faint">·</span>}
+          <span aria-hidden className={`mr-1.5 inline-block size-2 rounded-full ${ptDotClass(l)}`} />
+          {l}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 const CONFIDENCE_STYLE: Record<ConfidenceLevel, string> = {
   HIGH: "bg-success-soft text-success",
   MEDIUM: "bg-warning-soft text-warning",

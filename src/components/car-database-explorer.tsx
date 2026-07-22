@@ -5,9 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { NameplateRow, VariantIndexRow } from "@/lib/queries";
-import { BODY_TYPE_LABEL, LIFECYCLE_LABEL, SEGMENT_LABEL } from "@/lib/labels";
+import { BODY_TYPE_LABEL, SEGMENT_LABEL } from "@/lib/labels";
 import { formatDateTH, formatTHB } from "@/lib/format";
 import { nameplateImage } from "@/lib/images";
+import { LifecycleBadge, PowertrainDots } from "@/components/badges";
 
 type SortKey = "name" | "price" | "year" | "variants";
 type StatusFilter = "all" | "CURRENT" | "DISCONTINUED";
@@ -90,24 +91,6 @@ function CarThumb({ slug }: { slug: string }) {
   );
 }
 
-// ป้ายสถานะการขาย (เบสสั่ง 2026-07-20) — ขายอยู่/เลิกจำหน่าย ท้ายชื่อรุ่น
-const LIFECYCLE_BADGE_CLASS: Record<string, string> = {
-  CURRENT: "bg-success-soft text-success",
-  DISCONTINUED: "bg-surface-muted text-faint",
-  TRANSITION: "bg-warning-soft text-warning",
-  UPCOMING: "bg-accent-soft text-accent",
-};
-
-function LifecycleBadge({ status }: { status: string }) {
-  return (
-    <span
-      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${LIFECYCLE_BADGE_CLASS[status] ?? "bg-surface-muted text-faint"}`}
-    >
-      {LIFECYCLE_LABEL[status] ?? status}
-    </span>
-  );
-}
-
 // เซกเมนต์กับตัวถังมักซ้ำความหมายกัน (เช่น PPV/PPV, กระบะ/กระบะ) — แสดงครั้งเดียวเมื่อข้อความตรงกัน
 function CategoryCell({ row }: { row: NameplateRow }) {
   const segmentLabel = row.segment ? (SEGMENT_LABEL[row.segment] ?? row.segment) : null;
@@ -117,29 +100,6 @@ function CategoryCell({ row }: { row: NameplateRow }) {
   }
   // บรรทัดเดียวจบ — บรรทัดย่อย (เช่น "SUV กลาง/SUV") ซ้ำความหมาย รกโดยไม่จำเป็น (ฟีดแบ็กเบส 2026-07-20)
   return <span>{segmentLabel ?? bodyLabel}</span>;
-}
-
-// จุดสีตามหมวดขุมพลัง (สแกนไว) — คู่กับข้อความเสมอ ไม่พึ่งสีอย่างเดียว (a11y) · สีสื่อ "หมวด" ไม่ใช่คะแนนรถ
-function ptDotClass(label: string): string {
-  if (label.includes("EV") || label.includes("ไฟฟ้า") || label.includes("ไฮโดรเจน")) return "bg-pt-ev";
-  if (label.includes("ไฮบริด")) return "bg-pt-hybrid";
-  if (label.includes("ดีเซล")) return "bg-pt-diesel";
-  if (label.includes("เบนซิน") || label.includes("สันดาป")) return "bg-pt-petrol";
-  return "bg-faint";
-}
-
-function PowertrainCell({ labels }: { labels: string[] }) {
-  return (
-    <span className="inline-flex flex-wrap items-center gap-x-1 gap-y-1">
-      {labels.map((l, i) => (
-        <span key={l} className="inline-flex items-center whitespace-nowrap">
-          {i > 0 && <span className="mx-1 text-faint">·</span>}
-          <span aria-hidden className={`mr-1.5 inline-block size-2 rounded-full ${ptDotClass(l)}`} />
-          {l}
-        </span>
-      ))}
-    </span>
-  );
 }
 
 export function CarDatabaseExplorer({
@@ -513,7 +473,7 @@ export function CarDatabaseExplorer({
                     <CategoryCell row={row} />
                   </td>
                   <td className="px-3 py-2.5 text-sm text-muted">
-                    <PowertrainCell labels={row.powertrainLabels} />
+                    <PowertrainDots labels={row.powertrainLabels} />
                   </td>
                   <td
                     className="tnum px-3 py-2.5 text-right text-sm text-muted"

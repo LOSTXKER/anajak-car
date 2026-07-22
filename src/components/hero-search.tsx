@@ -31,7 +31,7 @@ export function HeroSearch() {
       <form
         role="search"
         aria-label="ค้นหารุ่นรถ"
-        className="flex items-center gap-2 rounded-full border border-border-strong bg-surface py-2 pr-2 pl-5 shadow-sm transition-[border-color,box-shadow] focus-within:border-accent focus-within:shadow-md"
+        className="flex items-center gap-2 rounded-full border border-border-strong bg-surface py-2 pr-2 pl-5 shadow-[0_10px_30px_-16px_rgba(20,30,60,0.28)] transition-[border-color,box-shadow] hover:border-faint focus-within:border-accent focus-within:shadow-[0_0_0_4px_var(--accent-soft)]"
         onSubmit={(e) => {
           e.preventDefault();
           apply(value.trim() ? { q: value.trim() } : {});

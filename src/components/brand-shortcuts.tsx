@@ -70,13 +70,9 @@ export function BrandShortcuts({ brands }: { brands: BrandTile[] }) {
           title="ยังไม่อยู่ใน coverage — กำลังทยอยเก็บข้อมูลพร้อมหลักฐาน"
           className="flex w-[96px] flex-col items-center gap-2.5 rounded-2xl px-2 py-4"
         >
-          {/* dim เฉพาะโลโก้ (decorative, alt="") — ไม่แตะ opacity ของ container กัน text-muted/text-faint หลุด AA (เคยแก้แล้ว) */}
-          <span className="opacity-45">
-            <BrandMark name={name} />
-          </span>
+          {/* โลโก้สีเต็ม (ไม่ dim) — เบสสั่ง 2026-07-22 · ตัดป้าย "เร็วๆ นี้" ออก · Toyota ยังเด่นด้วย tile สี */}
+          <BrandMark name={name} />
           <span className="text-xs font-medium text-muted">{name}</span>
-          {/* label ที่เห็นได้จริง ไม่ใช่แค่ title (mouse-only) — คีย์บอร์ด/touch/screen reader เข้าถึงได้ */}
-          <span className="text-[10px] text-faint">เร็วๆ นี้</span>
         </div>
       ))}
       <Link
