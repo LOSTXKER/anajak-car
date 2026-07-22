@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBrandDetail, getBrandTimeline } from "@/lib/queries";
+import { getBrandDetail } from "@/lib/queries";
 import { formatDateTH, formatPriceRange } from "@/lib/format";
 import { DataStatusValue, StatTile } from "@/components/badges";
 import { BrandMark } from "@/components/brand-shortcuts";
+import { CarDatabaseExplorer } from "@/components/car-database-explorer";
 
 export const dynamic = "force-dynamic";
 
@@ -22,18 +23,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BrandOverviewPage({ params }: Props) {
   const { slug } = await params;
-  const [detail, timeline] = await Promise.all([getBrandDetail(slug), getBrandTimeline(slug)]);
+  const detail = await getBrandDetail(slug);
   if (!detail) notFound();
   const operationYear = detail.operationFrom ? new Date(detail.operationFrom).getUTCFullYear() : null;
 
-  const entries = [
-    { href: `/brands/${slug}/models`, title: "รุ่นรถ", sub: `${detail.stats.nameplates} รุ่น · ${detail.stats.variants} รุ่นย่อย` },
-    { href: `/brands/${slug}/timeline`, title: "ไทม์ไลน์และประวัติ", sub: `${timeline.length} เหตุการณ์` },
-    { href: `/brands/${slug}/sources`, title: "แหล่งอ้างอิง", sub: `${detail.sources.length} แหล่ง` },
-  ];
-
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 pb-20 sm:px-6">
+    <div className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
       <nav aria-label="breadcrumb" className="pt-8 text-sm text-faint">
         <ol className="flex flex-wrap items-center gap-1.5">
           <li><Link href="/" className="hover:text-foreground">ฐานข้อมูลรถ</Link></li>
@@ -60,31 +55,14 @@ export default async function BrandOverviewPage({ params }: Props) {
           <StatTile label="ดำเนินงานตั้งแต่" value={<span className="tnum"><DataStatusValue value={operationYear} /></span>} sub={detail.distributorName ?? undefined} />
           <StatTile label="ตรวจสอบล่าสุด" value={<span className="tnum text-sm">{formatDateTH(detail.stats.latestChecked) ?? "—"}</span>} />
         </div>
+        {detail.channel && <p className="mt-4 max-w-2xl text-sm text-muted">{detail.channel}</p>}
       </header>
 
-      {(detail.channel || detail.parentCompany) && (
-        <section className="border-t border-border pt-6">
-          <h2 className="text-lg font-semibold tracking-tight">เกี่ยวกับแบรนด์ในไทย</h2>
-          <dl className="mt-3 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-            <div><dt className="text-xs text-faint">ผู้ผลิต/จัดจำหน่าย</dt><dd className="mt-0.5 text-sm font-medium"><DataStatusValue value={detail.distributorName} /></dd></div>
-            <div><dt className="text-xs text-faint">บริษัทแม่</dt><dd className="mt-0.5 text-sm font-medium"><DataStatusValue value={detail.parentCompany} /></dd></div>
-          </dl>
-          {detail.channel && <p className="mt-3 max-w-2xl text-sm text-muted">{detail.channel}</p>}
-        </section>
-      )}
-
-      <section className="mt-8 border-t border-border pt-6">
-        <div className="grid gap-3 sm:grid-cols-3">
-          {entries.map((e) => (
-            <Link key={e.href} href={e.href} className="rounded-2xl border border-border bg-surface p-5 transition-all hover:border-accent hover:shadow-sm">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold">{e.title}</span>
-                <span aria-hidden className="text-accent">→</span>
-              </div>
-              <p className="mt-1 text-xs text-faint tnum">{e.sub}</p>
-            </Link>
-          ))}
-        </div>
+      {/* ตารางรุ่น — เฉพาะแบรนด์นี้ (getBrandDetail คืนเฉพาะรุ่นของแบรนด์ · สัญญา filter URL) */}
+      <section aria-labelledby="brand-nameplates" className="border-t border-border pt-8">
+        <h2 id="brand-nameplates" className="text-xl font-semibold tracking-tight">รุ่นรถใน coverage</h2>
+        <p className="mt-1 mb-4 text-sm text-faint">เฉพาะรุ่น {detail.name} ที่มีข้อมูลตรวจสอบแล้ว — กดเข้าดูราคาและรุ่นย่อย · กรอง/แชร์ลิงก์ผลกรองได้</p>
+        <CarDatabaseExplorer rows={detail.rows} variantRows={detail.variantRows} />
       </section>
     </div>
   );
