@@ -187,6 +187,17 @@
 - [ ] เบสรีวิว → merge เข้า main + deploy (Vercel)
 - [ ] เสริม: ชิปงบด่วน · ป้าย "ปรับราคาล่าสุด/ใหม่" · mobile ตาราง→การ์ด · หน้ารุ่น data รวยขึ้น (strip-plot) · รูปจริง Champ/Revo
 
+## ▶ Milestone 23: หน้าใน — brand sidebar + global navbar (implement แล้วบน branch, ยังไม่ merge)
+> เบสสั่ง "หน้าแรกคงเดิม · เข้าไปในเว็บให้มี sidebar ประจำแบรนด์ + navbar เครื่องมือกลาง" → ทำหน้าเทียบ 3 แบบ (branch `mockup/m23-shell-compare` · Vercel preview) → **เบสเลือก Variant A "เมนู"** · โครง shell = revive ของที่พักไว้ branch `archive/m22-m24-sidebar-apple` แล้ว restyle เป็นภาษา M22
+- [x] Phase A — หน้าเทียบ 3 แบบ (A เมนู · B รายชื่อรุ่น · C ไฮบริด) บนข้อมูล Toyota จริง คลิกสลับได้ · เบสเลือก A
+- [x] โครง route: root layout สลิม (html/body) · `(home)/layout.tsx` = SiteHeader เดิม (หน้าแรก output ไม่เปลี่ยน) · `(app)/` route group = GlobalNavbar + zone layouts (URL เดิมทุกอัน)
+- [x] `getNavIndex()` query เบา (brands+nameplates · cache dedupe) ป้อน navbar switcher + mobile drawer
+- [x] components: `app-shell` · `global-navbar` (ค้นหา/สลับแบรนด์/เทียบรุ่นเร็วๆนี้/แบรนด์) · `brand-sidebar` (Variant A เมนู + จุดยึดในหน้า gate ตามข้อมูล) · `brand-switcher` (รู้แบรนด์ทั้ง 2 โซน) · `mobile-nav-drawer` (a11y ครบ)
+- [x] `/brands` index = navbar เปล่า `(app)/(plain)/` · `(app)/not-found.tsx` · loading ต่อโซน · anchor `scroll-mt-20` กัน navbar บัง · ลบ `theme-toggle.tsx`
+- [x] verify: lint+tsc+build · เปิดจริง 3105 (หน้าแรกเหมือนเดิม · หน้าใน navbar+sidebar · 404 ถูก · filter URL รอด · mobile drawer · anchor เลื่อนถูก)
+- [ ] เบสรีวิว → merge→main + deploy · ลบ branch/โฟลเดอร์ dev ของ mockup
+- [ ] เสริม (ถ้าเบสสั่ง): scroll-spy sidebar · เทียบรุ่น (Compare) ทำจริง → เปลี่ยนปุ่ม navbar เป็นลิงก์ · mobile ตาราง→การ์ด
+
 ## ถัดไป (ยังไม่เริ่ม)
 
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

@@ -1,7 +1,7 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-22 (**M22+M22b redesign — merge เข้า main (local) แล้ว รอ push**: Kanit + light-only + typewriter + ตารางเกลา + แตก NameplateTable · เบสสั่ง deploy แต่ push main ถูก safety guard บล็อก → เบสรัน `git push origin main` เอง)
+อัปเดตล่าสุด: 2026-07-22 (**M23 inner-shell — implement เสร็จบน branch `redesign/m23-inner-shell` (ยังไม่ merge)**: หน้าในได้ navbar เครื่องมือกลาง + sidebar ประจำแบรนด์ · เบสเลือก **Variant A "เมนู"** จากหน้าเทียบ 3 แบบ (mockup branch `mockup/m23-shell-compare`) · หน้าแรกคงเดิมเป๊ะ)
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
@@ -18,7 +18,7 @@
 - ~~Champ/Revo ยังไม่ seed~~ → **seed แล้ว (M15)**: RideHeightClass.STANDARD ใช้จริง 14 trims · raw API JSON เก็บที่ `prisma/ops/data/hilux-3lines-20260720.json` · endpoint สเปกทางการ: `GET /model/api/car/?series_code=<code>` (+ ราคารวม: `POST /api-service/car/series {"grades":true}`)
 - ⚠️ prisma CLI: รันด้วย `PRISMA_CLI_DIRECT=1` (สลับไป DIRECT_URL 5432 ใน prisma.config.ts — pooler 6543 ทำ CLI ค้าง) · enum/rename ที่มีข้อมูลต้องทำ SQL มือใน `prisma/ops/*.sql` ก่อน push (db push cast เองไม่ได้) · partial unique index ของ TrimFeature สร้างด้วย SQL มือ (db push ไม่ลบ — ตรวจแล้ว)
 
-หน้าเว็บ (5 หน้า — อย่าลืม `/brands/[slug]` ใช้ CarDatabaseExplorer ตัวเดียวกับหน้าแรก) · **deploy แล้ว: anajak-car.vercel.app (auto-deploy จาก main)**:
+หน้าเว็บ (5 หน้า — อย่าลืม `/brands/[slug]` ใช้ CarDatabaseExplorer ตัวเดียวกับหน้าแรก) · **deploy แล้ว: anajak-car.vercel.app (auto-deploy จาก main)** · **หน้าใน (/brands/[slug], /cars/[slug]) ได้ shell ใหม่ navbar+sidebar ตั้งแต่ M23 (ดูท้ายไฟล์)**:
 - `/` **Hero ใหม่ search-first (M16 — เบสเลือกจากหน้าเทียบ 3 แบบ)**: ช่องค้นหาใหญ่เป็นพระเอก + ชิปหมวดผูก filter จริง + บรรทัดพิสูจน์ตัวเลขจริง · hero ส่งเงื่อนไขเข้าตารางผ่าน URL param (`?q=/&body=/&pt=/&cap=` — แชร์ลิงก์ผลกรองได้) · ช่องค้นหาในตารางซ่อนบนหน้าแรก (hideSearch — กันซ้ำ) · ตาราง 2 มุมมอง + dropdown filters (ตัวเลือกขุมพลังจาก enum canonical)
 - `/cars/[slug]` = บันไดราคา · specLine เป็นคำกลางล้วน (`ดีเซล · 204 PS · อัตโนมัติ 6 สปีด · 4WD`) · ชื่อการตลาด (VN Turbo ฯลฯ) อยู่ title tooltip เท่านั้น · HEV โชว์ "E-CVT"
 - `/brands` + `/brands/[slug]` (แหล่งอ้างอิงอ่านผ่าน EntityType enum แล้ว — type-safe)
@@ -38,14 +38,20 @@
 - รูปรถ = ลิขสิทธิ์ Toyota (CREDITS.md ครบ) — ทบทวนสิทธิ์ก่อน production · ยังไม่มี production domain
 - ~~งานยังไม่ commit~~ → **commit + push แล้ว (เบสสั่ง 2026-07-20)**: `a330ea4` เว็บ v1 (M2–M12) + `a01076e` ภาษากลาง (M13–M14) — tree สะอาด
 
-## 🎨 M22 REDESIGN (2026-07-22 — implement แล้ว บน branch `redesign/m22-carmeta-light-kanit`, ยังไม่ merge/deploy)
-เบสสั่ง "รื้อ UXUI" → ผ่าน mockup หลายรอบ (tracker=รกไป · Apple=โล่งไป) → เบสชี้หน้าจริงเดิม "อยากได้ประมาณนี้" + ขอ Kanit + typewriter + light
-- **ทำจริงแล้ว** (ดู DESIGN.md §เคาะแล้ว M22 · git diff branch นี้): Kanit ทั้งเว็บ · **light-only** (ตัด dark+toggle — โลโก้แบรนด์ไม่เหมาะมืด) · hero typewriter (`hero-headline.tsx`) · `car-database-explorer` เกลา (จุดสีขุมพลัง+tnum+sort⇅+ตัดของซ้ำ) · `globals.css` token ใหม่ (`.tnum`, `--pt-*`) · ตัด ThemeToggle ใน header · ทุกหน้า (home/cars/brands) เข้าชุดอัตโนมัติ
-- verify: lint+tsc+build ผ่าน · เปิดจริง 3105 + screenshot home/car/brands ครบ
-- **ไฟล์แก้**: `layout.tsx` `globals.css` `(home)/page.tsx` `car-database-explorer.tsx` `site-header.tsx` + ใหม่ `hero-headline.tsx`
+## 🎨 M22 REDESIGN — merge เข้า main แล้ว (Kanit + light-only + typewriter + ตารางเกลา)
+สถานะปัจจุบันของ main · รายละเอียด+เหตุผลอยู่ DESIGN.md §เคาะแล้ว M22
+
+## 🧭 M23 INNER-SHELL (2026-07-22 — implement เสร็จ branch `redesign/m23-inner-shell`, ยังไม่ merge)
+เบสสั่ง "หน้าแรกคงเดิม แต่เข้าไปในเว็บให้มี sidebar ประจำแบรนด์ + navbar เครื่องมือกลาง" → ทำหน้าเทียบ 3 แบบ (branch `mockup/m23-shell-compare` · preview บน Vercel) → **เบสเลือก Variant A "เมนู"**
+- **โครง route**: root layout สลิมเหลือ html/body · แยกโซนด้วย route group — `(home)/` = SiteHeader เดิม (หน้าแรก output ไม่เปลี่ยน) · `(app)/` = GlobalNavbar + sidebar (URL เดิมทุกอัน: route group ไม่เปลี่ยน path) · `/brands` index อยู่ `(app)/(plain)/` (navbar เปล่าไม่มี sidebar)
+- **Sidebar Variant A** (`brand-sidebar.tsx`): เมนู ภาพรวมแบรนด์/รุ่นรถทั้งหมด/แหล่งอ้างอิง · หน้ารุ่นเพิ่มกลุ่ม "ในหน้านี้" (บันไดราคา/ADAS/ไทม์ไลน์/แหล่งอ้างอิง — **gate ตามข้อมูลจริง**: ไม่มี ADAS/event → ซ่อน) · anchor เลื่อนด้วย `scroll-mt-20` กัน navbar บัง
+- **Navbar** (`global-navbar.tsx`): ค้นหา (→ `/?q=#database` reuse สัญญาเดิม) · BrandSwitcher (รู้แบรนด์ทั้ง /brands/[slug] และ /cars/[slug]) · **"เทียบรุ่น (เร็วๆ นี้)"** disabled (เบสเคาะให้โชว์) · แบรนด์ · mobile = hamburger→drawer (รายชื่อรุ่น + เมนูกลาง · a11y ครบ)
+- **query ใหม่** `getNavIndex()` เบา (brands+nameplates · cache dedupe) ป้อน switcher/drawer · **ลบ `theme-toggle.tsx`** (dead code)
+- **ไฟล์ใหม่**: `(home)/layout.tsx` `(app)/layout.tsx` `(app)/(plain)/layout.tsx` `(app)/brands/[slug]/layout.tsx` `(app)/cars/[slug]/layout.tsx` `(app)/not-found.tsx` + loading ต่อโซน · components: `app-shell` `global-navbar` `brand-sidebar` `brand-switcher` `mobile-nav-drawer`
+- verify: lint+tsc+build ผ่าน · เปิดจริง 3105 — หน้าแรกเหมือนเดิม · /brands (navbar เปล่า) · /brands/toyota + /cars/* (navbar+sidebar) · 404 ถูก (แบรนด์/รุ่นไม่มี→notFound จาก layout) · **สัญญา filter URL รอด** (`?body/pt/q` ยัง pre-apply) · anchor เลื่อนพ้น navbar · mobile drawer (iframe harness 400px) ครบ
 
 ## ▶ NEXT (ทำต่อทันที)
-1. **รอเบสรีวิว M22 บน branch** แล้วตัดสิน: merge→main + deploy · หรือปรับเพิ่มก่อน
-2. งานเสริมหน้าแรกที่เสนอไว้ (ทำระหว่าง/หลัง merge): ชิปงบด่วน (≤5แสน/1ล้าน/2ล้าน) · ป้าย "ปรับราคาล่าสุด/ใหม่" (ใช้ประวัติ append-only เป็นจุดต่าง) · mobile ตาราง→การ์ด
-3. หน้ารุ่น (/cars) ใส่ data รวยขึ้น (strip-plot การกระจายราคา + ADAS meter จากงาน tracker mockup) · เทียบรุ่น (Compare) · รูปจริง Champ/Revo
+1. **รอเบสรีวิว M23 บน branch** (หรือ preview) → merge→main + deploy · ถ้า OK ลบ branch `mockup/m23-shell-compare` + โฟลเดอร์ dev บน mockup ทิ้ง
+2. เกลาเพิ่มถ้าเบสสั่ง: scroll-spy ไฮไลต์หัวข้อที่กำลังดู (sidebar Variant A) · breadcrumb ปรับ/ตัด · mobile ตาราง→การ์ด
+3. หน้ารุ่น (/cars) ใส่ data รวยขึ้น (strip-plot การกระจายราคา) · **เทียบรุ่น (Compare)** — ทำจริงแล้วเปลี่ยนปุ่ม navbar จาก disabled เป็นลิงก์ · รูปจริง Champ/Revo
 4. งานเดิมค้าง: ขยาย ADAS (BSM/AHB/LDW) · VOCABULARY Phase 5 · แบรนด์ที่ 2 (editorial gate)

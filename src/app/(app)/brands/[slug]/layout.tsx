@@ -1,0 +1,25 @@
+import { notFound } from "next/navigation";
+import { getNavIndex } from "@/lib/queries";
+import { AppShell } from "@/components/app-shell";
+import { BrandSidebar } from "@/components/brand-sidebar";
+
+// โซนแบรนด์ (/brands/[slug]) — sidebar เมนูประจำแบรนด์ (Variant A)
+// หา brand จาก navIndex (เบา · cache dedupe กับ navbar) · ไม่เจอ → 404 ตั้งแต่ layout
+export default async function BrandLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const navIndex = await getNavIndex();
+  const brand = navIndex.find((b) => b.slug === slug);
+  if (!brand) notFound();
+
+  return (
+    <AppShell sidebar={<BrandSidebar brand={{ slug: brand.slug, name: brand.name }} />}>
+      {children}
+    </AppShell>
+  );
+}

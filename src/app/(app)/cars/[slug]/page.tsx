@@ -118,7 +118,7 @@ export default async function NameplatePage({ params }: Props) {
 
       {/* บันไดราคา — ราคาเป็นพระเอกหนึ่งเดียวของหน้า */}
       <section aria-labelledby="variants-heading" className="border-t border-border pt-10 pb-14">
-        <h2 id="variants-heading" className="text-sm font-medium text-muted">
+        <h2 id="variants-heading" className="scroll-mt-20 text-sm font-medium text-muted">
           ราคาป้ายทางการ
         </h2>
         <p className="mt-2 text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
@@ -222,7 +222,7 @@ export default async function NameplatePage({ params }: Props) {
               : "text-faint italic";
         return (
           <section aria-labelledby="adas-heading" className="border-t border-border pt-10 pb-14">
-            <h2 id="adas-heading" className="text-xl font-semibold tracking-tight">
+            <h2 id="adas-heading" className="scroll-mt-20 text-xl font-semibold tracking-tight">
               ระบบช่วยขับขี่
             </h2>
             {uniform ? (
@@ -283,7 +283,7 @@ export default async function NameplatePage({ params }: Props) {
 
       {detail.changeEvents.length > 0 && (
         <section aria-labelledby="timeline-heading" className="border-t border-border pt-10 pb-14">
-          <h2 id="timeline-heading" className="text-xl font-semibold tracking-tight">
+          <h2 id="timeline-heading" className="scroll-mt-20 text-xl font-semibold tracking-tight">
             ไทม์ไลน์การเปลี่ยนแปลง
           </h2>
           <ol className="mt-2 max-w-3xl divide-y divide-border">

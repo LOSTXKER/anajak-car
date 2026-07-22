@@ -102,7 +102,7 @@ export default async function BrandPage({ params }: Props) {
       </header>
 
       <section aria-labelledby="brand-nameplates" className="pb-4">
-        <h2 id="brand-nameplates" className="text-xl font-semibold tracking-tight">
+        <h2 id="brand-nameplates" className="scroll-mt-20 text-xl font-semibold tracking-tight">
           รุ่นทั้งหมดใน coverage
         </h2>
         <p className="mt-1 mb-4 text-sm text-faint">

@@ -730,3 +730,32 @@ export const getBrandDetail = cache(async (slug: string): Promise<BrandDetail | 
     },
   };
 });
+
+// ── ดัชนีนำทางแบบเบา (แบรนด์ + รุ่นในแต่ละแบรนด์) — ป้อน navbar switcher + mobile drawer ──
+// เลือกเฉพาะ field ที่ nav ใช้ (ไม่ลาก tree ราคา/สเปก) · cache() = ทุก layout ในรีเควสต์เดียวจ่าย DB ครั้งเดียว
+export type NavNameplate = { slug: string; name: string; lifecycleStatus: string };
+export type NavBrand = { slug: string; name: string; nameplates: NavNameplate[] };
+
+export const getNavIndex = cache(async (): Promise<NavBrand[]> => {
+  const brands = await prisma.brand.findMany({
+    orderBy: { name: "asc" },
+    select: {
+      slug: true,
+      name: true,
+      marketPresences: {
+        select: {
+          nameplates: {
+            orderBy: { name: "asc" },
+            select: { slug: true, name: true, lifecycleStatus: true },
+          },
+        },
+      },
+    },
+  });
+  return brands.map((b) => ({
+    slug: b.slug,
+    name: b.name,
+    // แบรนด์เดียวอาจมีหลาย presence (ตลาด/ช่วงเวลา) — รวมรุ่นให้ตรงกับที่ getBrandDetail แสดง
+    nameplates: b.marketPresences.flatMap((p) => p.nameplates),
+  }));
+});
