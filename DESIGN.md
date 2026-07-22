@@ -15,7 +15,17 @@
 - https://www.coinbase.com/explore · https://coinmarketcap.com (ตารางตลาด: ราคา + %เปลี่ยนแปลง + sparkline)
 
 **สิ่งที่ 7 เว็บมีร่วมกัน (observation ให้ mockup ใช้ — ไม่ใช่ข้อบังคับ):** ตาราง/กริดข้อมูลแน่นเป็นพระเอกตั้งแต่ fold แรก · ตัวเลข + %change + sparkline ต่อแถว · หลายสีตามหน้าที่ (เขียว/แดง/tier) · dark theme เป็นหลัก · nav utilitarian · หน้า entity มี stat block ใหญ่
-**ขั้นต่อไป:** เปิดเว็บ reference ดูของจริง → ทำหน้าเทียบ 2-3 ทิศ (เช่น A=op.gg/dotabuff stat-tracker · B=coinmarketcap market table · C=prydwen wiki hybrid) → เบสเลือก → implement ทั้งเว็บ + ลง token จริงใน `globals.css`
+### ✅ เคาะแล้ว + implement แล้ว (M22 · 2026-07-22) — สถานะปัจจุบันของเว็บ
+เส้นทางกว่าจะเจอ (ผ่านหลาย mockup): tracker/market แน่นๆ ตาม reference → เบส **"รกไป"** · Apple minimal → **"โล่งไป"** · สรุปเบสชี้หน้าจริงเดิม (M21) ว่า **"อยากได้หน้าแรกประมาณนี้"** = search-first landing ที่ต้อนรับ ไม่ใช่ dashboard แน่น
+**ดีไซน์ที่ลงโค้ดจริงแล้ว (branch `redesign/m22-carmeta-light-kanit`):**
+- **ฟอนต์ Kanit** ทั้งเว็บ (next/font · `--font-kanit`) · ตัวเลข tabular = Geist Mono ผ่าน `.tnum` (Kanit ไม่มี tnum จริง)
+- **light-only** (เบสเลือก 2026-07-22) — ตัด dark + theme toggle: เว็บโลโก้แบรนด์เยอะไม่เหมาะธีมมืด (โลโก้จม/ชิปขาวไม่สวย/โมโนโครม Ford เพี้ยน) เหมือนเว็บรถชั้นนำ (KBB/CarGurus/Kayak) · **dark พักไว้** (ถ้าจะทำต้องทำ dark-variant โลโก้รายแบรนด์)
+- **หน้าแรก**: hero **typewriter** (ฮุค "เช็กก่อนซื้อ" คงที่ + บรรทัด 2 พิมพ์วนเปลี่ยน คำท้ายสี accent · `hero-headline.tsx` · reduced-motion+aria) → search-first → แถวโลโก้แบรนด์จริง (Toyota + เร็วๆนี้) → ตารางสะอาด
+- **ตาราง (`car-database-explorer`)**: จุดสีตามหมวดขุมพลัง (diesel/petrol/hybrid/ev token) + ข้อความคู่เสมอ (a11y) · หัวเรียงได้ทุกคอลัมน์ (⇅ จาง · เพิ่ม year/variants) · ตัด "เริ่มต้น"/โลโก้ต่อแถว/ป้าย "ขายอยู่" (default = noise) · ราคา/ปี/จำนวน = `.tnum`
+- token สี: คง accent Royal #2f56c9 + เพิ่ม `--pt-diesel/petrol/hybrid/ev` (สื่อ "หมวด" ไม่ใช่คะแนนรถ) · ทุกหน้า (home/cars/brands) รับผ่าน globals อัตโนมัติ
+- verify: lint+tsc+build ผ่าน · เปิดจริง port 3105 + screenshot 3 หน้า
+**ยังไม่ทำ (backlog):** merge→main/deploy · ชิปงบด่วน · ป้าย "ปรับราคาล่าสุด/ใหม่" (ใช้ประวัติ append-only) · เทียบรุ่น · หน้ารุ่นใส่ data รวยขึ้น (strip-plot การกระจาย) · mobile ตาราง→การ์ด · รูปจริง Champ/Revo
+**~ขั้นต่อไปเดิม~** (ทำแล้ว): ทำ mockup เทียบ → เบสเลือก → implement
 - asset ที่มี: โลโก้ CARMETA ตระกูลน้ำเงิน Royal (#2f56c9) — ใช้/ไม่ใช้/ปรับ ให้รอบ mockup ตัดสิน
 
 ## ตัวตนผลิตภัณฑ์บน UI (ส่วนเดียวที่ต้องอยู่ในทุกดีไซน์ — มาจาก PRODUCT.md)

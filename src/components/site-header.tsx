@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { SiteLogo } from "@/components/site-logo";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteHeader() {
   return (
@@ -25,7 +24,6 @@ export function SiteHeader() {
           >
             evidence-first
           </span>
-          <ThemeToggle />
         </nav>
       </div>
     </header>

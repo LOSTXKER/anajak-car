@@ -1,11 +1,9 @@
 @import "tailwindcss";
 
-/* CARMETA design tokens — ตาม DESIGN.md
-   ทิศทาง: minimal เปิดโล่ง ลดกล่องการ์ด · โค้งมนทันสมัย · แยกชั้นด้วย whitespace + เส้นแบ่งบาง แทนกรอบกล่อง
-   ธีม: light = ขาวล้วน · dark = เทาเข้มแบบ GitHub/Linear (ไม่ดำสนิท) · สลับผ่าน [data-theme] (toggle) หรือ prefers-color-scheme
-   accent = "Royal Softened" (เลือกโดยเบสจากหน้าเทียบ 14 โทนตระกูลสีโลโก้):
-     light #2f56c9 (6.4:1 บนขาว) · dark #7c9dfa (6.8:1 บนเทาเข้ม)
-   --accent-2 (#0ac3fb) = ฟ้าอ่อนจากโลโก้จริง ใช้เฉพาะจุดตกแต่ง (hero glow) ไม่ใช่ accent การใช้งานหลัก
+/* CARMETA design tokens — redesign M22 (เบสเคาะ 2026-07-22)
+   ฟอนต์หลัก: Kanit (โหลดใน layout.tsx) · ตัวเลข tabular = Geist Mono ผ่าน .tnum
+   ธีม: light-only (เบสเลือก — เว็บโลโก้แบรนด์เยอะไม่เหมาะธีมมืด · dark พักไว้ก่อน)
+   accent = Royal #2f56c9 (แบรนด์) · เพิ่มสีตามหมวดขุมพลัง (สื่อหมวด ไม่ใช่คะแนนรถ)
    ทุกคู่สีข้อความผ่าน WCAG AA (คำนวณจริงก่อนตั้งค่า) */
 
 :root {
@@ -15,7 +13,7 @@
   --surface-muted: #f4f5f7;
   --border: #e7e8ea;
   --border-strong: #d6d7da;
-  --foreground: #18181b;
+  --foreground: #16181d;
   --muted: #52525b;
   --faint: #6e6e73;
   --accent: #2f56c9;
@@ -28,53 +26,11 @@
   --warning-soft: rgba(255, 159, 10, 0.14);
   --danger: #c93030;
   --danger-soft: rgba(255, 69, 58, 0.12);
-}
-
-/* ค่าธีมมืด — ใช้ซ้ำ 2 ที่ (toggle เลือกเอง + ตามระบบ) ต้อง copy ให้ตรงกันเสมอ */
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --background: #17181c;
-  --surface: #1d1e23;
-  --surface-muted: #25262c;
-  --border: #2c2d33;
-  --border-strong: #3a3b42;
-  --foreground: #f0f1f3;
-  --muted: #a4a6ae;
-  --faint: #969aa2;
-  --accent: #7c9dfa;
-  --accent-soft: rgba(124, 157, 250, 0.14);
-  --accent-2: #0ac3fb;
-  --accent-2-soft: rgba(10, 195, 251, 0.14);
-  --success: #4cd07d;
-  --success-soft: rgba(48, 209, 88, 0.16);
-  --warning: #ffb340;
-  --warning-soft: rgba(255, 159, 10, 0.16);
-  --danger: #ff6961;
-  --danger-soft: rgba(255, 69, 58, 0.16);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --background: #17181c;
-    --surface: #1d1e23;
-    --surface-muted: #25262c;
-    --border: #2c2d33;
-    --border-strong: #3a3b42;
-    --foreground: #f0f1f3;
-    --muted: #a4a6ae;
-    --faint: #969aa2;
-    --accent: #7c9dfa;
-    --accent-soft: rgba(124, 157, 250, 0.14);
-    --accent-2: #0ac3fb;
-    --accent-2-soft: rgba(10, 195, 251, 0.14);
-    --success: #4cd07d;
-    --success-soft: rgba(48, 209, 88, 0.16);
-    --warning: #ffb340;
-    --warning-soft: rgba(255, 159, 10, 0.16);
-    --danger: #ff6961;
-    --danger-soft: rgba(255, 69, 58, 0.16);
-  }
+  /* สีตามหมวดขุมพลัง (จุดในตาราง/ชิป) — คู่กับข้อความเสมอ ไม่พึ่งสีอย่างเดียว (a11y) */
+  --pt-diesel: #b26a00;
+  --pt-petrol: #2f6bd6;
+  --pt-hybrid: #0d9488;
+  --pt-ev: #12965a;
 }
 
 @theme inline {
@@ -96,7 +52,11 @@
   --color-warning-soft: var(--warning-soft);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
-  --font-sans: var(--font-geist-sans), var(--font-thai), ui-sans-serif, system-ui,
+  --color-pt-diesel: var(--pt-diesel);
+  --color-pt-petrol: var(--pt-petrol);
+  --color-pt-hybrid: var(--pt-hybrid);
+  --color-pt-ev: var(--pt-ev);
+  --font-sans: var(--font-kanit), "Noto Sans Thai", ui-sans-serif, system-ui,
     -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
@@ -105,6 +65,14 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/* ตัวเลข tabular (ราคา/ปี/จำนวน) — เรียงหลักตรงทุกแถว (Kanit ไม่มี tnum จริง) */
+.tnum {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.01em;
 }
 
 ::selection {
@@ -126,25 +94,22 @@ body {
   }
 }
 
-/* สลับภาพโลโก้ตามธีม — ใช้ selector เดียวกับระบบสี CSS var ข้างบน (data-theme toggle + prefers-color-scheme)
-   กัน hydration mismatch: DOM เหมือนกันทุก render ต่างแค่ display ผ่าน CSS ล้วน */
+/* light-only: โชว์โลโก้เวอร์ชัน light เสมอ (dark variant พักไว้ · คอมโพเนนต์ยังใช้คลาสเดิมได้) */
 .theme-logo-light {
   display: block;
 }
 .theme-logo-dark {
   display: none;
 }
-:root[data-theme="dark"] .theme-logo-light {
-  display: none;
-}
-:root[data-theme="dark"] .theme-logo-dark {
-  display: block;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .theme-logo-light {
-    display: none;
+
+/* caret ของ hero typewriter — กระพริบคมแบบเทอร์มินัล (นิ่งตอนพิมพ์ · กระพริบตอนหยุด) */
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
   }
-  :root:not([data-theme="light"]) .theme-logo-dark {
-    display: block;
+  50% {
+    opacity: 0;
   }
 }
+

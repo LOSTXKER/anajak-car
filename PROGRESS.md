@@ -1,7 +1,7 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-20 (M16–M21: hero/ตารางเกลากับเบส 5 รอบ + ปี/โลโก้/ป้ายสถานะ + ADAS 3 ฟีเจอร์แรกขึ้นหน้าเว็บ)
+อัปเดตล่าสุด: 2026-07-22 (**M22 redesign — implement แล้วบน branch**: Kanit + light-only + hero typewriter + ตารางเกลา · ทุกหน้าเข้าชุด)
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
@@ -38,7 +38,14 @@
 - รูปรถ = ลิขสิทธิ์ Toyota (CREDITS.md ครบ) — ทบทวนสิทธิ์ก่อน production · ยังไม่มี production domain
 - ~~งานยังไม่ commit~~ → **commit + push แล้ว (เบสสั่ง 2026-07-20)**: `a330ea4` เว็บ v1 (M2–M12) + `a01076e` ภาษากลาง (M13–M14) — tree สะอาด
 
+## 🎨 M22 REDESIGN (2026-07-22 — implement แล้ว บน branch `redesign/m22-carmeta-light-kanit`, ยังไม่ merge/deploy)
+เบสสั่ง "รื้อ UXUI" → ผ่าน mockup หลายรอบ (tracker=รกไป · Apple=โล่งไป) → เบสชี้หน้าจริงเดิม "อยากได้ประมาณนี้" + ขอ Kanit + typewriter + light
+- **ทำจริงแล้ว** (ดู DESIGN.md §เคาะแล้ว M22 · git diff branch นี้): Kanit ทั้งเว็บ · **light-only** (ตัด dark+toggle — โลโก้แบรนด์ไม่เหมาะมืด) · hero typewriter (`hero-headline.tsx`) · `car-database-explorer` เกลา (จุดสีขุมพลัง+tnum+sort⇅+ตัดของซ้ำ) · `globals.css` token ใหม่ (`.tnum`, `--pt-*`) · ตัด ThemeToggle ใน header · ทุกหน้า (home/cars/brands) เข้าชุดอัตโนมัติ
+- verify: lint+tsc+build ผ่าน · เปิดจริง 3105 + screenshot home/car/brands ครบ
+- **ไฟล์แก้**: `layout.tsx` `globals.css` `(home)/page.tsx` `car-database-explorer.tsx` `site-header.tsx` + ใหม่ `hero-headline.tsx`
+
 ## ▶ NEXT (ทำต่อทันที)
-1. รอเบสรีวิวของจริงบน anajak-car.vercel.app (หน้าแรกโฉมใหม่ + section ระบบช่วยขับขี่ในหน้ารถ)
-2. งานต่อที่เลือกได้: ขยาย ADAS ฟีเจอร์เพิ่ม (BSM/AHB/LDW — ข้อมูล classify ไว้แล้วบางส่วน) · เกลาหน้า /cars ให้ตัวหนังสือใหญ่ขึ้นเข้าชุดหน้าแรก · หน้า Compare exact entity · แบรนด์ที่ 2 (ผ่าน editorial gate VOCABULARY §4)
-3. VOCABULARY Phase 5 backlog (ดูหัวข้อ "ค้าง")
+1. **รอเบสรีวิว M22 บน branch** แล้วตัดสิน: merge→main + deploy · หรือปรับเพิ่มก่อน
+2. งานเสริมหน้าแรกที่เสนอไว้ (ทำระหว่าง/หลัง merge): ชิปงบด่วน (≤5แสน/1ล้าน/2ล้าน) · ป้าย "ปรับราคาล่าสุด/ใหม่" (ใช้ประวัติ append-only เป็นจุดต่าง) · mobile ตาราง→การ์ด
+3. หน้ารุ่น (/cars) ใส่ data รวยขึ้น (strip-plot การกระจายราคา + ADAS meter จากงาน tracker mockup) · เทียบรุ่น (Compare) · รูปจริง Champ/Revo
+4. งานเดิมค้าง: ขยาย ADAS (BSM/AHB/LDW) · VOCABULARY Phase 5 · แบรนด์ที่ 2 (editorial gate)

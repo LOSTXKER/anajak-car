@@ -176,6 +176,17 @@
 - [x] หน้า /cars: section "ระบบช่วยขับขี่" — uniform ทั้งรุ่น = สรุปบรรทัดเดียว (bZ4X/Champ/Revo) · ต่างตามเกรด = ตาราง trim×ฟีเจอร์ (Altis/Yaris/Travo/Fortuner) · มี=เขียว ไม่มี=จาง ยังไม่ยืนยัน=เอียง · marketing name เป็น tooltip ตามกฎ §3 ข้อ 7
 - [x] verify: verify-vocab.ts 34/34 ✅ + build + curl 7 หน้า + screenshot (ตาราง Travo เล่าเรื่องชัด: รุ่นล่างไม่มี → Overland Plus/Travo-e ครบ)
 
+## ▶ Milestone 22: Redesign — Kanit + light-only + typewriter (implement แล้วบน branch, ยังไม่ merge)
+> เบสสั่งรื้อ UXUI → mockup หลายรอบ (tracker "รกไป" · Apple "โล่งไป") → เบสชี้หน้าจริงเดิม "อยากได้ประมาณนี้" + ขอ Kanit/typewriter/light · รายละเอียดทิศ+เหตุผลใน DESIGN.md §เคาะแล้ว M22 · branch `redesign/m22-carmeta-light-kanit`
+- [x] Foundation: `layout.tsx` โหลด Kanit (next/font) + Geist Mono สำหรับตัวเลข · ตัด theme init script (light-only)
+- [x] `globals.css`: Kanit เป็น `--font-sans` · ตัด dark blocks ทั้งหมด (light-only) · `.tnum` (Geist Mono tabular) · token สีขุมพลัง `--pt-diesel/petrol/hybrid/ev` · keyframe caret
+- [x] Header: ตัด `ThemeToggle` (light-only)
+- [x] หน้าแรก: `hero-headline.tsx` (typewriter ฮุคคงที่ + บรรทัด 2 พิมพ์วน · reduced-motion+aria) แทน h1 static
+- [x] `car-database-explorer`: จุดสีขุมพลัง (PowertrainCell) · sort ทุกคอลัมน์ (+year/variants, ⇅ affordance) · ตัด "เริ่มต้น"/BrandMark ต่อแถว/ป้าย "ขายอยู่" default · `.tnum` ราคา/ปี/จำนวน
+- [x] verify: lint + tsc + production build ผ่าน · เปิดจริง port 3105 + screenshot home/cars/brands (ทุกหน้าเข้าชุด Kanit+light)
+- [ ] เบสรีวิว → merge เข้า main + deploy (Vercel)
+- [ ] เสริม: ชิปงบด่วน · ป้าย "ปรับราคาล่าสุด/ใหม่" · mobile ตาราง→การ์ด · หน้ารุ่น data รวยขึ้น (strip-plot) · รูปจริง Champ/Revo
+
 ## ถัดไป (ยังไม่เริ่ม)
 
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

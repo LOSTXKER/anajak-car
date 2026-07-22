@@ -7,9 +7,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { NameplateRow, VariantIndexRow } from "@/lib/queries";
 import { BODY_TYPE_LABEL, LIFECYCLE_LABEL, SEGMENT_LABEL } from "@/lib/labels";
 import { formatDateTH, formatTHB } from "@/lib/format";
-import { BRAND_LOGO_DARK, brandLogo, nameplateImage } from "@/lib/images";
+import { nameplateImage } from "@/lib/images";
 
-type SortKey = "name" | "price";
+type SortKey = "name" | "price" | "year" | "variants";
 type StatusFilter = "all" | "CURRENT" | "DISCONTINUED";
 
 // ตัวกรองแบบ dropdown — แพตเทิร์นมาตรฐานของเว็บตารางข้อมูล (กะทัดรัด · state ที่เลือกเห็นชัดบนตัวปุ่ม)
@@ -90,24 +90,6 @@ function CarThumb({ slug }: { slug: string }) {
   );
 }
 
-// โลโก้แบรนด์เล็กหน้าชื่อรุ่น (เบสสั่ง 2026-07-20) — dark variant เฉพาะแบรนด์ที่โลโก้จมพื้นมืด (ดู images.ts)
-function BrandMark({ slug, name }: { slug: string; name: string }) {
-  const logo = brandLogo(slug);
-  if (!logo) return null;
-  const dark = BRAND_LOGO_DARK[slug];
-  if (!dark) {
-    return (
-      <Image src={logo} alt={name} width={44} height={18} className="h-[18px] w-auto max-w-11 shrink-0 object-contain" />
-    );
-  }
-  return (
-    <>
-      <Image src={logo} alt={name} width={44} height={18} className="theme-logo-light h-[18px] w-auto max-w-11 shrink-0 object-contain" />
-      <Image src={dark} alt="" aria-hidden width={44} height={18} className="theme-logo-dark h-[18px] w-auto max-w-11 shrink-0 object-contain" />
-    </>
-  );
-}
-
 // ป้ายสถานะการขาย (เบสสั่ง 2026-07-20) — ขายอยู่/เลิกจำหน่าย ท้ายชื่อรุ่น
 const LIFECYCLE_BADGE_CLASS: Record<string, string> = {
   CURRENT: "bg-success-soft text-success",
@@ -135,6 +117,29 @@ function CategoryCell({ row }: { row: NameplateRow }) {
   }
   // บรรทัดเดียวจบ — บรรทัดย่อย (เช่น "SUV กลาง/SUV") ซ้ำความหมาย รกโดยไม่จำเป็น (ฟีดแบ็กเบส 2026-07-20)
   return <span>{segmentLabel ?? bodyLabel}</span>;
+}
+
+// จุดสีตามหมวดขุมพลัง (สแกนไว) — คู่กับข้อความเสมอ ไม่พึ่งสีอย่างเดียว (a11y) · สีสื่อ "หมวด" ไม่ใช่คะแนนรถ
+function ptDotClass(label: string): string {
+  if (label.includes("EV") || label.includes("ไฟฟ้า") || label.includes("ไฮโดรเจน")) return "bg-pt-ev";
+  if (label.includes("ไฮบริด")) return "bg-pt-hybrid";
+  if (label.includes("ดีเซล")) return "bg-pt-diesel";
+  if (label.includes("เบนซิน") || label.includes("สันดาป")) return "bg-pt-petrol";
+  return "bg-faint";
+}
+
+function PowertrainCell({ labels }: { labels: string[] }) {
+  return (
+    <span className="inline-flex flex-wrap items-center gap-x-1 gap-y-1">
+      {labels.map((l, i) => (
+        <span key={l} className="inline-flex items-center whitespace-nowrap">
+          {i > 0 && <span className="mx-1 text-faint">·</span>}
+          <span aria-hidden className={`mr-1.5 inline-block size-2 rounded-full ${ptDotClass(l)}`} />
+          {l}
+        </span>
+      ))}
+    </span>
+  );
 }
 
 export function CarDatabaseExplorer({
@@ -234,14 +239,17 @@ export function CarDatabaseExplorer({
       return true;
     });
 
+    // ค่าที่ไม่มี (null) อยู่ท้ายเสมอ ไม่ว่าจะเรียงทิศไหน
+    const numSort = (av: number | null, bv: number | null) => {
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      return sortAsc ? av - bv : bv - av;
+    };
     result.sort((a, b) => {
-      // แถวไม่มีราคาต้องอยู่ท้ายเสมอ ไม่ว่าจะเรียงทิศไหน
-      if (sortKey === "price") {
-        if (a.priceMin == null && b.priceMin == null) return 0;
-        if (a.priceMin == null) return 1;
-        if (b.priceMin == null) return -1;
-        return sortAsc ? a.priceMin - b.priceMin : b.priceMin - a.priceMin;
-      }
+      if (sortKey === "price") return numSort(a.priceMin, b.priceMin);
+      if (sortKey === "year") return numSort(a.launchYear, b.launchYear);
+      if (sortKey === "variants") return sortAsc ? a.variantCount - b.variantCount : b.variantCount - a.variantCount;
       const cmp = `${a.brand} ${a.name}`.localeCompare(`${b.brand} ${b.name}`, "th");
       return sortAsc ? cmp : -cmp;
     });
@@ -289,8 +297,9 @@ export function CarDatabaseExplorer({
   }
 
   function sortIndicator(key: SortKey) {
-    if (sortKey !== key) return null;
-    return <span aria-hidden> {sortAsc ? "↑" : "↓"}</span>;
+    if (sortKey !== key)
+      return <span aria-hidden className="ml-0.5 text-faint opacity-50">⇅</span>;
+    return <span aria-hidden className="ml-0.5 text-accent">{sortAsc ? "↑" : "↓"}</span>;
   }
 
   function ariaSort(key: SortKey): "ascending" | "descending" | undefined {
@@ -449,8 +458,24 @@ export function CarDatabaseExplorer({
                 </th>
                 <th scope="col" className="px-3 py-2 font-medium">ประเภท</th>
                 <th scope="col" className="px-3 py-2 font-medium">ขุมพลัง</th>
-                <th scope="col" className="px-3 py-2 text-right font-medium">ปี</th>
-                <th scope="col" className="py-2 pr-3 pl-3 text-right font-medium">รุ่นย่อย</th>
+                <th scope="col" aria-sort={ariaSort("year")} className="px-3 py-2 text-right font-medium">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("year")}
+                    className="-mx-1 rounded px-1 py-2 font-medium hover:text-foreground"
+                  >
+                    ปี{sortIndicator("year")}
+                  </button>
+                </th>
+                <th scope="col" aria-sort={ariaSort("variants")} className="py-2 pr-3 pl-3 text-right font-medium">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("variants")}
+                    className="-mx-1 rounded px-1 py-2 font-medium hover:text-foreground"
+                  >
+                    รุ่นย่อย{sortIndicator("variants")}
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -462,7 +487,6 @@ export function CarDatabaseExplorer({
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-3">
                       <CarThumb slug={row.slug} />
-                      <BrandMark slug={row.brandSlug} name={row.brand} />
                       <Link
                         href={`/cars/${row.slug}`}
                         className="text-[15px] font-semibold text-foreground group-hover:text-accent"
@@ -470,17 +494,17 @@ export function CarDatabaseExplorer({
                       >
                         {row.name}
                       </Link>
-                      <LifecycleBadge status={row.lifecycleStatus} />
+                      {/* ป้ายสถานะเฉพาะที่ต่างจากค่าปกติ (ขายอยู่ทั้งตาราง = noise) */}
+                      {row.lifecycleStatus !== "CURRENT" && (
+                        <LifecycleBadge status={row.lifecycleStatus} />
+                      )}
                     </div>
                   </td>
                   <td className="px-3 py-2.5 text-right whitespace-nowrap">
                     {row.priceMin != null ? (
-                      <>
-                        <span className="mr-1.5 text-[13px] text-faint">เริ่มต้น</span>
-                        <span className="text-base font-semibold tabular-nums">
-                          {formatTHB(row.priceMin)}
-                        </span>
-                      </>
+                      <span className="tnum text-base font-semibold">
+                        {formatTHB(row.priceMin)}
+                      </span>
                     ) : (
                       <span className="text-sm text-faint">ไม่มีข้อมูล</span>
                     )}
@@ -489,18 +513,16 @@ export function CarDatabaseExplorer({
                     <CategoryCell row={row} />
                   </td>
                   <td className="px-3 py-2.5 text-sm text-muted">
-                    {row.powertrainLabels.join(" · ")}
+                    <PowertrainCell labels={row.powertrainLabels} />
                   </td>
                   <td
-                    className="px-3 py-2.5 text-right text-sm text-muted tabular-nums"
+                    className="tnum px-3 py-2.5 text-right text-sm text-muted"
                     title={row.generationCode ?? undefined}
                   >
                     {row.launchYear ?? <span className="text-faint">—</span>}
                   </td>
                   <td className="py-2.5 pr-3 pl-3 text-right whitespace-nowrap">
-                    <span className="text-sm text-muted tabular-nums">
-                      {row.variantCount} รุ่นย่อย
-                    </span>
+                    <span className="tnum text-sm text-muted">{row.variantCount}</span>
                     <span aria-hidden className="ml-1.5 text-faint transition-colors group-hover:text-accent">
                       ›
                     </span>

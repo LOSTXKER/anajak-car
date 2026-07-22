@@ -5,6 +5,7 @@ import { formatDateTH } from "@/lib/format";
 import { CarDatabaseExplorer } from "@/components/car-database-explorer";
 import { BrandShortcuts } from "@/components/brand-shortcuts";
 import { HeroSearch } from "@/components/hero-search";
+import { HeroHeadline } from "@/components/hero-headline";
 
 export const dynamic = "force-dynamic";
 
@@ -61,12 +62,8 @@ export default async function Home() {
         <p className="text-xs font-medium tracking-[0.22em] text-faint uppercase">
           Thailand Car Database
         </p>
-        {/* mobile ใช้ text-3xl — วลี "ด้วยข้อมูลรถที่ตรวจสอบได้" เป็นสตริงไทยยาวไม่มีวรรค ตัดคำไม่ได้ ที่ 4xl จะล้นจอ 390px */}
-        <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
-          เช็กก่อนซื้อ
-          <br className="sm:hidden" />
-          <span className="text-muted"> ด้วยข้อมูลรถที่ตรวจสอบได้</span>
-        </h1>
+        {/* พาดหัว typewriter — ฮุคคงที่ + บรรทัด 2 พิมพ์วนเปลี่ยน (client component) */}
+        <HeroHeadline />
         <div className="mt-8">
           <HeroSearch />
         </div>

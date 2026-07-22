@@ -1,22 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Thai } from "next/font/google";
+import { Kanit, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// ฟอนต์หลักทั้งเว็บ = Kanit (เบสเลือก · geometric ยุคใหม่ รองรับไทย+ละติน)
+const kanit = Kanit({
+  variable: "--font-kanit",
+  subsets: ["thai", "latin"],
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
 });
 
+// Geist Mono = ตัวเลข tabular (ราคา/ปี/จำนวน) ให้เรียงหลักตรง — Kanit ไม่มี tabular จริง
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const notoSansThai = Noto_Sans_Thai({
-  variable: "--font-thai",
-  subsets: ["thai", "latin"],
 });
 
 export const metadata: Metadata = {
@@ -41,10 +40,9 @@ export const metadata: Metadata = {
   },
 };
 
-// ตั้ง data-theme ก่อน paint กันธีมกะพริบ (FOUC) — ต้องเป็น inline script เท่านั้น
-// + ถอน service worker แปลกปลอมบน origin นี้ (CARMETA ไม่ใช้ SW · public/sw.js เป็น kill-switch คู่กัน)
-const themeInitScript = `try{var t=localStorage.getItem("carmeta-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}
-try{if("serviceWorker"in navigator)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})}).catch(function(){})}catch(e){}`;
+// ถอน service worker แปลกปลอมบน origin นี้ (CARMETA ไม่ใช้ SW · public/sw.js เป็น kill-switch คู่กัน)
+// (ตัด theme init ออก — เว็บเป็น light-only แล้ว)
+const swKillScript = `try{if("serviceWorker"in navigator)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})}).catch(function(){})}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -54,11 +52,10 @@ export default function RootLayout({
   return (
     <html
       lang="th"
-      suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${notoSansThai.variable} h-full antialiased`}
+      className={`${kanit.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: swKillScript }} />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
