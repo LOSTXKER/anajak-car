@@ -8,7 +8,9 @@
 - **`src/components/panel.tsx` ใหม่ = ภาษา UI กลาง 3 ชิ้น**: `SectionHeader` (■ accent + เส้นสีเต็มแถว) · `StatBar` (แถบหัวพื้น accent ตัวขาว + ค่าใหญ่) · `TagCard` (ป้ายสีซ้ายแบบ skill card) — หน้าใหม่ๆ ให้ reuse จากนี่
 - หน้ารุ่น: **hero banner แท่งสีเฉียง (clip-path) หลังรูปรถ** + eyebrow TOYOTA สี accent + ชื่อดำใหญ่ + powertrain chips + StatBar ×3 · ตัด PricePositionBar/ADAS ออกจาก hero (ซ้ำ/รก) · ตาราง B เดิมใต้ SectionHeader · about+timeline เป็น 2 คอลัมน์
 - หน้า SKU: banner เดียวกัน + ราคาเป็น StatBar · **switcher = ‹ ก่อนหน้า · x/N · ถัดไป › + ลิงก์กลับตาราง** (เลิก pill wall 18 อัน) · สเปก|ADAS 2 คอลัมน์ · ADAS = TagCard (เขียว มี/เทา ไม่มี/จาง ยังไม่ยืนยัน)
-- verify: lint+build ผ่าน · เปิดจริง hilux/model-3/glc + SKU + screenshot · route เทียบ `/ux/[v]/[slug]` **ยังไม่ลบ** (เบส deny rm — ไว้ลบตอน merge)
+- verify: lint+build ผ่าน · เปิดจริง hilux/model-3/glc + SKU + screenshot · **เบสดูแล้ว "ดูดีขึ้น" → ลบ /ux + push branch แล้ว (`8db3c69`)**
+- ต่อยอดรอบเดียวกัน: หน้าแบรนด์ (hub/models/timeline) ใช้ภาษาเดียวกัน (banner+StatBar+SectionHeader) · sku-table จอ <sm เป็นการ์ด
+- ค้าง: **ยังไม่ merge เข้า main** (เบสยังไม่สั่งชัด — main auto-deploy Vercel) · Tesla/Benz โลโก้+รูปรถยังไม่มี (ติดลิขสิทธิ์ ต้องเบสตัดสิน) · แบรนด์ Tesla/Benz ยังไม่มี EvidenceLink ระดับ BRAND (หน้าแหล่งอ้างอิงแบรนด์โชว์ 0 — ของราคาอยู่ระดับรุ่นครบ)
 
 ## รอบก่อนหน้า (M25e + M26 — เบสเคาะแล้วทำเลย)
 - **SKU-first "ตารางเป็นประตู"** (เบสรีวิวรอบแรกว่า UX งง/ซ้ำ → รื้อใหม่): `/cars/[slug]` = **ตารางรุ่นย่อยเดียว กดแต่ละแถวเข้าหน้า SKU** (`sku-table.tsx` — จัดกลุ่มตามตัวถัง มีช่วงราคาต่อกลุ่ม ลูกศร › ทุกแถว) — เลิกใช้การ์ด grid + tab "เทียบรุ่นย่อย" (ซ้ำกัน) · ข้อมูลประกอบ (โครงรุ่น/ไทม์ไลน์/แหล่งอ้างอิง) = section เงียบใต้ตาราง (`nameplate-about.tsx`) · **ทั้งหน้าเป็น server component ไม่ต้อง JS** (เดิม tab เป็น client) · `/cars/[slug]/[sku]` = 1 SKU (สเปกเต็ม + **ประวัติราคา** append-only + ADAS ของ trim + switcher) · skuKey = derived slug ไม่แตะ schema (`variantKey` slugs.ts + `selectVariant` queries.ts) · fix: stat ADAS = 0 → "—" (no false precision)
