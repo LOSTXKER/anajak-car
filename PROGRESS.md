@@ -3,7 +3,14 @@
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
 อัปเดตล่าสุด: 2026-07-22 (**M25e SKU-first + M26 เพิ่มแบรนด์ Tesla/Benz — เสร็จ branch `redesign/m25-sidebar-tabs`**)
 
-## รอบล่าสุด (M25e + M26 — เบสเคาะแล้วทำเลย)
+## รอบล่าสุด 2 (M25g — รื้อ UI เป็นภาษา "prydwen คู่มือเกม" ฉบับ light · 2026-07-23)
+เบสยังไม่ถูกใจ 3 รอบ → ถามเจาะ: หน้ารุ่นรก · หน้า SKU งง · จืดไม่มีเอกลักษณ์ · อยากได้ฟีล prydwen.gg → ไปดูโครงจริงแล้วแปลงเป็น light:
+- **`src/components/panel.tsx` ใหม่ = ภาษา UI กลาง 3 ชิ้น**: `SectionHeader` (■ accent + เส้นสีเต็มแถว) · `StatBar` (แถบหัวพื้น accent ตัวขาว + ค่าใหญ่) · `TagCard` (ป้ายสีซ้ายแบบ skill card) — หน้าใหม่ๆ ให้ reuse จากนี่
+- หน้ารุ่น: **hero banner แท่งสีเฉียง (clip-path) หลังรูปรถ** + eyebrow TOYOTA สี accent + ชื่อดำใหญ่ + powertrain chips + StatBar ×3 · ตัด PricePositionBar/ADAS ออกจาก hero (ซ้ำ/รก) · ตาราง B เดิมใต้ SectionHeader · about+timeline เป็น 2 คอลัมน์
+- หน้า SKU: banner เดียวกัน + ราคาเป็น StatBar · **switcher = ‹ ก่อนหน้า · x/N · ถัดไป › + ลิงก์กลับตาราง** (เลิก pill wall 18 อัน) · สเปก|ADAS 2 คอลัมน์ · ADAS = TagCard (เขียว มี/เทา ไม่มี/จาง ยังไม่ยืนยัน)
+- verify: lint+build ผ่าน · เปิดจริง hilux/model-3/glc + SKU + screenshot · route เทียบ `/ux/[v]/[slug]` **ยังไม่ลบ** (เบส deny rm — ไว้ลบตอน merge)
+
+## รอบก่อนหน้า (M25e + M26 — เบสเคาะแล้วทำเลย)
 - **SKU-first "ตารางเป็นประตู"** (เบสรีวิวรอบแรกว่า UX งง/ซ้ำ → รื้อใหม่): `/cars/[slug]` = **ตารางรุ่นย่อยเดียว กดแต่ละแถวเข้าหน้า SKU** (`sku-table.tsx` — จัดกลุ่มตามตัวถัง มีช่วงราคาต่อกลุ่ม ลูกศร › ทุกแถว) — เลิกใช้การ์ด grid + tab "เทียบรุ่นย่อย" (ซ้ำกัน) · ข้อมูลประกอบ (โครงรุ่น/ไทม์ไลน์/แหล่งอ้างอิง) = section เงียบใต้ตาราง (`nameplate-about.tsx`) · **ทั้งหน้าเป็น server component ไม่ต้อง JS** (เดิม tab เป็น client) · `/cars/[slug]/[sku]` = 1 SKU (สเปกเต็ม + **ประวัติราคา** append-only + ADAS ของ trim + switcher) · skuKey = derived slug ไม่แตะ schema (`variantKey` slugs.ts + `selectVariant` queries.ts) · fix: stat ADAS = 0 → "—" (no false precision)
 - **แบรนด์ใหม่ 2**: Tesla (Model 3 ×4 SKU, Model Y ×3) + Mercedes-Benz (C-Class ×5, E-Class ×3, S-Class ×2, GLC ×5 รวม Coupé, EQS ×1) = 7 nameplate / 23 SKU · research ผ่าน workflow 15 agents ทุกราคา cross-check สื่อไทย · seed: `prisma/ops/phase7-seed-tesla-benz.ts` (+7b backfill links, sanity) · raw: `prisma/ops/data/research-tesla-benz-20260722.json` · ค่าที่แหล่งขัดแย้ง (แบต/กำลัง Tesla LR·Perf, ระยะ Model Y RWD, แบต PHEV Benz) = **unknown ไม่เดา** จดใน notes · Tesla Model 3 ราคาจากสื่อ (ทางการ 403) = MEDIA/MEDIUM · ที่เหลือ MANUFACTURER_OFFICIAL/HIGH
 - verify แล้ว: lint+build ผ่าน · `verify-vocab.ts` **33/33 ✅** · เปิดจริง (port 3001) ทุกหน้าใหม่ 200 + ลิงก์ SKU ทุกอันเข้าได้ + screenshot จริง · commit `75e2005` (Part A) + Part B รอ commit

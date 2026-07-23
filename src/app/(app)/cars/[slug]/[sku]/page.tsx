@@ -14,6 +14,7 @@ import {
   SpecRow,
   ptDotClass,
 } from "@/components/badges";
+import { SectionHeader, StatBar, TagCard } from "@/components/panel";
 import { SkuSwitcher } from "@/components/sku-switcher";
 
 export const dynamic = "force-dynamic";
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// ── หน้ารุ่นย่อย (1 SKU ขายจริง) — สเปกเต็ม + ประวัติราคา + ADAS ของ trim นี้ ──
+// ── หน้ารุ่นย่อย (1 SKU) — ภาษา "คู่มือ" เดียวกับหน้ารุ่น: banner + SectionHeader + StatBar/TagCard ──
 export default async function SkuPage({ params }: Props) {
   const { slug, sku } = await params;
   const [detail, tree] = await Promise.all([getNameplateDetail(slug), getNameplateTree(slug)]);
@@ -46,11 +47,14 @@ export default async function SkuPage({ params }: Props) {
       (t) => t.label === trim.name || t.label === `${trim.name} — ${derivative.name ?? ""}`,
     ) ?? null;
   const adasFeatures = detail.adas?.features ?? [];
-  const statusText = (has: boolean | null) => (has === true ? "มี" : has === false ? "ไม่มี" : "ยังไม่ยืนยัน");
-  const statusClass = (has: boolean | null) =>
-    has === true ? "text-success font-medium" : has === false ? "text-faint" : "text-faint italic";
 
   const bodyLabel = derivative.name || (BODY_TYPE_LABEL[derivative.bodyType] ?? derivative.bodyType);
+  const evSpecs: [string, string][] = [];
+  if (v.motorKw != null) evSpecs.push(["กำลังมอเตอร์", `${v.motorKw} kW`]);
+  if (v.batteryKwh != null) evSpecs.push(["ความจุแบตเตอรี่", `${v.batteryKwh} kWh`]);
+  if (v.rangeKm != null) evSpecs.push(["ระยะทางต่อชาร์จ", `${v.rangeKm} กม.${v.rangeStandard ? ` (${v.rangeStandard})` : ""}`]);
+  const charge = [v.acKw != null ? `AC ${v.acKw} kW` : null, v.dcKw != null ? `DC ${v.dcKw} kW` : null].filter(Boolean).join(" · ");
+  if (charge) evSpecs.push(["การชาร์จ", charge]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
@@ -66,91 +70,101 @@ export default async function SkuPage({ params }: Props) {
         </ol>
       </nav>
 
-      {/* hero */}
-      <header className="pt-6">
-        <p className="text-[13px] font-medium tracking-widest text-faint uppercase">{tree.brand} {tree.name}</p>
-        <div className="mt-1 flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{v.name}</h1>
-          <LifecycleBadge status={detail.lifecycleStatus} />
-        </div>
-        <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-muted">
-          <span>{bodyLabel}</span>
-          <span aria-hidden>·</span>
-          <span className="inline-flex items-center gap-1.5">
-            <span aria-hidden className={`inline-block size-2 rounded-full ${ptDotClass(v.powertrainText)}`} />
-            {v.powertrainText}
-          </span>
-        </p>
+      {/* hero banner — ภาษาเดียวกับหน้ารุ่น */}
+      <header className="relative mt-5 overflow-hidden rounded-2xl border border-border bg-background">
+        <div
+          aria-hidden
+          className="absolute inset-y-0 right-0 hidden w-[38%] bg-accent-soft sm:block"
+          style={{ clipPath: "polygon(24% 0, 100% 0, 100% 100%, 0 100%)" }}
+        />
+        <div className="relative p-6 sm:p-8">
+          <p className="text-[13px] font-semibold tracking-[0.2em] text-accent uppercase">{tree.brand} {tree.name}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-3">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{v.name}</h1>
+            <LifecycleBadge status={detail.lifecycleStatus} />
+          </div>
+          <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-muted">
+            <span>{bodyLabel}</span>
+            <span aria-hidden>·</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span aria-hidden className={`inline-block size-2 rounded-full ${ptDotClass(v.powertrainText)}`} />
+              {v.powertrainText}
+            </span>
+          </p>
 
-        <div className="mt-5">
-          {v.price != null ? (
-            <div className="flex flex-wrap items-baseline gap-3">
-              <span className="text-3xl font-semibold tnum sm:text-4xl">{formatTHB(v.price)}</span>
-              <span className="text-sm text-faint">ราคาป้ายทางการ{v.priceAsOf ? ` · ณ ${formatDateTH(v.priceAsOf)}` : ""}</span>
+          <div className="mt-5 flex flex-wrap items-end gap-x-8 gap-y-4">
+            <div className="w-full max-w-[13rem]">
+              <StatBar
+                label="ราคาป้ายทางการ"
+                value={v.price != null ? formatTHB(v.price) : "ไม่มีข้อมูล"}
+                sub={v.priceAsOf ? `ณ ${formatDateTH(v.priceAsOf)}` : undefined}
+              />
             </div>
-          ) : (
-            <span className="text-lg text-faint">ไม่มีข้อมูลราคา</span>
-          )}
-          {v.price != null && detail.priceMin != null && detail.priceMax != null && detail.priceMin !== detail.priceMax && (
-            <div className="mt-3 max-w-md">
-              <PricePositionBar min={detail.priceMin} max={detail.priceMax} value={v.price} />
-              <p className="mt-1 text-[11px] text-faint">ตำแหน่งราคาในช่วงรุ่นย่อยทั้งหมดของ {tree.name}</p>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-6 border-t border-border pt-5">
-          <SkuSwitcher tree={tree} currentSkuKey={v.skuKey} />
-        </div>
-      </header>
-
-      {/* สเปก */}
-      <section aria-labelledby="spec-heading" className="mt-10">
-        <h2 id="spec-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">สเปก</h2>
-        <dl className="mt-3 max-w-2xl">
-          <SpecRow label="ขุมพลัง">{v.powertrainText}</SpecRow>
-          {v.engineText && <SpecRow label="เครื่องยนต์"><span className="text-[13px]">{v.engineText}</span></SpecRow>}
-          {v.powerText && <SpecRow label="กำลัง"><span className="tnum">{v.powerText}</span></SpecRow>}
-          <SpecRow label="เกียร์"><DataStatusValue value={v.transmissionText} /></SpecRow>
-          <SpecRow label="ระบบขับเคลื่อน"><DataStatusValue value={v.drivetrain ? (DRIVETRAIN_LABEL[v.drivetrain] ?? v.drivetrain) : null} /></SpecRow>
-          <SpecRow label="ที่นั่ง"><span className="tnum"><DataStatusValue value={v.seatCount} /></span></SpecRow>
-          <SpecRow label="รหัสเกรด"><span className="tnum text-xs"><DataStatusValue value={v.gradeCode} /></span></SpecRow>
-        </dl>
-        {(v.motorKw != null || v.batteryKwh != null || v.rangeKm != null || v.acKw != null || v.dcKw != null) && (
-          <div className="mt-5 grid max-w-2xl grid-cols-2 gap-2 sm:grid-cols-3">
-            {v.motorKw != null && (
-              <div className="rounded-xl border border-border bg-surface-muted px-3 py-2.5">
-                <div className="text-[11px] text-faint">กำลังมอเตอร์</div>
-                <div className="mt-0.5 text-sm font-semibold tnum">{v.motorKw} kW</div>
-              </div>
-            )}
-            {v.batteryKwh != null && (
-              <div className="rounded-xl border border-border bg-surface-muted px-3 py-2.5">
-                <div className="text-[11px] text-faint">ความจุแบตเตอรี่</div>
-                <div className="mt-0.5 text-sm font-semibold tnum">{v.batteryKwh} kWh</div>
-              </div>
-            )}
-            {v.rangeKm != null && (
-              <div className="rounded-xl border border-border bg-surface-muted px-3 py-2.5">
-                <div className="text-[11px] text-faint">ระยะทางต่อชาร์จ</div>
-                <div className="mt-0.5 text-sm font-semibold tnum">{v.rangeKm} กม.{v.rangeStandard ? ` (${v.rangeStandard})` : ""}</div>
-              </div>
-            )}
-            {(v.acKw != null || v.dcKw != null) && (
-              <div className="rounded-xl border border-border bg-surface-muted px-3 py-2.5">
-                <div className="text-[11px] text-faint">การชาร์จ</div>
-                <div className="mt-0.5 text-sm font-semibold tnum">
-                  {[v.acKw != null ? `AC ${v.acKw} kW` : null, v.dcKw != null ? `DC ${v.dcKw} kW` : null].filter(Boolean).join(" · ")}
-                </div>
+            {v.price != null && detail.priceMin != null && detail.priceMax != null && detail.priceMin !== detail.priceMax && (
+              <div className="w-full max-w-xs pb-1">
+                <PricePositionBar min={detail.priceMin} max={detail.priceMax} value={v.price} />
+                <p className="mt-1 text-[11px] text-faint">ตำแหน่งราคาในรุ่นย่อยทั้งหมดของ {tree.name}</p>
               </div>
             )}
           </div>
-        )}
-      </section>
 
-      {/* ประวัติราคา (append-only — โชว์ทุก observation ไม่ทับอดีต) */}
-      <section aria-labelledby="price-history-heading" className="mt-10">
-        <h2 id="price-history-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">ประวัติราคา</h2>
+          <div className="mt-6 border-t border-border pt-4">
+            <SkuSwitcher tree={tree} currentSkuKey={v.skuKey} />
+          </div>
+        </div>
+      </header>
+
+      {/* สเปก | ADAS — 2 คอลัมน์บนจอกว้าง */}
+      <div className="mt-10 grid gap-10 lg:grid-cols-2">
+        <section aria-label="สเปก">
+          <SectionHeader id="spec-heading" title="สเปก" />
+          <dl className="mt-3">
+            <SpecRow label="ขุมพลัง">{v.powertrainText}</SpecRow>
+            {v.engineText && <SpecRow label="เครื่องยนต์"><span className="text-[13px]">{v.engineText}</span></SpecRow>}
+            {v.powerText && <SpecRow label="กำลัง"><span className="tnum">{v.powerText}</span></SpecRow>}
+            <SpecRow label="เกียร์"><DataStatusValue value={v.transmissionText} /></SpecRow>
+            <SpecRow label="ระบบขับเคลื่อน"><DataStatusValue value={v.drivetrain ? (DRIVETRAIN_LABEL[v.drivetrain] ?? v.drivetrain) : null} /></SpecRow>
+            <SpecRow label="ที่นั่ง"><span className="tnum"><DataStatusValue value={v.seatCount} /></span></SpecRow>
+            <SpecRow label="รหัสเกรด"><span className="tnum text-xs"><DataStatusValue value={v.gradeCode} /></span></SpecRow>
+          </dl>
+          {evSpecs.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {evSpecs.map(([k, val]) => (
+                <StatBar key={k} label={k} value={<span className="text-sm">{val}</span>} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section aria-label="ระบบช่วยขับขี่">
+          <SectionHeader id="adas-heading" title="ระบบช่วยขับขี่" />
+          {adasRow ? (
+            <div className="mt-3 space-y-2.5">
+              {adasFeatures.map((f) => {
+                const val = adasRow.values.find((x) => x.key === f.key);
+                const has = val?.has ?? null;
+                return (
+                  <TagCard
+                    key={f.key}
+                    tag={has === true ? "มี" : has === false ? "ไม่มี" : "ยังไม่ยืนยัน"}
+                    tone={has === true ? "success" : has === false ? "muted" : "faint"}
+                    title={<span title={f.definition ?? undefined}>{f.nameTh} <span className="font-normal text-faint">({f.key})</span></span>}
+                  >
+                    {val?.marketing ?? undefined}
+                  </TagCard>
+                );
+              })}
+              <p className="pt-1 text-[13px] text-faint">ตามตารางสเปกทางการ — สเปกไม่ระบุ = &ldquo;ยังไม่ยืนยัน&rdquo; (ไม่ใช่ &ldquo;ไม่มี&rdquo;)</p>
+            </div>
+          ) : (
+            <div className="mt-3"><PendingBlock title="ยังไม่มีข้อมูลระบบช่วยขับขี่ที่ยืนยัน" reason="สเปกทางการยังไม่ระบุ AEB/ACC/LKA ของรุ่นย่อยนี้" /></div>
+          )}
+        </section>
+      </div>
+
+      {/* ประวัติราคา */}
+      <section aria-label="ประวัติราคา" className="mt-12">
+        <SectionHeader id="price-history-heading" title="ประวัติราคา" sub="append-only — บันทึกทุกครั้งที่พบ ไม่เขียนทับอดีต" />
         {v.priceHistory.length > 0 ? (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full max-w-2xl min-w-[480px] text-sm">
@@ -182,38 +196,10 @@ export default async function SkuPage({ params }: Props) {
         <p className="mt-2 text-[13px] text-faint">ราคาป้ายทางการ ไม่ใช่ราคาซื้อขายจริง</p>
       </section>
 
-      {/* ADAS ของ trim นี้ */}
-      <section aria-labelledby="adas-heading" className="mt-10">
-        <h2 id="adas-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">ระบบช่วยขับขี่</h2>
-        {adasRow ? (
-          <>
-            <ul className="mt-3 max-w-3xl space-y-2">
-              {adasFeatures.map((f) => {
-                const val = adasRow.values.find((x) => x.key === f.key);
-                const has = val?.has ?? null;
-                return (
-                  <li key={f.key} className="flex items-baseline gap-3 text-[15px]">
-                    <span className={statusClass(has)}>{statusText(has)}</span>
-                    <span title={f.definition ?? undefined}>
-                      {f.nameTh} <span className="text-faint">({f.key})</span>
-                      {val?.marketing && <span className="ml-1 text-[13px] text-faint">— {val.marketing}</span>}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-            <p className="mt-3 text-[13px] text-faint">ตามตารางสเปกทางการของรุ่นย่อยนี้ — ค่าที่สเปกไม่ระบุ = &ldquo;ยังไม่ยืนยัน&rdquo; (ไม่ใช่ &ldquo;ไม่มี&rdquo;)</p>
-          </>
-        ) : (
-          <div className="mt-3 max-w-xl"><PendingBlock title="ยังไม่มีข้อมูลระบบช่วยขับขี่ที่ยืนยัน" reason="สเปกทางการยังไม่ระบุ AEB/ACC/LKA ของรุ่นย่อยนี้" /></div>
-        )}
-      </section>
-
-      {/* แหล่งอ้างอิง (ระดับรุ่น — หลักฐานเฉพาะราคา SKU นี้อยู่ในตารางประวัติราคา) */}
-      <section aria-labelledby="sku-sources-heading" className="mt-12 border-t border-border pt-8">
-        <h2 id="sku-sources-heading" className="scroll-mt-20 text-lg font-semibold tracking-tight text-accent">แหล่งอ้างอิง</h2>
-        <p className="mt-1.5 text-sm text-faint">{detail.sources.length} แหล่ง — หลักฐานราคาและข้อมูลของ {tree.brand} {tree.name}</p>
-        <ul className="mt-3 max-w-3xl divide-y divide-border">
+      {/* แหล่งอ้างอิง */}
+      <section aria-label="แหล่งอ้างอิง" className="mt-12">
+        <SectionHeader id="sku-sources-heading" title="แหล่งอ้างอิง" sub={<><span className="tnum">{detail.sources.length}</span> แหล่ง — ของ {tree.brand} {tree.name}</>} />
+        <ul className="mt-2 max-w-3xl divide-y divide-border">
           {detail.sources.map((s) => (
             <li key={s.id} className="flex flex-wrap items-center gap-2 py-3 text-sm">
               <span className="font-medium">{s.publisher ?? "ไม่ระบุผู้เผยแพร่"}</span>

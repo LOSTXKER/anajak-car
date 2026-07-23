@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { NameplateTree } from "@/lib/queries";
 import { BODY_TYPE_LABEL, DRIVETRAIN_LABEL } from "@/lib/labels";
-import { formatPriceRange, formatTHB } from "@/lib/format";
+import { formatDateTH, formatPriceRange, formatTHB } from "@/lib/format";
 import { ptDotClass } from "@/components/badges";
+import { SectionHeader } from "@/components/panel";
 
 // ── ตารางรุ่นย่อย (ทิศ B "ตารางสถิติ" — เบสเลือก 2026-07-23): การ์ดต่อตัวถัง หัวกลุ่มสี accent ·
 // คอลัมน์ Δ ถูกสุด · zebra · แถวกดเข้าหน้า SKU ── server component ล้วน
@@ -14,7 +15,7 @@ function specText(v: { powerText: string | null; transmissionText: string | null
   );
 }
 
-export function SkuTable({ tree }: { tree: NameplateTree }) {
+export function SkuTable({ tree, latestChecked }: { tree: NameplateTree; latestChecked?: string | null }) {
   const gen = tree.generations[0] ?? null;
   if (!gen) return null;
   const all = gen.derivatives.flatMap((d) => d.trims.flatMap((t) => t.variants));
@@ -22,13 +23,12 @@ export function SkuTable({ tree }: { tree: NameplateTree }) {
   const min = prices.length ? Math.min(...prices) : null;
 
   return (
-    <section aria-labelledby="sku-heading" className="mt-10">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 id="sku-heading" className="text-lg font-semibold tracking-tight text-accent">รุ่นย่อยทั้งหมด</h2>
-        <span className="text-[13px] text-faint">
-          <span className="tnum">{gen.variantCount}</span> รุ่น · แตะแถวเพื่อดูสเปกและราคา
-        </span>
-      </div>
+    <section aria-label="รุ่นย่อยและราคา" className="mt-10">
+      <SectionHeader
+        id="sku-heading"
+        title="รุ่นย่อยและราคา"
+        sub={<><span className="tnum">{gen.variantCount}</span> รุ่น · แตะแถวเพื่อดูสเปกเต็ม</>}
+      />
 
       <div className="mt-4 space-y-6">
         {gen.derivatives.map((d) => (
@@ -79,7 +79,10 @@ export function SkuTable({ tree }: { tree: NameplateTree }) {
           </div>
         ))}
       </div>
-      <p className="mt-3 text-[13px] text-faint">ราคาป้ายทางการ ไม่ใช่ราคาซื้อขายจริง · Δ = ส่วนต่างจากรุ่นย่อยถูกสุดของรุ่นนี้</p>
+      <p className="mt-3 text-[13px] text-faint">
+        ราคาป้ายทางการ ไม่ใช่ราคาซื้อขายจริง · Δ = ส่วนต่างจากรุ่นย่อยถูกสุดของรุ่นนี้
+        {latestChecked ? <> · ตรวจสอบล่าสุด <span className="tnum">{formatDateTH(latestChecked)}</span></> : null}
+      </p>
     </section>
   );
 }
