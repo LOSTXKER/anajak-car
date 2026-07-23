@@ -35,8 +35,12 @@ export default async function BrandTimelinePage({ params }: Props) {
         </ol>
       </nav>
 
-      <h1 className="pt-6 pb-2 text-3xl font-semibold tracking-tight">ไทม์ไลน์และประวัติ {detail.name}</h1>
-      {operationYear && <p className="text-sm text-muted tnum">ดำเนินงานในไทยตั้งแต่ {operationYear}{detail.distributorName ? ` · ${detail.distributorName}` : ""}</p>}
+      <div className="pt-6">
+        <p className="text-[13px] font-semibold tracking-[0.2em] text-accent uppercase">{detail.name}</p>
+        <h1 className="mt-0.5 text-3xl font-bold tracking-tight">ไทม์ไลน์และประวัติ</h1>
+        {operationYear && <p className="mt-1 text-sm text-muted tnum">ดำเนินงานในไทยตั้งแต่ {operationYear}{detail.distributorName ? ` · ${detail.distributorName}` : ""}</p>}
+        <div aria-hidden className="mt-3 h-0.5 w-full rounded-full bg-accent" />
+      </div>
 
       {timeline.length > 0 ? (
         <ol className="mt-8 border-l border-border">

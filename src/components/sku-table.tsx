@@ -37,7 +37,38 @@ export function SkuTable({ tree, latestChecked }: { tree: NameplateTree; latestC
               <h3 className="text-sm font-semibold text-accent">{d.name || (BODY_TYPE_LABEL[d.bodyType] ?? d.bodyType)}</h3>
               <span className="text-xs text-accent/80 tnum">{formatPriceRange(d.priceMin, d.priceMax)}</span>
             </div>
-            <div className="overflow-x-auto">
+            {/* mobile: การ์ดต่อรุ่นย่อย (จอ <sm — ไม่ต้องปาดตาราง) */}
+            <div className="sm:hidden">
+              {d.trims.flatMap((t) => t.variants).map((v) => (
+                <Link
+                  key={v.id}
+                  href={`/cars/${tree.slug}/${v.skuKey}`}
+                  className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 last:border-b-0 active:bg-accent-soft"
+                >
+                  <div className="min-w-0">
+                    <div className="font-medium">{v.name}</div>
+                    <div className="mt-0.5 flex items-center gap-1.5 text-[12px] text-faint">
+                      <span aria-hidden className={`inline-block size-1.5 shrink-0 rounded-full ${ptDotClass(v.powertrainText)}`} />
+                      <span className="truncate">{v.powertrainText}{specText(v) !== "—" ? ` · ${specText(v)}` : ""}</span>
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    {v.price != null ? (
+                      <>
+                        <div className="font-semibold tnum">{formatTHB(v.price)}</div>
+                        <div className="text-[11px] tnum">
+                          {min != null && v.price === min ? <span className="text-success">ถูกสุด</span> : min != null ? <span className="text-faint">+{formatTHB(v.price - min)}</span> : null}
+                        </div>
+                      </>
+                    ) : (
+                      <span className="text-[13px] text-faint">ไม่มีข้อมูล</span>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {/* desktop: ตารางเต็ม */}
+            <div className="hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[720px] text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-[12px] text-faint">

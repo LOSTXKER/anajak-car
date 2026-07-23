@@ -7,6 +7,7 @@ import { formatPriceRange } from "@/lib/format";
 import { nameplateImage } from "@/lib/images";
 import { DataStatusValue, LifecycleBadge, PowertrainDots } from "@/components/badges";
 import { CarDatabaseExplorer } from "@/components/car-database-explorer";
+import { SectionHeader } from "@/components/panel";
 
 export const dynamic = "force-dynamic";
 
@@ -36,8 +37,12 @@ export default async function BrandModelsPage({ params }: Props) {
         </ol>
       </nav>
 
-      <h1 className="pt-6 pb-1 text-3xl font-semibold tracking-tight">รุ่นรถ {detail.name}</h1>
-      <p className="text-sm text-faint">เฉพาะรุ่นที่มีข้อมูลตรวจสอบแล้ว — กดเข้าดูราคาและรุ่นย่อย · รุ่นอื่นจะทยอยเพิ่มพร้อมหลักฐาน</p>
+      <div className="pt-6">
+        <p className="text-[13px] font-semibold tracking-[0.2em] text-accent uppercase">{detail.name}</p>
+        <h1 className="mt-0.5 text-3xl font-bold tracking-tight">รุ่นรถ</h1>
+        <p className="mt-1 text-sm text-faint">เฉพาะรุ่นที่มีข้อมูลตรวจสอบแล้ว — กดเข้าดูราคาและรุ่นย่อย · รุ่นอื่นจะทยอยเพิ่มพร้อมหลักฐาน</p>
+        <div aria-hidden className="mt-3 h-0.5 w-full rounded-full bg-accent" />
+      </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {detail.rows.map((r) => {
@@ -61,9 +66,9 @@ export default async function BrandModelsPage({ params }: Props) {
         })}
       </div>
 
-      <section aria-labelledby="search-heading" className="mt-10 border-t border-border pt-8">
-        <h2 id="search-heading" className="text-xl font-semibold tracking-tight">ค้นหาและกรอง</h2>
-        <p className="mt-1 mb-4 text-sm text-faint">กรองตามตัวถัง ขุมพลัง สถานะ และงบ — แชร์ลิงก์ผลกรองได้</p>
+      <section aria-label="ค้นหาและกรอง" className="mt-10">
+        <SectionHeader id="search-heading" title="ค้นหาและกรอง" sub="กรองตามตัวถัง ขุมพลัง สถานะ และงบ — แชร์ลิงก์ผลกรองได้" />
+        <div className="mb-4" />
         <CarDatabaseExplorer rows={detail.rows} variantRows={detail.variantRows} />
       </section>
     </div>

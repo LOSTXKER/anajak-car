@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBrandDetail, getBrandTimeline } from "@/lib/queries";
 import { formatDateTH, formatPriceRange } from "@/lib/format";
-import { DataStatusValue, StatTile } from "@/components/badges";
+import { DataStatusValue } from "@/components/badges";
+import { SectionHeader, StatBar } from "@/components/panel";
 import { BrandMark } from "@/components/brand-shortcuts";
 
 export const dynamic = "force-dynamic";
@@ -42,29 +43,38 @@ export default async function BrandOverviewPage({ params }: Props) {
         </ol>
       </nav>
 
-      <header className="pt-6 pb-8">
-        <div className="flex items-center gap-4">
-          <span className="flex size-16 items-center justify-center rounded-2xl bg-surface-muted p-3">
-            <BrandMark name={detail.name} size={44} />
-          </span>
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{detail.name}</h1>
-            {detail.officialName && <p className="mt-1 text-sm text-muted">{detail.officialName}</p>}
+      {/* hero banner — ภาษาเดียวกับหน้ารุ่น (แท่งสีเฉียง + StatBar) */}
+      <header className="relative mt-5 mb-8 overflow-hidden rounded-2xl border border-border bg-background">
+        <div
+          aria-hidden
+          className="absolute inset-y-0 right-0 hidden w-[40%] bg-accent-soft sm:block"
+          style={{ clipPath: "polygon(24% 0, 100% 0, 100% 100%, 0 100%)" }}
+        />
+        <div className="relative p-6 sm:p-8">
+          <div className="flex items-center gap-4">
+            <span className="flex size-16 shrink-0 items-center justify-center rounded-2xl border border-border bg-background p-3">
+              <BrandMark name={detail.name} size={44} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[13px] font-semibold tracking-[0.2em] text-accent uppercase">แบรนด์</p>
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{detail.name}</h1>
+              {detail.officialName && <p className="mt-0.5 text-sm text-muted">{detail.officialName}</p>}
+            </div>
           </div>
-        </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
-          <StatTile label="รุ่นใน coverage" value={<span className="tnum">{detail.stats.nameplates}</span>} />
-          <StatTile label="รุ่นย่อย" value={<span className="tnum">{detail.stats.variants}</span>} />
-          <StatTile label="ช่วงราคาป้าย" value={<span className="tnum text-sm">{formatPriceRange(detail.stats.priceMin, detail.stats.priceMax) ?? "—"}</span>} />
-          <StatTile label="ดำเนินงานตั้งแต่" value={<span className="tnum"><DataStatusValue value={operationYear} /></span>} sub={detail.distributorName ?? undefined} />
-          <StatTile label="ตรวจสอบล่าสุด" value={<span className="tnum text-sm">{formatDateTH(detail.stats.latestChecked) ?? "—"}</span>} />
+          <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+            <StatBar label="รุ่นใน coverage" value={detail.stats.nameplates} />
+            <StatBar label="รุ่นย่อย" value={detail.stats.variants} />
+            <StatBar label="ช่วงราคาป้าย" value={<span className="text-sm">{formatPriceRange(detail.stats.priceMin, detail.stats.priceMax) ?? "—"}</span>} />
+            <StatBar label="ดำเนินงานตั้งแต่" value={<DataStatusValue value={operationYear} />} sub={detail.distributorName ?? undefined} />
+            <StatBar label="ตรวจสอบล่าสุด" value={<span className="text-sm">{formatDateTH(detail.stats.latestChecked) ?? "—"}</span>} />
+          </div>
         </div>
       </header>
 
       {(detail.channel || detail.parentCompany) && (
-        <section className="border-t border-border pt-6">
-          <h2 className="text-lg font-semibold tracking-tight">เกี่ยวกับแบรนด์ในไทย</h2>
+        <section className="pt-2">
+          <SectionHeader title="เกี่ยวกับแบรนด์ในไทย" />
           <dl className="mt-3 grid gap-x-8 gap-y-3 sm:grid-cols-2">
             <div><dt className="text-xs text-faint">ผู้ผลิต/จัดจำหน่าย</dt><dd className="mt-0.5 text-sm font-medium"><DataStatusValue value={detail.distributorName} /></dd></div>
             <div><dt className="text-xs text-faint">บริษัทแม่</dt><dd className="mt-0.5 text-sm font-medium"><DataStatusValue value={detail.parentCompany} /></dd></div>
@@ -73,8 +83,9 @@ export default async function BrandOverviewPage({ params }: Props) {
         </section>
       )}
 
-      <section className="mt-8 border-t border-border pt-6">
-        <div className="grid gap-3 sm:grid-cols-3">
+      <section className="mt-8">
+        <SectionHeader title="สำรวจข้อมูลแบรนด์" />
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
           {entries.map((e) => (
             <Link key={e.href} href={e.href} className="rounded-2xl border border-border bg-surface p-5 transition-all hover:border-accent hover:shadow-sm">
               <div className="flex items-center justify-between gap-2">
