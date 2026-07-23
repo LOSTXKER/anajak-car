@@ -1,7 +1,24 @@
 # 📍 PROGRESS — สถานะสด
 
 > เขียนทับทุกครั้ง ไม่สะสม log (log อยู่ git history) · hook โหลดไฟล์นี้ทุก session
-อัปเดตล่าสุด: 2026-07-22 (**M22+M22b redesign — merge เข้า main (local) แล้ว รอ push**: Kanit + light-only + typewriter + ตารางเกลา + แตก NameplateTable · เบสสั่ง deploy แต่ push main ถูก safety guard บล็อก → เบสรัน `git push origin main` เอง)
+อัปเดตล่าสุด: 2026-07-22 (**M25e SKU-first + M26 เพิ่มแบรนด์ Tesla/Benz — เสร็จ branch `redesign/m25-sidebar-tabs`**)
+
+## รอบล่าสุด 2 (M25g — รื้อ UI เป็นภาษา "prydwen คู่มือเกม" ฉบับ light · 2026-07-23)
+เบสยังไม่ถูกใจ 3 รอบ → ถามเจาะ: หน้ารุ่นรก · หน้า SKU งง · จืดไม่มีเอกลักษณ์ · อยากได้ฟีล prydwen.gg → ไปดูโครงจริงแล้วแปลงเป็น light:
+- **`src/components/panel.tsx` ใหม่ = ภาษา UI กลาง 3 ชิ้น**: `SectionHeader` (■ accent + เส้นสีเต็มแถว) · `StatBar` (แถบหัวพื้น accent ตัวขาว + ค่าใหญ่) · `TagCard` (ป้ายสีซ้ายแบบ skill card) — หน้าใหม่ๆ ให้ reuse จากนี่
+- หน้ารุ่น: **hero banner แท่งสีเฉียง (clip-path) หลังรูปรถ** + eyebrow TOYOTA สี accent + ชื่อดำใหญ่ + powertrain chips + StatBar ×3 · ตัด PricePositionBar/ADAS ออกจาก hero (ซ้ำ/รก) · ตาราง B เดิมใต้ SectionHeader · about+timeline เป็น 2 คอลัมน์
+- หน้า SKU: banner เดียวกัน + ราคาเป็น StatBar · **switcher = ‹ ก่อนหน้า · x/N · ถัดไป › + ลิงก์กลับตาราง** (เลิก pill wall 18 อัน) · สเปก|ADAS 2 คอลัมน์ · ADAS = TagCard (เขียว มี/เทา ไม่มี/จาง ยังไม่ยืนยัน)
+- verify: lint+build ผ่าน · เปิดจริง hilux/model-3/glc + SKU + screenshot · **เบสดูแล้ว "ดูดีขึ้น" → ลบ /ux + push branch แล้ว (`8db3c69`)**
+- ต่อยอดรอบเดียวกัน: หน้าแบรนด์ (hub/models/timeline) ใช้ภาษาเดียวกัน (banner+StatBar+SectionHeader) · sku-table จอ <sm เป็นการ์ด
+- ค้าง: **ยังไม่ merge เข้า main** (เบสยังไม่สั่งชัด — main auto-deploy Vercel) · Tesla/Benz โลโก้+รูปรถยังไม่มี (ติดลิขสิทธิ์ ต้องเบสตัดสิน) · แบรนด์ Tesla/Benz ยังไม่มี EvidenceLink ระดับ BRAND (หน้าแหล่งอ้างอิงแบรนด์โชว์ 0 — ของราคาอยู่ระดับรุ่นครบ)
+
+## รอบก่อนหน้า (M25e + M26 — เบสเคาะแล้วทำเลย)
+- **SKU-first "ตารางเป็นประตู"** (เบสรีวิวรอบแรกว่า UX งง/ซ้ำ → รื้อใหม่): `/cars/[slug]` = **ตารางรุ่นย่อยเดียว กดแต่ละแถวเข้าหน้า SKU** (`sku-table.tsx` — จัดกลุ่มตามตัวถัง มีช่วงราคาต่อกลุ่ม ลูกศร › ทุกแถว) — เลิกใช้การ์ด grid + tab "เทียบรุ่นย่อย" (ซ้ำกัน) · ข้อมูลประกอบ (โครงรุ่น/ไทม์ไลน์/แหล่งอ้างอิง) = section เงียบใต้ตาราง (`nameplate-about.tsx`) · **ทั้งหน้าเป็น server component ไม่ต้อง JS** (เดิม tab เป็น client) · `/cars/[slug]/[sku]` = 1 SKU (สเปกเต็ม + **ประวัติราคา** append-only + ADAS ของ trim + switcher) · skuKey = derived slug ไม่แตะ schema (`variantKey` slugs.ts + `selectVariant` queries.ts) · fix: stat ADAS = 0 → "—" (no false precision)
+- **แบรนด์ใหม่ 2**: Tesla (Model 3 ×4 SKU, Model Y ×3) + Mercedes-Benz (C-Class ×5, E-Class ×3, S-Class ×2, GLC ×5 รวม Coupé, EQS ×1) = 7 nameplate / 23 SKU · research ผ่าน workflow 15 agents ทุกราคา cross-check สื่อไทย · seed: `prisma/ops/phase7-seed-tesla-benz.ts` (+7b backfill links, sanity) · raw: `prisma/ops/data/research-tesla-benz-20260722.json` · ค่าที่แหล่งขัดแย้ง (แบต/กำลัง Tesla LR·Perf, ระยะ Model Y RWD, แบต PHEV Benz) = **unknown ไม่เดา** จดใน notes · Tesla Model 3 ราคาจากสื่อ (ทางการ 403) = MEDIA/MEDIUM · ที่เหลือ MANUFACTURER_OFFICIAL/HIGH
+- verify แล้ว: lint+build ผ่าน · `verify-vocab.ts` **33/33 ✅** · เปิดจริง (port 3001) ทุกหน้าใหม่ 200 + ลิงก์ SKU ทุกอันเข้าได้ + screenshot จริง · commit `75e2005` (Part A) + Part B รอ commit
+- ค้าง: โลโก้ Tesla/Benz (ตอนนี้ fallback ตัวอักษร) + รูปรถ · sku มั่ว = soft-404 (โชว์หน้า 404 ถูกแต่ HTTP 200 — ข้อจำกัด streaming + loading.tsx ของ [slug]) · เบสรีวิว → merge
+
+(ก่อนหน้า: M25 sidebar หมวดกลาง + หน้ารุ่นเป็น tab แบบ prydwen — sidebar หลักอันเดียว(หมวด)+brand switcher บนหัว)
 
 ## ทำถึงไหน
 **CARMETA v1 + ระบบภาษากลาง (canonical vocabulary) apply แล้ว Phase 0–4** — สเปกเต็ม + สถานะอยู่ใน `VOCABULARY.md` (มี TL;DR อ่านง่ายหัวไฟล์) · milestone ครบใน PLAN.md (M0–M14)
@@ -18,7 +35,7 @@
 - ~~Champ/Revo ยังไม่ seed~~ → **seed แล้ว (M15)**: RideHeightClass.STANDARD ใช้จริง 14 trims · raw API JSON เก็บที่ `prisma/ops/data/hilux-3lines-20260720.json` · endpoint สเปกทางการ: `GET /model/api/car/?series_code=<code>` (+ ราคารวม: `POST /api-service/car/series {"grades":true}`)
 - ⚠️ prisma CLI: รันด้วย `PRISMA_CLI_DIRECT=1` (สลับไป DIRECT_URL 5432 ใน prisma.config.ts — pooler 6543 ทำ CLI ค้าง) · enum/rename ที่มีข้อมูลต้องทำ SQL มือใน `prisma/ops/*.sql` ก่อน push (db push cast เองไม่ได้) · partial unique index ของ TrimFeature สร้างด้วย SQL มือ (db push ไม่ลบ — ตรวจแล้ว)
 
-หน้าเว็บ (5 หน้า — อย่าลืม `/brands/[slug]` ใช้ CarDatabaseExplorer ตัวเดียวกับหน้าแรก) · **deploy แล้ว: anajak-car.vercel.app (auto-deploy จาก main)**:
+หน้าเว็บ (5 หน้า — อย่าลืม `/brands/[slug]` ใช้ CarDatabaseExplorer ตัวเดียวกับหน้าแรก) · **deploy แล้ว: anajak-car.vercel.app (auto-deploy จาก main)** · **หน้าใน (/brands/[slug], /cars/[slug]) ได้ shell ใหม่ navbar+sidebar ตั้งแต่ M23 (ดูท้ายไฟล์)**:
 - `/` **Hero ใหม่ search-first (M16 — เบสเลือกจากหน้าเทียบ 3 แบบ)**: ช่องค้นหาใหญ่เป็นพระเอก + ชิปหมวดผูก filter จริง + บรรทัดพิสูจน์ตัวเลขจริง · hero ส่งเงื่อนไขเข้าตารางผ่าน URL param (`?q=/&body=/&pt=/&cap=` — แชร์ลิงก์ผลกรองได้) · ช่องค้นหาในตารางซ่อนบนหน้าแรก (hideSearch — กันซ้ำ) · ตาราง 2 มุมมอง + dropdown filters (ตัวเลือกขุมพลังจาก enum canonical)
 - `/cars/[slug]` = บันไดราคา · specLine เป็นคำกลางล้วน (`ดีเซล · 204 PS · อัตโนมัติ 6 สปีด · 4WD`) · ชื่อการตลาด (VN Turbo ฯลฯ) อยู่ title tooltip เท่านั้น · HEV โชว์ "E-CVT"
 - `/brands` + `/brands/[slug]` (แหล่งอ้างอิงอ่านผ่าน EntityType enum แล้ว — type-safe)
@@ -38,14 +55,38 @@
 - รูปรถ = ลิขสิทธิ์ Toyota (CREDITS.md ครบ) — ทบทวนสิทธิ์ก่อน production · ยังไม่มี production domain
 - ~~งานยังไม่ commit~~ → **commit + push แล้ว (เบสสั่ง 2026-07-20)**: `a330ea4` เว็บ v1 (M2–M12) + `a01076e` ภาษากลาง (M13–M14) — tree สะอาด
 
-## 🎨 M22 REDESIGN (2026-07-22 — implement แล้ว บน branch `redesign/m22-carmeta-light-kanit`, ยังไม่ merge/deploy)
-เบสสั่ง "รื้อ UXUI" → ผ่าน mockup หลายรอบ (tracker=รกไป · Apple=โล่งไป) → เบสชี้หน้าจริงเดิม "อยากได้ประมาณนี้" + ขอ Kanit + typewriter + light
-- **ทำจริงแล้ว** (ดู DESIGN.md §เคาะแล้ว M22 · git diff branch นี้): Kanit ทั้งเว็บ · **light-only** (ตัด dark+toggle — โลโก้แบรนด์ไม่เหมาะมืด) · hero typewriter (`hero-headline.tsx`) · `car-database-explorer` เกลา (จุดสีขุมพลัง+tnum+sort⇅+ตัดของซ้ำ) · `globals.css` token ใหม่ (`.tnum`, `--pt-*`) · ตัด ThemeToggle ใน header · ทุกหน้า (home/cars/brands) เข้าชุดอัตโนมัติ
-- verify: lint+tsc+build ผ่าน · เปิดจริง 3105 + screenshot home/car/brands ครบ
-- **ไฟล์แก้**: `layout.tsx` `globals.css` `(home)/page.tsx` `car-database-explorer.tsx` `site-header.tsx` + ใหม่ `hero-headline.tsx`
+## 🎨 M22 REDESIGN — merge เข้า main แล้ว (Kanit + light-only + typewriter + ตารางเกลา)
+สถานะปัจจุบันของ main · รายละเอียด+เหตุผลอยู่ DESIGN.md §เคาะแล้ว M22
+
+## 🧭 M23 INNER-SHELL (2026-07-22 — implement เสร็จ branch `redesign/m23-inner-shell`, ยังไม่ merge)
+เบสสั่ง "หน้าแรกคงเดิม แต่เข้าไปในเว็บให้มี sidebar ประจำแบรนด์ + navbar เครื่องมือกลาง" → ทำหน้าเทียบ 3 แบบ (branch `mockup/m23-shell-compare` · preview บน Vercel) → **เบสเลือก Variant A "เมนู"**
+- **โครง route**: root layout สลิมเหลือ html/body · แยกโซนด้วย route group — `(home)/` = SiteHeader เดิม (หน้าแรก output ไม่เปลี่ยน) · `(app)/` = GlobalNavbar + sidebar (URL เดิมทุกอัน: route group ไม่เปลี่ยน path) · `/brands` index อยู่ `(app)/(plain)/` (navbar เปล่าไม่มี sidebar)
+- **Sidebar Variant A** (`brand-sidebar.tsx`): เมนู ภาพรวมแบรนด์/รุ่นรถทั้งหมด/แหล่งอ้างอิง · หน้ารุ่นเพิ่มกลุ่ม "ในหน้านี้" (บันไดราคา/ADAS/ไทม์ไลน์/แหล่งอ้างอิง — **gate ตามข้อมูลจริง**: ไม่มี ADAS/event → ซ่อน) · anchor เลื่อนด้วย `scroll-mt-20` กัน navbar บัง
+- **Navbar** (`global-navbar.tsx`): ค้นหา (→ `/?q=#database` reuse สัญญาเดิม) · BrandSwitcher (รู้แบรนด์ทั้ง /brands/[slug] และ /cars/[slug]) · **"เทียบรุ่น (เร็วๆ นี้)"** disabled (เบสเคาะให้โชว์) · แบรนด์ · mobile = hamburger→drawer (รายชื่อรุ่น + เมนูกลาง · a11y ครบ)
+- **query ใหม่** `getNavIndex()` เบา (brands+nameplates · cache dedupe) ป้อน switcher/drawer · **ลบ `theme-toggle.tsx`** (dead code)
+- **ไฟล์ใหม่**: `(home)/layout.tsx` `(app)/layout.tsx` `(app)/(plain)/layout.tsx` `(app)/brands/[slug]/layout.tsx` `(app)/cars/[slug]/layout.tsx` `(app)/not-found.tsx` + loading ต่อโซน · components: `app-shell` `global-navbar` `brand-sidebar` `brand-switcher` `mobile-nav-drawer`
+- verify: lint+tsc+build ผ่าน · เปิดจริง 3105 — หน้าแรกเหมือนเดิม · /brands (navbar เปล่า) · /brands/toyota + /cars/* (navbar+sidebar) · 404 ถูก (แบรนด์/รุ่นไม่มี→notFound จาก layout) · **สัญญา filter URL รอด** (`?body/pt/q` ยัง pre-apply) · anchor เลื่อนพ้น navbar · mobile drawer (iframe harness 400px) ครบ
+
+## 🗂️ M24 ENTITY-SPLIT + REDESIGN + TIERLIST (2026-07-22 — branch `redesign/m24-entity-split`)
+เบสสั่ง "รื้อ UXUI: แยกข้อมูลแต่ละหน้า + สวยขึ้น + Tierlist" → mockup รวม (branch `mockup/m24-compare`) → เบสเลือก Dense/Cards/Editorial
+- **แยกหน้าตามลำดับชั้น (nested ใต้ /cars/[slug])**: `/gen/[launchYear]` (Generation) · `/gen/[gen]/[deriv]` (Derivative+Phase inline) · `/gen/[gen]/[deriv]/[trim]` (Trim/Variant — leaf รวยสุด: สเปกเต็ม+BEV+evidence) · `/timeline` (Change Timeline) — ทุกหน้าใช้ M23 shell (sidebar/navbar) · **หน้า thin ตอบ 200 + placeholder ซื่อสัตย์** (มิติ/facelift/model year = "ไม่มีข้อมูล/รอข้อมูล" ไม่ปลอมเลข)
+- **query ใหม่**: `getNameplateTree` (คงชั้น gen→deriv→phase→trim→variant · `src/lib/slugs.ts` gen key=launchYear) + selectors + `getBrandTimeline` · ขยาย `getNameplateDetail` มีสเปก BEV (specExtras: motor/battery/range/charging — known เท่านั้น)
+- **redesign**: หน้ารุ่น `/cars/[slug]` = **Dense** (stat tiles + PricePositionBar + ตารางเทียบ + BEV block จาก data จริง + generation strip ลิงก์หน้าย่อย) · หน้าแบรนด์ `/brands/[slug]` = **Cards** (KPI row + การ์ดรุ่น + brand timeline) คง CarDatabaseExplorer + สัญญา filter · primitives ใหม่ใน `badges.tsx` (StatTile/SpecRow/PricePositionBar/PendingBlock) · label ใหม่ CAB_TYPE/RIDE_HEIGHT/CHASSIS (กัน raw enum หลุด)
+- **Tierlist Editorial** (`/tierlist` + `/tierlist/[slug]` โซน (plain)): S/A/B/C ติดป้าย "ความเห็นบรรณาธิการ" + byline + เหตุผล + หลักฐานต่ออันดับ · **เก็บเป็น config `src/lib/editorial-tiers.ts` (ไม่แตะ schema — แยก opinion จาก Fact tables · เบสแก้ไฟล์นี้เพื่อจัด tier)** · navbar เพิ่มลิงก์ "จัดอันดับ" · sidebar route-aware (หน้าย่อยโชว์ "← กลับหน้ารุ่น")
+- verify: lint+tsc+build ผ่าน · เปิดจริง 3105 ทุกหน้า (hub/gen/deriv/trim/timeline/tierlist/brand) · slug รุ่น/tierlist ผิด = 404 · หน้า thin = 200+placeholder · filter URL รอด · ไม่มี raw enum หลุด (ตรวจแล้ว)
+- ⚠️ known issue เล็ก: **deep invalid key** (เช่น `/gen/9999`, bad deriv/trim) เรนเดอร์หน้า 404 ถูก **แต่ HTTP status = 200** (soft-404 — Next.js: notFound จาก nested page ไม่ set 404 เหมือนจาก layout) · ผู้ใช้เห็นหน้า "ไม่พบ" ปกติ · แก้เต็มต้องเพิ่ม layout validate ต่อชั้น (ยังไม่ทำ — กระทบแค่ URL ที่พิมพ์มั่ว/ลิงก์เสีย)
+
+## 🧭 M25 หน้ารุ่นเป็น TAB + แยก navbar(กลาง)/sidebar(แบรนด์) ชัด (2026-07-22 — branch `redesign/m25-sidebar-tabs` · ref prydwen.gg tabs)
+เบสส่ง prydwen เป็น ref (แคปเก็บแล้ว) → หน้ารุ่นเป็น tab · **แล้วเบสเคาะ split สุดท้าย: navbar = เครื่องมือกลางใช้ร่วมทั้งเว็บ · sidebar = ทางลัดของแบรนด์นั้นๆ เท่านั้น** (ตรงคำขอแรกสุด)
+- **navbar เครื่องมือกลาง** (`global-navbar.tsx`): logo + สลับแบรนด์ + ค้นหา + จัดอันดับ + เทียบรุ่น(เร็วๆนี้) + แบรนด์ — ข้ามแบรนด์ ใช้ทั้งเว็บ · อยู่ `(app)/layout`
+- **sidebar ประจำแบรนด์ = เมนูเนื้อหาแบรนด์ "1 หน้า 1 เรื่อง"** (`brand-sidebar.tsx` · แบบหมวดใน prydwen · **ไม่ใช่ลิสต์ชื่อรุ่น** — เบสแก้รอบสุดท้าย): **ภาพรวม · รุ่นรถ · ไทม์ไลน์และประวัติ · แหล่งอ้างอิง** (แต่ละอันเป็นหน้าแยกจริง) · โชว์เฉพาะโซนแบรนด์/รุ่น · โซนไม่ผูกแบรนด์ (`/tierlist`,`/brands` index) = ไม่มี sidebar
+- **หน้าแบรนด์แตกเป็น 4 หน้า** (1 เรื่อง/หน้า): `/brands/[slug]` ภาพรวม(ตัวตน+KPI+ทางเข้า) · `/models` (การ์ดรุ่น+explorer · filter ย้ายมาที่นี่) · `/timeline` (getBrandTimeline · Toyota 7 เหตุการณ์) · `/sources`
+- **หน้ารุ่นเป็น tab** (`nameplate-tabs.tsx` client): ภาพรวม / ราคา·รุ่นย่อย / สเปก / ADAS / ไทม์ไลน์ — hero อยู่บน แท็บสลับ client · **ยุบ route เจน/ตัวถัง/รุ่นย่อย/timeline (M24) เข้า tab แล้วลบ** · slugs/getNameplateTree ยังใช้
+- mobile drawer = ทางลัดรุ่นแบรนด์ปัจจุบัน + เมนูกลาง (หน้าแรก/แบรนด์/จัดอันดับ)
+- verify: lint+tsc+build · เปิดจริง 3105 — navbar เครื่องมือกลางทุกหน้า · sidebar รุ่นโชว์เฉพาะ brand/car (active ถูก) · tierlist เต็มกว้างไม่มี sidebar · tab สลับ 5 แท็บ · brand Cards · slug ผิด=404 · mobile
 
 ## ▶ NEXT (ทำต่อทันที)
-1. **รอเบสรีวิว M22 บน branch** แล้วตัดสิน: merge→main + deploy · หรือปรับเพิ่มก่อน
-2. งานเสริมหน้าแรกที่เสนอไว้ (ทำระหว่าง/หลัง merge): ชิปงบด่วน (≤5แสน/1ล้าน/2ล้าน) · ป้าย "ปรับราคาล่าสุด/ใหม่" (ใช้ประวัติ append-only เป็นจุดต่าง) · mobile ตาราง→การ์ด
-3. หน้ารุ่น (/cars) ใส่ data รวยขึ้น (strip-plot การกระจายราคา + ADAS meter จากงาน tracker mockup) · เทียบรุ่น (Compare) · รูปจริง Champ/Revo
+1. **รอเบสรีวิว M25 บน preview** → ถ้า OK merge M23+M24+M25 → main + deploy · ลบ branch mockup (m23/m24) + โฟลเดอร์ dev
+2. เกลาถ้าเบสสั่ง: soft-404 status (เพิ่ม gen/deriv layout validate) · scroll-spy sidebar · Tierlist Data-driven (เพิ่มอีกหมวดในหน้า /tierlist) · เทียบรุ่น (Compare) เปลี่ยนปุ่ม navbar เป็นลิงก์
+3. เติมข้อมูลให้หน้าย่อยรวยขึ้น: มิติตัวถัง (L×W×H) · ประวัติเจน/facelift · รูปจริง Champ/Revo
 4. งานเดิมค้าง: ขยาย ADAS (BSM/AHB/LDW) · VOCABULARY Phase 5 · แบรนด์ที่ 2 (editorial gate)

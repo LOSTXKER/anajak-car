@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Kanit, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 // ฟอนต์หลักทั้งเว็บ = Kanit (เบสเลือก · geometric ยุคใหม่ รองรับไทย+ละติน)
 const kanit = Kanit({
@@ -56,9 +54,8 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col font-sans">
         <script dangerouslySetInnerHTML={{ __html: swKillScript }} />
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        {/* chrome (header/footer) ย้ายไปไว้ต่อโซน: (home) ใช้ SiteHeader เดิม · (app) ใช้ GlobalNavbar+sidebar */}
+        {children}
       </body>
     </html>
   );

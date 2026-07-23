@@ -187,6 +187,25 @@
 - [ ] เบสรีวิว → merge เข้า main + deploy (Vercel)
 - [ ] เสริม: ชิปงบด่วน · ป้าย "ปรับราคาล่าสุด/ใหม่" · mobile ตาราง→การ์ด · หน้ารุ่น data รวยขึ้น (strip-plot) · รูปจริง Champ/Revo
 
+## ▶ Milestone 23: หน้าใน — brand sidebar + global navbar (implement แล้วบน branch, ยังไม่ merge)
+> เบสสั่ง "หน้าแรกคงเดิม · เข้าไปในเว็บให้มี sidebar ประจำแบรนด์ + navbar เครื่องมือกลาง" → ทำหน้าเทียบ 3 แบบ (branch `mockup/m23-shell-compare` · Vercel preview) → **เบสเลือก Variant A "เมนู"** · โครง shell = revive ของที่พักไว้ branch `archive/m22-m24-sidebar-apple` แล้ว restyle เป็นภาษา M22
+- [x] Phase A — หน้าเทียบ 3 แบบ (A เมนู · B รายชื่อรุ่น · C ไฮบริด) บนข้อมูล Toyota จริง คลิกสลับได้ · เบสเลือก A
+- [x] โครง route: root layout สลิม (html/body) · `(home)/layout.tsx` = SiteHeader เดิม (หน้าแรก output ไม่เปลี่ยน) · `(app)/` route group = GlobalNavbar + zone layouts (URL เดิมทุกอัน)
+- [x] `getNavIndex()` query เบา (brands+nameplates · cache dedupe) ป้อน navbar switcher + mobile drawer
+- [x] components: `app-shell` · `global-navbar` (ค้นหา/สลับแบรนด์/เทียบรุ่นเร็วๆนี้/แบรนด์) · `brand-sidebar` (Variant A เมนู + จุดยึดในหน้า gate ตามข้อมูล) · `brand-switcher` (รู้แบรนด์ทั้ง 2 โซน) · `mobile-nav-drawer` (a11y ครบ)
+- [x] `/brands` index = navbar เปล่า `(app)/(plain)/` · `(app)/not-found.tsx` · loading ต่อโซน · anchor `scroll-mt-20` กัน navbar บัง · ลบ `theme-toggle.tsx`
+- [x] verify: lint+tsc+build · เปิดจริง 3105 (หน้าแรกเหมือนเดิม · หน้าใน navbar+sidebar · 404 ถูก · filter URL รอด · mobile drawer · anchor เลื่อนถูก)
+- [ ] เบสรีวิว → merge→main + deploy · ลบ branch/โฟลเดอร์ dev ของ mockup
+- [ ] เสริม (ถ้าเบสสั่ง): scroll-spy sidebar · เทียบรุ่น (Compare) ทำจริง → เปลี่ยนปุ่ม navbar เป็นลิงก์ · mobile ตาราง→การ์ด
+
+## ▶ Milestone 25e: SKU-first (หน้าเลือกรุ่นย่อย) + Milestone 26: แบรนด์ Tesla/Benz (2026-07-22 · branch `redesign/m25-sidebar-tabs`)
+> เบสเคาะ: รุ่นย่อย = คนละ SKU → กดรุ่นแล้วให้เลือกรุ่นย่อย (ระดับ trim/variant ขายจริง) ก่อนเข้าหน้ารายละเอียด · และเพิ่ม Benz + Tesla (เบสถนัดกว่า)
+- [x] `/cars/[slug]` = หน้าเลือก SKU (การ์ดจัดกลุ่มตามตัวถัง `sku-selector-grid.tsx`) + tab เหลือ 3 (ภาพรวม/เทียบรุ่นย่อย/ไทม์ไลน์)
+- [x] `/cars/[slug]/[sku]` ใหม่ = 1 SKU: สเปกเต็ม + ประวัติราคา (append-only + Evidence/Confidence) + ADAS ของ trim + `sku-switcher.tsx` · skuKey = derived slug (`variantKey` + dedupe ทั้งเจน — ไม่แตะ schema)
+- [x] M26: research ราคา/สเปกจริง (workflow 15 agents · ทุกราคา cross-check สื่อไทย) → seed append-only `prisma/ops/phase7-seed-tesla-benz.ts`: Tesla (Model 3 ×4, Model Y ×3) + Benz (C ×5, E ×3, S ×2, GLC ×5, EQS ×1) = 2 แบรนด์ 7 รุ่น 23 SKU · ค่าขัดแย้งข้ามแหล่ง = unknown ไม่เดา · raw research ที่ `prisma/ops/data/research-tesla-benz-20260722.json`
+- [x] verify: lint+build ผ่าน · verify-vocab 33/33 ✅ · เปิดจริงทุกหน้าใหม่ + ลิงก์ SKU ครบ + screenshot
+- [ ] เบสรีวิว → merge · โลโก้ Tesla/Benz (ตอนนี้ fallback ตัวอักษร) + รูปรถ · sku มั่ว = soft-404 (โชว์หน้า 404 แต่ status 200 — ข้อจำกัด streaming/loading.tsx)
+
 ## ถัดไป (ยังไม่เริ่ม)
 
 - [ ] VOCABULARY Phase 5 backlog: legacy AWD/FOUR_WD subtype · motor type (PMSM) · ecoCarPhase รอหลักฐานภาษี

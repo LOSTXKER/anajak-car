@@ -1,5 +1,5 @@
 import { CONFIDENCE_LABEL, LIFECYCLE_LABEL, SOURCE_TYPE_LABEL } from "@/lib/labels";
-import { formatDateTH } from "@/lib/format";
+import { formatDateTH, formatTHB } from "@/lib/format";
 import type { ConfidenceLevel, EvidenceRef } from "@/lib/queries";
 
 export function Chip({ children }: { children: React.ReactNode }) {
@@ -131,5 +131,66 @@ export function EvidenceLink({ evidence }: { evidence: EvidenceRef }) {
       <span aria-hidden>↗</span>
       <span className="sr-only">(เปิดแหล่งอ้างอิงในแท็บใหม่)</span>
     </a>
+  );
+}
+
+/** ช่องสถิติ — label + ค่าเด่น (ตัวเลขใช้ .tnum) · ใช้ในหัวหน้ารุ่น/แบรนด์ */
+export function StatTile({
+  label,
+  value,
+  sub,
+  accent = false,
+}: {
+  label: string;
+  value: React.ReactNode;
+  sub?: string;
+  /** ขอบสีบน accent — ใช้เน้น tile พระเอก (เช่น ราคา) ตามลุคทิศ B (เบสเลือก 2026-07-23) */
+  accent?: boolean;
+}) {
+  return (
+    <div className={`rounded-xl border border-border bg-background px-4 py-3 ${accent ? "border-t-2 border-t-accent" : "bg-surface-muted"}`}>
+      <div className={`text-xs ${accent ? "text-accent" : "text-faint"}`}>{label}</div>
+      <div className="mt-1 text-lg font-semibold text-foreground">{value}</div>
+      {sub && <div className="mt-0.5 text-[11px] text-faint">{sub}</div>}
+    </div>
+  );
+}
+
+/** แถวสเปก dt/dd — ใช้ในบล็อกสเปก (ขุมพลัง/มิติ) */
+export function SpecRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 border-b border-border py-2.5 last:border-b-0">
+      <dt className="shrink-0 text-sm text-faint">{label}</dt>
+      <dd className="text-right text-sm font-medium text-foreground">{children}</dd>
+    </div>
+  );
+}
+
+/** แถบตำแหน่งราคาในช่วง min–max (data-viz จากราคาจริง ไม่ใช่ ranking) */
+export function PricePositionBar({ min, max, value }: { min: number; max: number; value: number }) {
+  const pct = max > min ? ((value - min) / (max - min)) * 100 : 0;
+  return (
+    <div className="w-full">
+      <div className="relative h-1.5 w-full rounded-full bg-surface-muted">
+        <div
+          className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent ring-2 ring-background"
+          style={{ left: `${pct}%` }}
+        />
+      </div>
+      <div className="mt-1 flex justify-between text-[10px] text-faint tnum">
+        <span>{formatTHB(min)}</span>
+        <span>{formatTHB(max)}</span>
+      </div>
+    </div>
+  );
+}
+
+/** ช่องข้อมูลที่ยังไม่มี — ซื่อสัตย์ ไม่ปลอมเลข (คู่กับกฎ DataStatus / no false precision) */
+export function PendingBlock({ title, reason }: { title: string; reason?: string }) {
+  return (
+    <div className="rounded-xl border border-dashed border-border bg-surface-muted/40 px-4 py-5 text-center">
+      <div className="text-sm font-medium text-muted">{title}</div>
+      <div className="mt-1 text-xs text-faint">{reason ?? "รอข้อมูลที่ตรวจสอบได้"}</div>
+    </div>
   );
 }

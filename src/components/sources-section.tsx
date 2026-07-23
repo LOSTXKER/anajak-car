@@ -12,7 +12,7 @@ export function SourcesSection({
 }) {
   return (
     <section aria-labelledby="sources-heading" className="pb-20">
-      <h2 id="sources-heading" className="text-xl font-semibold tracking-tight">
+      <h2 id="sources-heading" className="scroll-mt-20 text-xl font-semibold tracking-tight">
         แหล่งอ้างอิง
       </h2>
       <p className="mt-1.5 text-sm text-faint">{subtitle}</p>

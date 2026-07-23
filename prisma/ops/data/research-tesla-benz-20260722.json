@@ -1,0 +1,761 @@
+{
+  "lineup": {
+    "tesla": [
+      {
+        "model": "Model 3",
+        "url": "https://www.tesla.com/th_th/model3",
+        "notes": "On sale new in Thailand via tesla.com Thai site. Variants as of 2026: Standard (new base, ~THB 1.149M, launched Jan 2026), RWD, Long Range AWD, Performance AWD (up to ~THB 2.199M)."
+      },
+      {
+        "model": "Model Y",
+        "url": "https://www.tesla.com/th_th/modely",
+        "notes": "On sale new in Thailand. Variants: RWD and Long Range AWD (~THB 1.719M-2.019M); Tesla has also debuted the extended-wheelbase 6-seat Model Y L in Thailand. English page: https://www.tesla.com/en_th/modely. Model S, Model X and Cybertruck are NOT sold new via Tesla Thailand."
+      }
+    ],
+    "benz": [
+      {
+        "model": "GLC (SUV / Coupe, incl. GLC 350e PHEV)",
+        "url": "https://www.mercedes-benz.co.th/en/passengercars/models/suv/glc/overview.html",
+        "popularity_reason": "Best-selling Mercedes SUV in Thailand; locally assembled at Samut Prakan, and the PHEV GLC 350e hits Thailand's plug-in tax sweet spot, making it the volume leader of the lineup."
+      },
+      {
+        "model": "E-Class (Saloon)",
+        "url": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/e-class/overview.html",
+        "popularity_reason": "Historically Mercedes-Benz Thailand's top-selling model line; executive-saloon staple, locally assembled (W214 E 220 d / plug-in hybrids), strong corporate and chauffeur demand."
+      },
+      {
+        "model": "C-Class (Saloon)",
+        "url": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html",
+        "popularity_reason": "Entry point to the locally assembled saloon range (W206 built in Samut Prakan); traditional volume model for first-time luxury buyers in Thailand."
+      },
+      {
+        "model": "EQS (Saloon)",
+        "url": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/eqs/overview.html",
+        "popularity_reason": "Mercedes-Benz Thailand's flagship EV and its BEV volume leader — the EQS 450+ AMG is CKD-assembled in Thailand with BOI EV incentives; Bangkok Post reported a record year for Mercedes BEVs in Thailand."
+      },
+      {
+        "model": "S-Class (Saloon)",
+        "url": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/s-class/overview.html",
+        "popularity_reason": "Segment-dominant luxury flagship in Thailand (locally assembled S 350 d / S 580 e PHEV); consistently the best-seller in the full-size luxury saloon class."
+      }
+    ]
+  },
+  "results": [
+    {
+      "model": {
+        "brand": "Tesla",
+        "model": "Model 3",
+        "bodyType": "Sedan (4-door)",
+        "segment": "D-segment / compact executive EV",
+        "generation": "2nd-gen facelift \"Highland\" (TH launch of Highland ~2024; Model 3 first sold officially in TH 2022); MY2026 refresh lineup announced in Thailand Jan 2026, revised again ~June 2026 (Premium LR AWD dropped)",
+        "variants": [
+          {
+            "name": "Standard RWD",
+            "priceTHB": 1149000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.autospinn.com/2026/06/tesla-model-3-official-price-and-specification-thailand-149771",
+            "powertrainType": "BEV",
+            "engineOrMotor": "Single motor RWD",
+            "powerPs": 283,
+            "batteryKWh": 57.5,
+            "rangeKm": 534,
+            "drivetrain": "RWD",
+            "transmission": "Single-speed reduction gear",
+            "specNotes": "57.5 kWh LFP · 534 km WLTP (one source says 520) · 0-100 6.2s · simplified interior, 7 speakers · CBU China",
+            "specSourceUrls": [
+              "https://www.headlightmag.com/official-price-tesla-model-3-my2026/",
+              "https://www.car250.com/tesla-model-3-highland-th-2026-3.html"
+            ]
+          },
+          {
+            "name": "Premium RWD",
+            "priceTHB": 1439000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.autospinn.com/2026/06/tesla-model-3-official-price-and-specification-thailand-149771",
+            "powertrainType": "BEV",
+            "engineOrMotor": "Single motor RWD",
+            "powerPs": 347,
+            "batteryKWh": 57.5,
+            "rangeKm": 534,
+            "drivetrain": "RWD",
+            "transmission": "Single-speed reduction gear",
+            "specNotes": "57.5 kWh LFP · 534 km WLTP · 0-100 6.1s",
+            "specSourceUrls": [
+              "https://www.headlightmag.com/official-price-tesla-model-3-my2026/"
+            ]
+          },
+          {
+            "name": "Premium Long Range RWD",
+            "priceTHB": 1599000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.autospinn.com/2026/06/tesla-model-3-official-price-and-specification-thailand-149771",
+            "powertrainType": "BEV",
+            "engineOrMotor": "Single motor RWD (Long Range)",
+            "powerPs": 347,
+            "batteryKWh": 75,
+            "rangeKm": 750,
+            "drivetrain": "RWD",
+            "transmission": "Single-speed reduction gear",
+            "specNotes": "750 km WLTP · 0-100 5.2s · battery reported 75 kWh NMC (headlightmag) vs 84.7 kWh (autolifethailand) — conflict, unverified · power 347 PS (headlightmag) vs 320 hp (autolifethailand)",
+            "specSourceUrls": [
+              "https://www.headlightmag.com/official-price-tesla-model-3-my2026/",
+              "https://autolifethailand.tv/tesla-model-3-standard-premium-2026/"
+            ]
+          },
+          {
+            "name": "Performance AWD",
+            "priceTHB": 2099000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.autospinn.com/2026/06/tesla-model-3-official-price-and-specification-thailand-149771",
+            "powertrainType": "BEV",
+            "engineOrMotor": "Dual Motor AWD (Performance)",
+            "powerPs": 510,
+            "batteryKWh": 75,
+            "rangeKm": 571,
+            "drivetrain": "AWD",
+            "transmission": "Single-speed reduction gear",
+            "specNotes": "571 km WLTP · 0-100 3.1s · power reported 510 PS/375 kW (headlightmag) vs 460 hp (autolifethailand/autospinn) — conflict · battery 75-79 kWh NMC reported inconsistently",
+            "specSourceUrls": [
+              "https://www.headlightmag.com/official-price-tesla-model-3-my2026/",
+              "https://www.car250.com/tesla-model-3-highland-th-2026-3.html"
+            ]
+          }
+        ],
+        "unknowns": [
+          "Official site tesla.com/th_TH/model3 and /design configurator returned HTTP 403 to the fetch tool — prices could NOT be confirmed directly on tesla.com; the THB prices given are Tesla's official list prices as reported consistently by multiple Thai automotive press (headlightmag, autolifethailand, autospinn, car250, Jan–Jun 2026), not aggregator/dealer prices",
+          "Premium Long Range AWD (1,799,000 THB, 441-498 PS, 715 km WLTP) was in the Jan 2026 lineup but reported discontinued by ~June 2026 (autolifethailand); could not confirm on official site whether it is still orderable",
+          "Exact battery capacities conflict across sources (57.5 LFP for Standard/Premium agreed; LR/Performance reported 75 / 79 / 84.7 kWh) — Tesla does not publish official kWh",
+          "Power figures for LR RWD and Performance conflict between sources (347 vs 320 PS; 510 vs 460 PS)",
+          "Standard RWD range reported as 534 km (most sources) vs 520 km (autolifethailand) WLTP",
+          "Exact Thai launch year of original Model 3 (official Tesla Thailand entry Dec 2022) and Highland arrival not verified from official source"
+        ]
+      },
+      "verify": {
+        "model": "Tesla Model 3 (MY2026, Thailand)",
+        "checks": [
+          {
+            "variant": "Standard RWD",
+            "priceTHB": 1149000,
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/tesla-model-3-standard-premium-2026/",
+            "note": "Listed as Model 3 Standard RWD 1,149,000 THB — exact match"
+          },
+          {
+            "variant": "Premium RWD",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/tesla-model-3-standard-premium-2026/",
+            "note": "Listed as Model 3 Premium RWD 1,439,000 THB — exact match"
+          },
+          {
+            "variant": "Premium Long Range RWD",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/tesla-model-3-standard-premium-2026/",
+            "note": "Listed as 1,599,000 THB — exact match"
+          },
+          {
+            "variant": "Performance AWD",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/tesla-model-3-standard-premium-2026/",
+            "note": "Listed as Premium Performance AWD 2,099,000 THB — exact match. Source also lists a discontinued Premium Long Range AWD at 1,799,000 THB not in the checked list (consistent, since it was cancelled)."
+          }
+        ]
+      }
+    },
+    {
+      "model": {
+        "brand": "Tesla",
+        "model": "Model Y",
+        "bodyType": "SUV (5-door crossover; Model Y L = long-wheelbase 6-seat)",
+        "segment": "D-segment electric mid-size SUV",
+        "generation": "2nd-gen facelift \"Juniper\" (MY2026, launched Thailand 17 Jan 2026; Model Y L deliveries from Q2 2026); marketed in TH as \"Model Y Premium\"",
+        "variants": [
+          {
+            "name": "Model Y Premium ขับเคลื่อนล้อหลัง (RWD)",
+            "priceTHB": 1719000,
+            "priceSourceUrl": "https://www.tesla.com/th_th/modely/design",
+            "priceObservedDate": "2026-07-22",
+            "powertrainType": "BEV",
+            "engineOrMotor": "Single motor, rear",
+            "powerPs": null,
+            "batteryKWh": null,
+            "rangeKm": 466,
+            "transmission": "Single-speed reduction gear",
+            "drivetrain": "RWD",
+            "specNotes": "466 km WLTP (autolifethailand); configurator shows ~488 km est. with 19-inch wheels; 0-100 5.9s; top speed 201 km/h; DC charge up to 175 kW. Tesla TH does not publish power/battery figures.",
+            "specSourceUrls": [
+              "https://www.tesla.com/th_th/modely/design",
+              "https://autolifethailand.tv/official-price-tesla-model-y-juniper-my-2026/"
+            ]
+          },
+          {
+            "name": "Model Y Premium ขับเคลื่อนล้อหลังรุ่น Long Range (Long Range RWD)",
+            "priceTHB": 1849000,
+            "priceSourceUrl": "https://www.tesla.com/th_th/modely/design",
+            "priceObservedDate": "2026-07-22",
+            "powertrainType": "BEV",
+            "engineOrMotor": "Single motor, rear",
+            "powerPs": null,
+            "batteryKWh": 84.7,
+            "rangeKm": 661,
+            "transmission": "Single-speed reduction gear",
+            "drivetrain": "RWD",
+            "specNotes": "661 km WLTP (official tesla.com/th_th/modely page); 0-100 5.6s; DC charge up to 250 kW, +267 km in 15 min; kerb 1,901 kg; battery 84.7 kWh per autolifethailand (not stated by Tesla TH).",
+            "specSourceUrls": [
+              "https://www.tesla.com/th_th/modely",
+              "https://autolifethailand.tv/official-price-tesla-model-y-juniper-my-2026/"
+            ]
+          },
+          {
+            "name": "Model Y L Premium ขับเคลื่อนสี่ล้อ (AWD, long wheelbase, 6 seats)",
+            "priceTHB": 1999000,
+            "priceSourceUrl": "https://www.tesla.com/th_th/modely/design",
+            "priceObservedDate": "2026-07-22",
+            "powertrainType": "BEV",
+            "engineOrMotor": "Dual motor AWD",
+            "powerPs": 462,
+            "batteryKWh": 82,
+            "rangeKm": 681,
+            "transmission": "Single-speed reduction gear",
+            "drivetrain": "AWD",
+            "specNotes": "Secondary source (headlightmag): 462 PS / 493 Nm, 82 kWh, 681 km WLTP, 0-100 5.0s, wheelbase 3,040 mm, 3-row 6-seat, CBU China. Power/battery not published on Tesla TH site.",
+            "specSourceUrls": [
+              "https://www.headlightmag.com/official-price-tesla-model-y-l-long-wheelbase/",
+              "https://www.tesla.com/th_th/modely/design"
+            ]
+          }
+        ],
+        "unknowns": [
+          "Tesla Thailand's official site does not publish motor power (PS/kW) or battery kWh for any variant — power/battery figures above are from secondary Thai media (autolifethailand.tv, headlightmag.com), not official",
+          "Model Y Long Range AWD (฿2,019,000 at Jan 2026 launch) is NOT listed in the th_TH configurator as of 2026-07-22 — appears discontinued/paused in Thailand, unverified",
+          "Exact battery kWh of the base RWD variant",
+          "Official WLTP range of base RWD (Tesla TH configurator shows only an ~488 km 'estimated' figure; 466 km WLTP is from media)",
+          "Performance variant: no evidence it is sold in Thailand currently"
+        ]
+      },
+      "verify": {
+        "model": "Tesla Model Y",
+        "checks": [
+          {
+            "variant": "Model Y Premium ขับเคลื่อนล้อหลัง (RWD)",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/official-price-tesla-model-y-refresh-juniper-long-range-rwd/",
+            "note": "Autolifethailand confirms Standard RWD at 1,719,000 THB"
+          },
+          {
+            "variant": "Model Y Premium ขับเคลื่อนล้อหลังรุ่น Long Range (Long Range RWD)",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/official-price-tesla-model-y-refresh-juniper-long-range-rwd/",
+            "note": "Autolifethailand confirms Long Range RWD at 1,849,000 THB (+130,000 over Standard RWD)"
+          },
+          {
+            "variant": "Model Y L Premium ขับเคลื่อนสี่ล้อ (AWD, long wheelbase, 6 seats)",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/official-price-tesla-model-y-l-thailand/",
+            "note": "Autolifethailand confirms Model Y L 6-seat AWD at 1,999,000 THB. Note: lineup also includes Long Range AWD at 2,019,000 THB, not in the checked list."
+          }
+        ]
+      }
+    },
+    {
+      "model": {
+        "brand": "Mercedes-Benz",
+        "model": "GLC (SUV + Coupé)",
+        "bodyType": "SUV / SUV Coupé",
+        "segment": "Midsize luxury SUV (D-segment premium)",
+        "generation": "SUV = X254 (TH launch 2023, CKD; MY2026 update per official spec sheet \"2026 (MY806+056)\") · Coupé = C254 (TH launch 2024)",
+        "variants": [
+          {
+            "name": "GLC 220 d 4MATIC",
+            "powertrainType": "DIESEL",
+            "engineOrMotor": "OM654M 2.0L (1,993 cc) 4-cyl turbodiesel",
+            "powerPs": 197,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC",
+            "drivetrain": "4MATIC AWD",
+            "priceTHB": 3490000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/mercedes-benz-cars/car-configurator.html/motorization/CCci/TH/en/tc/X254",
+            "specNotes": "145 kW (197 HP)/3,600 rpm, 440 Nm/1,800-2,800; 0-100 8.0 s; top speed 219 km/h; boot 620-1,680 L; also shown as the featured config at THB 3,490,000 on the GLC overview page",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/en/passengercars/models/suv/glc/overview.html",
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/spec-sheet/GLC_SUV_Specsheet_MAY26.pdf"
+            ]
+          },
+          {
+            "name": "GLC 220 d 4MATIC (MANUFAKTUR paint)",
+            "powertrainType": "DIESEL",
+            "engineOrMotor": "OM654M 2.0L (1,993 cc) 4-cyl turbodiesel",
+            "powerPs": 197,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC",
+            "drivetrain": "4MATIC AWD",
+            "priceTHB": 3550000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/mercedes-benz-cars/car-configurator.html/motorization/CCci/TH/en/tc/X254",
+            "specNotes": "Same mechanicals as GLC 220 d 4MATIC; MANUFAKTUR paint option line in configurator",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/en/passengercars/mercedes-benz-cars/car-configurator.html/motorization/CCci/TH/en/tc/X254"
+            ]
+          },
+          {
+            "name": "GLC 220 d 4MATIC Avantgarde",
+            "powertrainType": "DIESEL",
+            "engineOrMotor": "OM654M 2.0L (1,993 cc) 4-cyl turbodiesel",
+            "powerPs": 197,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC",
+            "drivetrain": "4MATIC AWD",
+            "priceTHB": 3720000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/mercedes-benz-cars/car-configurator.html/motorization/CCci/TH/en/tc/X254",
+            "specNotes": "145 kW (197 HP); Avantgarde trim",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/en/passengercars/mercedes-benz-cars/car-configurator.html/motorization/CCci/TH/en/tc/X254",
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/spec-sheet/GLC_SUV_Specsheet_MAY26.pdf"
+            ]
+          },
+          {
+            "name": "GLC 350 e 4MATIC AMG Dynamic (SUV)",
+            "powertrainType": "PHEV",
+            "engineOrMotor": "M254 2.0L (1,999 cc) turbo petrol 204 PS + 136 PS e-motor, system 313 PS / 550 Nm",
+            "powerPs": 313,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC",
+            "drivetrain": "4MATIC AWD",
+            "priceTHB": 4180000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/mercedes-benz-cars/car-configurator.html/motorization/CCci/TH/en/tc/X254",
+            "specNotes": "ICE 150 kW (204 PS)/6,100, 320 Nm; e-motor 100 kW (136 PS), 440 Nm; 0-100 6.7 s; top 218 km/h; boot 470-1,530 L. Battery kWh and EV range not stated on official TH site/spec sheet for the SUV",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/spec-sheet/GLC_SUV_Specsheet_MAY26.pdf"
+            ]
+          },
+          {
+            "name": "GLC 350 e 4MATIC Coupé AMG Dynamic",
+            "powertrainType": "PHEV",
+            "engineOrMotor": "M254 2.0L (1,999 cc) turbo petrol 204 PS + 136 PS e-motor, system 313 PS / 550 Nm",
+            "powerPs": 313,
+            "batteryKWh": 31.2,
+            "rangeKm": 120,
+            "transmission": "9G-TRONIC",
+            "drivetrain": "4MATIC AWD",
+            "priceTHB": 4340000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/mercedes-benz-cars/car-configurator.html/motorization/CCci/TH/en/tc/C254",
+            "specNotes": "Official spec sheet: 0-100 6.7 s, top 220 km/h, boot 390-1,335 L, tank 62 L. Battery 31.2 kWh and ~120 km EV range (WLTP) from autolifethailand launch report (not on official TH site); DC fast charge up to 60 kW. Locally assembled (CKD)",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/spec-sheet/glc-coupe_spec-sheet-may-26-en.pdf",
+              "https://autolifethailand.tv/official-price-mercedes-benz-glc-350e-4matic-coupe/",
+              "https://www.mercedes-benz.co.th/en/passengercars/models/suv/glc-coupe/overview.html"
+            ]
+          }
+        ],
+        "unknowns": [
+          "Battery kWh and official electric range for GLC 350 e 4MATIC SUV — not published on the official TH overview page or the official MAY26 spec sheet (likely same 31.2 kWh pack as the Coupé, unverified)",
+          "Coupé 31.2 kWh / ~120 km WLTP range comes from autolifethailand.tv launch report, not the official mercedes-benz.co.th site",
+          "GLC 300 e variants (SUV and Coupé) reported by aggregators (9carthai) are NOT in the official TH configurator as of 2026-07-22 — treated as no longer on sale",
+          "Exact Thai launch dates: X254 SUV 2023 and C254 Coupé 2024 are from general knowledge, not re-verified against a primary source this session",
+          "Whether the 2026 official pages describing 'the new GLC' (620 L boot, rear-axle steering, AIRMATIC) reflect a facelift within X254 — the official deeplink API tags the model series as X254; spec sheet marked 2026 (MY806+056)",
+          "GLC 220 d trim naming: base configurator entry carries no trim suffix; the 'AMG Dynamic' 220 d trims cited by aggregators do not appear in the official configurator"
+        ]
+      },
+      "verify": {
+        "model": "Mercedes-Benz GLC (X254 SUV / C254 Coupe)",
+        "checks": [
+          {
+            "variant": "GLC 220 d 4MATIC",
+            "priceTHB_claimed": 3490000,
+            "priceMatches": null,
+            "secondSourceUrl": "https://autolifethailand.tv/official-discount-price-mercedes-benz-glc-220d-4matic-oct2024/",
+            "note": "No independent source lists 3,490,000 as the LIST price of a base (non-Avantgarde) GLC 220 d. The only 3,490,000 found is a promotional/discount price (Oct 2024) on the GLC 220 d Avantgarde, cut from the 3,720,000 list price. Possible confusion between discount price and a base-variant list price."
+          },
+          {
+            "variant": "GLC 220 d 4MATIC (MANUFAKTUR paint)",
+            "priceMatches": null,
+            "secondSourceUrl": "",
+            "note": "No Thai media source found mentioning a MANUFAKTUR-paint variant at 3,550,000 THB. Searches on headlightmag/autolifethailand/autospinn/checkraka returned nothing; unverified."
+          },
+          {
+            "variant": "GLC 220 d 4MATIC Avantgarde",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/official-price-mercedes-benz-glc-220d-350e-x254/",
+            "note": "Confirmed 3,720,000 THB (Thai-assembled, X254) by autolifethailand and also headlightmag (https://www.headlightmag.com/2023-11-20-official-price-mercedes-benz-glc-220d-avantgarde-edit/)."
+          },
+          {
+            "variant": "GLC 350 e 4MATIC AMG Dynamic (SUV)",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/official-price-mercedes-benz-glc-350-e-4matic-x254/",
+            "note": "Confirmed 4,180,000 THB by autolifethailand and headlightmag (https://www.headlightmag.com/2023-08-10-official-price-mercedes-benz-glc-350-e-amg-2/). Note: heavy promotional discounts existed later (down to 3,490,000 in May 2026), but the list price matches."
+          },
+          {
+            "variant": "GLC 350 e 4MATIC Coupé AMG Dynamic",
+            "priceMatches": true,
+            "secondSourceUrl": "https://www.checkraka.com/car/mercedes-benz/glc-class/1460565/",
+            "note": "Confirmed 4,340,000 THB by checkraka (MY2024) and dealer listings (benzkenghongthong.com)."
+          }
+        ]
+      }
+    },
+    {
+      "model": {
+        "brand": "Mercedes-Benz",
+        "model": "E-Class Saloon",
+        "bodyType": "Saloon (4-door sedan)",
+        "segment": "E-segment executive / luxury sedan",
+        "generation": "W214 — เปิดตัวในไทย มีนาคม 2024 (ประกอบไทย/CKD; ปีเปิดตัวอ้างอิงสื่อไทย autolifethailand.tv/autobuzz.my ไม่ใช่หน้า official)",
+        "variants": [
+          {
+            "name": "E 220 d AMG Line",
+            "powertrainType": "DIESEL (MHEV not confirmed on official TH spec sheet)",
+            "engineOrMotor": "1,993 cc diesel 4-cyl turbo w/ intercooler, 145 kW [197 hp] @3,600 rpm, 440 Nm @1,800–2,800 rpm",
+            "powerPs": 197,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC",
+            "drivetrain": "RWD (not explicitly stated on official TH spec sheet)",
+            "priceTHB": 3930000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/pricelist/MB-EQ_Price%20list%20-%206JULY_EN.pdf",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/spec-sheet/e-class_spec-sheet-may-26-en.pdf"
+            ],
+            "specNotes": "0–100 km/h 7.6 s · top speed 238 km/h · tank 66 l · boot 540 l · tyres 245/45 R19 front / 275/40 R19 rear · 1,880x4,950x1,461 mm · price list dated 6 JULY (2026), includes 7% VAT, locally assembled"
+          },
+          {
+            "name": "E 350 e Exclusive",
+            "powertrainType": "PHEV",
+            "engineOrMotor": "1,999 cc petrol 4-cyl turbo 150 kW [204 hp] @6,100 rpm + e-motor 95 kW/440 Nm · total 313 hp / 550 Nm",
+            "powerPs": 313,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC",
+            "drivetrain": "RWD (not explicitly stated on official TH spec sheet)",
+            "priceTHB": 3650000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/pricelist/MB-EQ_Price%20list%20-%206JULY_EN.pdf",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/spec-sheet/e-class_spec-sheet-may-26-en.pdf",
+              "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/e-class/overview.html"
+            ],
+            "specNotes": "0–100 km/h 6.4 s · top speed 236 km/h · tank 50 l · boot 370 l · tyres 245/45 R19 / 275/40 R19 · EXCLUSIVE exterior/interior · spec sheet notes electric range determined per DIR 2017/1151/EU (WLTP) but prints no km figure · overview page shows 'E 350 e — THB 3,650,000' matching price list · 6 JULY 2026 price list incl. 7% VAT, locally assembled"
+          },
+          {
+            "name": "E 350 e AMG Dynamic",
+            "powertrainType": "PHEV",
+            "engineOrMotor": "1,999 cc petrol 4-cyl turbo 150 kW [204 hp] @6,100 rpm + e-motor 95 kW/440 Nm · total 313 hp / 550 Nm",
+            "powerPs": 313,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC",
+            "drivetrain": "RWD (not explicitly stated on official TH spec sheet)",
+            "priceTHB": 4080000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/pricelist/MB-EQ_Price%20list%20-%206JULY_EN.pdf",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/spec-sheet/e-class_spec-sheet-may-26-en.pdf"
+            ],
+            "specNotes": "AMG Line exterior/interior · 0–100 km/h 6.4 s · top speed 236 km/h · tank 50 l · boot 370 l · tyres 245/40 R20 / 275/35 R20 (20\" AMG multi-spoke) · 6 JULY 2026 price list incl. 7% VAT, locally assembled"
+          }
+        ],
+        "unknowns": [
+          "Battery capacity (kWh) of E 350 e — official TH spec sheet (may 2026) does not state it; widely reported ~25.4 kWh usable for W214 E350e but NOT verified on official Thai source, so left null",
+          "All-electric range (km) of E 350 e — spec sheet footnote says range determined per WLTP (DIR 2017/1151/EU) but no km figure printed; left null",
+          "Drivetrain RWD and E220d 48V mild-hybrid status not explicitly stated in official TH spec sheet (inferred common knowledge, not recorded as fact)",
+          "Thai launch date (March 2024, Bangkok Motor Show) sourced from Thai motoring media (autolifethailand.tv, autobuzz.my), not the official site",
+          "Official site currently shows promotional/campaign prices in media (e.g. discounts to 3,285,000–3,590,000 per autolifethailand May 2026) — only the official price-list PDF figures are recorded here",
+          "mercedes-benz.co.th blocks server-side fetches; prices were extracted from the official price-list PDF (dated 6 JULY, 2026 folder) via the browser — PDF itself carries no explicit year in the text extracted"
+        ]
+      },
+      "verify": {
+        "checks": [
+          {
+            "variant": "E 220 d AMG Line",
+            "priceMatches": true,
+            "secondSourceUrl": "https://www.headlightmag.com/2024-03-26-official-price-mercedes-benz-e-class-214/",
+            "note": "HeadLight Magazine confirms 3,930,000 THB; Autolifethailand also lists same list price"
+          },
+          {
+            "variant": "E 350 e Exclusive",
+            "priceMatches": true,
+            "secondSourceUrl": "https://www.headlightmag.com/2024-03-26-official-price-mercedes-benz-e-class-214/",
+            "note": "Confirmed 3,650,000 THB; also https://autolifethailand.tv/official-price-mercedes-benz-e350e-exclusive/"
+          },
+          {
+            "variant": "E 350 e AMG Dynamic",
+            "priceMatches": true,
+            "secondSourceUrl": "https://www.headlightmag.com/2024-03-26-official-price-mercedes-benz-e-class-214/",
+            "note": "Confirmed 4,080,000 THB (MY2024; earlier Launch Edition was 4,250,000). May 2026 promos discount actual selling prices but list price unchanged"
+          }
+        ],
+        "model": "Mercedes-Benz E-Class (Saloon, W214)"
+      }
+    },
+    {
+      "model": {
+        "brand": "Mercedes-Benz",
+        "model": "C-Class Saloon",
+        "bodyType": "Saloon (4-door sedan)",
+        "segment": "D-segment / compact executive",
+        "generation": "W206 (confirmed via style id \"W206__MERCEDES_BENZ__AMG_LINE\" in official page data); Thai launch year not verified from official source (widely reported as 2022, local assembly)",
+        "variants": [
+          {
+            "name": "C 220 d (Night Edition)",
+            "powertrainType": "DIESEL",
+            "engineOrMotor": "OM654 2.0L (1,993 cc) 4-cyl turbodiesel — official page lists 145 kW (197 HP)",
+            "powerPs": 197,
+            "transmission": "9G-TRONIC automatic",
+            "drivetrain": "RWD (not stated on official page — 'Drive type: -')",
+            "batteryKWh": null,
+            "rangeKm": null,
+            "priceTHB": 2690000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html"
+            ],
+            "specNotes": "Price from schema.org AggregateOffer embedded in official overview page. Top speed 245 km/h, 0-100 7.5 s, kerb 1,795 kg."
+          },
+          {
+            "name": "C 220 d AMG Line (Night Edition)",
+            "powertrainType": "DIESEL",
+            "engineOrMotor": "OM654 2.0L (1,993 cc) 4-cyl turbodiesel — 145 kW (197 HP)",
+            "powerPs": 197,
+            "transmission": "9G-TRONIC automatic",
+            "drivetrain": "RWD (not stated on official page)",
+            "batteryKWh": null,
+            "rangeKm": null,
+            "priceTHB": 2800000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html"
+            ],
+            "specNotes": "Price from schema.org data on official overview page; also matches official-site text 'C-Class Saloon price starts at 2,800,000 THB incl. VAT'."
+          },
+          {
+            "name": "C 220 d AMG Line",
+            "powertrainType": "DIESEL",
+            "engineOrMotor": "OM654 2.0L (1,993 cc) 4-cyl turbodiesel — 145 kW (197 HP)",
+            "powerPs": 197,
+            "transmission": "9G-TRONIC automatic",
+            "drivetrain": "RWD (not stated on official page)",
+            "batteryKWh": null,
+            "rangeKm": null,
+            "priceTHB": 2880000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html",
+              "https://www.zigwheels.co.th/en/new-cars/mercedes-benz/c-class-saloon/price",
+              "https://autolifethailand.tv/official-price-mercedes-benz-c-220-d-amg-line/"
+            ],
+            "specNotes": "2,880,000 THB confirmed by official schema data + ZigWheels + Autolifethailand (Thai-assembled)."
+          },
+          {
+            "name": "C 350 e AMG Dynamic",
+            "powertrainType": "PHEV",
+            "engineOrMotor": "M254 2.0L (1,999 cc) 4-cyl turbo petrol plug-in hybrid — combustion engine 150 kW (204 HP); system output not stated on official page",
+            "powerPs": 204,
+            "transmission": "9G-TRONIC automatic",
+            "drivetrain": "RWD (not stated on official page)",
+            "batteryKWh": null,
+            "rangeKm": null,
+            "priceTHB": 3190000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html"
+            ],
+            "specNotes": "Plug-In Hybrid, unleaded 95; 0-100 6.1 s, top speed 240 km/h. Official page shows '-' for battery capacity, EAER electric range and system output — not verifiable from this source."
+          },
+          {
+            "name": "C 350 e AMG Dynamic (Night Edition)",
+            "powertrainType": "PHEV",
+            "engineOrMotor": "M254 2.0L (1,999 cc) 4-cyl turbo petrol plug-in hybrid — combustion engine 150 kW (204 HP); system output not stated",
+            "powerPs": 204,
+            "transmission": "9G-TRONIC automatic",
+            "drivetrain": "RWD (not stated on official page)",
+            "batteryKWh": null,
+            "rangeKm": null,
+            "priceTHB": 3290000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/en/passengercars/models/saloon/c-class/overview.html",
+              "https://www.zigwheels.co.th/en/new-cars/mercedes-benz/c-class-saloon/price",
+              "https://autolifethailand.tv/official-price-mercedes-benz-c350e-night-edition/"
+            ],
+            "specNotes": "3,290,000 THB confirmed by official schema data + ZigWheels + Autolifethailand. Note: official page also carries an additional 'Buy Now / InStock' offer for this name at 2,990,000 THB and 'C 350 e plug-in hybrid (Night Edition)' offers at 2,890,000 / 2,950,000 THB — these look like campaign/stock offers, listed in unknowns."
+          }
+        ],
+        "unknowns": [
+          "All prices were extracted from schema.org structured data embedded in the official overview page (page HTML fetched 2026-07-22); the visible page UI could not be rendered, so I could not confirm which of the 9 offer entries are the definitive current price list vs campaign cards.",
+          "Official page carries extra/conflicting offers: 'C 350 e AMG Dynamic (Night Edition)' also at 2,990,000 THB (marked InStock/Buy Now) and 'C 350 e plug-in hybrid (Night Edition)' at 2,890,000 and 2,950,000 THB — unclear if these are separate stock/campaign variants; official-site search snippet also says 'plug-in hybrid starts at 2,990,000 THB'.",
+          "C 350 e battery capacity (widely reported ~25.4 kWh) and electric range (WLTP EAER) NOT verified — official Thai page shows '-' for these fields, so left null.",
+          "Drive type (RWD) not explicitly stated on the official page (field shows '-'); RWD is the standard W206 layout but unverified from this source.",
+          "Thai launch year of W206 (reported 2022) not verified from an official source.",
+          "No official downloadable price-list PDF from mercedes-benz.co.th could be located (only a dealer-hosted 2023 PDF).",
+          "Whether a 'C 220 d Avantgarde' trim is still on sale is unverified — ZigWheels mentions it but it does not appear in the official page's offer data."
+        ]
+      },
+      "verify": {
+        "model": "Mercedes-Benz C-Class (Saloon, W206)",
+        "checks": [
+          {
+            "variant": "C 220 d (Night Edition)",
+            "priceTHB": 2690000,
+            "priceMatches": null,
+            "secondSourceUrl": "",
+            "note": "No second source found for a plain 'C 220 d Night Edition' at 2,690,000. Thai media only list C 220 d AMG Line Night Edition at 2,800,000 (autolifethailand.tv, checkraka). The 2,690,000 figure appears only as an Oct 2024 promotional price for C 220 d AMG Line (https://autolifethailand.tv/official-discount-price-mercedes-benz-c220d-amg-line-oct2024/) — possible variant-name/price confusion."
+          },
+          {
+            "variant": "C 220 d AMG Line (Night Edition)",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/official-price-mercedes-benz-c-220-d-amg-line-night-edition/",
+            "note": "Official price 2,800,000 THB confirmed by Autolifethailand and Checkraka (MY2026, Thai-assembled)."
+          },
+          {
+            "variant": "C 220 d AMG Line",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/official-price-mercedes-benz-c-220-d-amg-line/",
+            "note": "Official price 2,880,000 THB confirmed by Autolifethailand; also referenced by dealer benzkenghongthong.com as 'ราคาเดิม 2,880,000'."
+          },
+          {
+            "variant": "C 350 e AMG Dynamic",
+            "priceMatches": true,
+            "secondSourceUrl": "https://www.facebook.com/benzbkkvipawadeepage/videos/1480167950366591/",
+            "note": "Weak confirmation: 3,190,000 THB appears only as 'ราคาแนะนำ' on a dealer (Benz BKK Vipawadee) Facebook post, not major media. Autolifethailand/HeadLightMag list launch price 3,350,000 (2022) and Checkraka 3,200,000; 3,190,000 is plausibly a later revised list price but lacks an independent media source — treat with caution."
+          },
+          {
+            "variant": "C 350 e AMG Dynamic (Night Edition)",
+            "priceMatches": true,
+            "secondSourceUrl": "https://www.headlightmag.com/2024-05-25-mercedes-benz-c-350-e-night-edition/",
+            "note": "Official price 3,290,000 THB confirmed by HeadLight Magazine, Autolifethailand, and Checkraka."
+          }
+        ]
+      }
+    },
+    {
+      "model": {
+        "brand": "Mercedes-Benz",
+        "model": "EQS (Saloon)",
+        "bodyType": "Sedan (liftback saloon)",
+        "segment": "Luxury full-size EV (F-segment)",
+        "generation": "V297 · Thai launch 2022 (EQS 500 4MATIC CKD announced Nov 2022; CKD assembly in Thailand)",
+        "variants": [
+          {
+            "name": "EQS 500 4MATIC AMG Premium",
+            "powertrainType": "BEV",
+            "engineOrMotor": "Dual permanent-magnet synchronous motors (4MATIC)",
+            "powerPs": 449,
+            "batteryKWh": 108.4,
+            "rangeKm": 702,
+            "drivetrain": "AWD (4MATIC)",
+            "transmission": "Single-speed reduction gear",
+            "priceTHB": 7200000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2026/pricelist/MB-EQ_Price%20list%20-%2023%20MAR_TH.pdf",
+            "specSourceUrls": [
+              "https://www.headlightmag.com/2022-11-14-official-price-mercedes-eqs-500-4matic-ckd-thailand/",
+              "https://www.grandprix.co.th/eqs-500-specification-ckd-thailand-2022/"
+            ],
+            "specNotes": "Range 702 km per WLTP. 828 Nm, 0-100 km/h 4.8 s, top speed 210 km/h, DC charge 10-80% ~31 min, AC 11 kW. Official Mercedes-Benz Thailand price list effective 23 Mar 2026 (period 04-03/2569) lists 7,200,000 THB incl. 7% VAT; launched Nov 2022 at 7,900,000 THB and later cut by 700,000 THB. Only EQS Saloon variant on the current official price list."
+          }
+        ],
+        "unknowns": [
+          "Official mercedes-benz.co.th overview page (https://www.mercedes-benz.co.th/en/passengercars/models/saloon/eqs/overview.html) timed out on fetch, so the variant list was taken from the official Recommended Price List PDF (23 Mar 2026) instead — only EQS 500 4MATIC AMG Premium appears there; the previously sold EQS 450+ AMG Premium is absent and appears discontinued, but discontinuation not explicitly confirmed by Mercedes-Benz TH",
+          "Whether the Thai CKD EQS 500 is the pre-facelift or 2024-facelift V297 (facelift has larger 118 kWh battery; Thai specs cite 108.4 kWh, indicating pre-facelift) — not verified on the official TH spec sheet",
+          "Battery kWh and 702 km WLTP range are from Thai press coverage of the official launch (HeadlightMag/GrandPrix), not fetched directly from the official mercedes-benz.co.th spec sheet"
+        ]
+      },
+      "verify": {
+        "model": "Mercedes-Benz EQS (Saloon)",
+        "checks": [
+          {
+            "variant": "EQS 500 4MATIC AMG Premium",
+            "priceMatches": true,
+            "secondSourceUrl": "https://autolifethailand.tv/official-new-price-eqs-500-4matic-amg-premium/",
+            "note": "Autolifethailand confirms adjusted official price 7,200,000 THB (CKD), cut 700,000 from the 7,900,000 launch price (headlightmag). Note: later official cuts exist — 6,700,000 THB and 2024-2025 promo prices down to ~4.19M — so 7.2M is the 2023-era list price, not current."
+          }
+        ]
+      }
+    },
+    {
+      "model": {
+        "brand": "Mercedes-Benz",
+        "model": "S-Class Saloon (Long)",
+        "bodyType": "Saloon / sedan (long wheelbase)",
+        "segment": "F-segment / luxury flagship sedan",
+        "generation": "W223 (V223 long-wheelbase); launched in Thailand 2021, facelift-era spec sheet marked MY804 (01-04/2567) — TH launch year of current MY not officially stated",
+        "variants": [
+          {
+            "name": "S 350 d Exclusive",
+            "priceTHB": 7050000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon-long/s-class/overview.html (Series tab, shown as 'THB 7,050,000')",
+            "powertrainType": "DIESEL",
+            "engineOrMotor": "OM656-family inline-6 turbo-diesel with intercooler (official TH spec sheet: 'Diesel engine L6 with turbocharger and intercooler', 2,989 cc per spec sheet)",
+            "powerPs": 313,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC automatic with steering-wheel gearshift paddles",
+            "drivetrain": "not stated on official TH spec sheet",
+            "specNotes": "230 kW (313 hp) @3,600-4,800 rpm, 650 Nm @1,350-3,200 rpm, 0-100 km/h 5.6 s, top speed 250 km/h, tank 76 l, boot 540 l, 20-inch multi-spoke wheels, AIRMATIC, rear-axle steering 4.5°. NOTE: the overview web page's own tech widget shows 210 kW (286 HP) / 2,925 cc — conflicts with the official spec-sheet PDF (230 kW / 2,989 cc); discrepancy recorded in unknowns.",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2025/s-class/s-class-spec-sheet-sep-2025.pdf",
+              "https://www.mercedes-benz.co.th/en/passengercars/models/saloon-long/s-class/overview.html"
+            ]
+          },
+          {
+            "name": "S 580 e AMG Premium",
+            "priceTHB": 7580000,
+            "priceObservedDate": "2026-07-22",
+            "priceSourceUrl": "https://www.mercedes-benz.co.th/en/passengercars/models/saloon-long/s-class/overview.html/amg-line (AMG Line tab, shown as 'THB 7,580,000')",
+            "powertrainType": "PHEV",
+            "engineOrMotor": "Petrol inline-6 turbo (2,999 cc, M256-family) + electric motor 110 kW (150 hp); system output 375 kW (510 hp) / 750 Nm",
+            "powerPs": 510,
+            "batteryKWh": null,
+            "rangeKm": null,
+            "transmission": "9G-TRONIC automatic with steering-wheel gearshift paddles",
+            "drivetrain": "not stated on official TH spec sheet",
+            "specNotes": "ICE 270 kW (367 hp) @5,500-6,100 rpm, 500 Nm; e-motor 110 kW / 480 Nm; system 375 kW (510 hp) / 750 Nm; 0-100 km/h 5.2 s; top speed 250 km/h; tank 67 l; boot 350 l; 20-inch AMG multi-spoke wheels; fuel: hybrid, unleaded 95. Battery capacity and electric range (WLTP/NEDC) are NOT published on the official Thai spec sheet or overview page — left null.",
+            "specSourceUrls": [
+              "https://www.mercedes-benz.co.th/content/dam/thailand/brochure-specsheet/2025/s-class/s-class-spec-sheet-sep-2025.pdf",
+              "https://www.mercedes-benz.co.th/en/passengercars/models/saloon-long/s-class/overview.html/amg-line"
+            ]
+          }
+        ],
+        "unknowns": [
+          "Battery capacity (kWh) and electric range for S 580 e: not published anywhere on the official Thai site or the official spec-sheet PDF (global figure ~28.6 kWh / WLTP ~100+ km exists but is NOT Thai-official, so left null)",
+          "Drivetrain (RWD vs 4MATIC) not stated on the official Thai spec sheet for either variant",
+          "Power discrepancy for S 350 d: overview page widget says 210 kW (286 HP) / 2,925 cc while the official spec-sheet PDF (s-class-spec-sheet-sep-2025.pdf, marked 01-04/2567 MY804) says 230 kW (313 hp) / 2,989 cc — could not resolve which reflects the car currently delivered",
+          "Exact Thai launch date/year of the current facelift model year not stated on the official site",
+          "Generation code W223/V223 is industry knowledge, not printed on the official Thai pages",
+          "Spec sheet PDF is filename-dated Sep 2025 but internally marked 01-04/2567 (2024) — internal date inconsistency",
+          "Prices are the figures shown on the official overview page (Series = S 350 d Exclusive 7,050,000 / AMG Line = S 580 e AMG Premium 7,580,000); no separate official price-list PDF with prices was found on mercedes-benz.co.th"
+        ]
+      },
+      "verify": {
+        "model": "Mercedes-Benz S-Class (Saloon)",
+        "checks": [
+          {
+            "variant": "S 350 d Exclusive",
+            "priceMatches": true,
+            "secondSourceUrl": "https://www.headlightmag.com/2022-11-23-official-price-mercedes-benz-s350d-exclusive-s580e-amg-premium-my2023/",
+            "note": "HeadLight Magazine (official MY2023 price article) lists 7,050,000 THB — matches. Also corroborated by checkraka.com (7,050,000 THB)."
+          },
+          {
+            "variant": "S 580 e AMG Premium",
+            "priceMatches": true,
+            "secondSourceUrl": "https://www.headlightmag.com/2022-11-23-official-price-mercedes-benz-s350d-exclusive-s580e-amg-premium-my2023/",
+            "note": "HeadLight Magazine lists 7,580,000 THB (MY2023) — matches; checkraka also shows 7,580,000 THB for 2022 and 2024 model years. Minor discrepancy: 9carthai shows earlier launch price 7,190,000 THB (2022-2023), superseded by the MY2023 update."
+          }
+        ]
+      }
+    }
+  ]
+}

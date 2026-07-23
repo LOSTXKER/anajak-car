@@ -4,6 +4,7 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { ASPIRATION_LABEL, FUEL_TYPE_LABEL, powertrainLabel } from "@/lib/labels";
+import { generationKey, derivativeKey, trimKey, variantKey, dedupeKeys } from "@/lib/slugs";
 
 export type ConfidenceLevel = "HIGH" | "MEDIUM" | "LOW";
 
@@ -47,6 +48,17 @@ export type EvidenceRef = {
   checkedDate: string | null;
 };
 
+// สเปกเสริม (BEV/รหัสเกรด) — known เท่านั้น (ไม่มี = null · ไม่โชว์เลขปลอม)
+export type VariantSpecExtras = {
+  gradeCode: string | null;
+  motorKw: number | null;
+  batteryKwh: number | null;
+  rangeKm: number | null;
+  rangeStandard: string | null; // WLTP/NEDC/CLTC — มาตรฐานวัด (ห้ามแปลงข้าม)
+  acKw: number | null;
+  dcKw: number | null;
+};
+
 export type VariantRow = {
   id: string;
   name: string;
@@ -61,7 +73,7 @@ export type VariantRow = {
   price: number | null;
   priceAsOf: string | null;
   evidence: EvidenceRef | null;
-};
+} & VariantSpecExtras;
 
 export type VariantGroup = {
   key: string;
@@ -301,6 +313,25 @@ function describePowertrain(flat: FlatVariant): {
   };
 }
 
+// สเปกเสริม BEV/รหัสเกรด จาก variant — known เท่านั้น (range เลือกมาตรฐานเดียว ไม่แปลงข้าม)
+function specExtras(flat: FlatVariant): VariantSpecExtras {
+  const v = flat.variant;
+  const range =
+    v.rangeKmWltp != null ? { km: v.rangeKmWltp, std: "WLTP" }
+    : v.rangeKmNedc != null ? { km: v.rangeKmNedc, std: "NEDC" }
+    : v.rangeKmCltc != null ? { km: v.rangeKmCltc, std: "CLTC" }
+    : null;
+  return {
+    gradeCode: v.gradeCode ?? null,
+    motorKw: v.motor?.maxPowerKw ?? null,
+    batteryKwh: v.battery?.capacityKwh ?? null,
+    rangeKm: range?.km ?? null,
+    rangeStandard: range?.std ?? null,
+    acKw: v.battery?.acStatus === "known" ? v.battery.acMaxKw : null,
+    dcKw: v.battery?.dcStatus === "known" ? v.battery.dcMaxKw : null,
+  };
+}
+
 // หนึ่งแถวของ "มุมมองรุ่นย่อย" (ตารางแบบหุ้น — ทุกแถวมีราคาตัวเลขเดียว)
 export type VariantIndexRow = {
   id: string;
@@ -493,6 +524,7 @@ export const getNameplateDetail = cache(async (slug: string): Promise<NameplateD
         ? (obs.effectiveFrom ?? obs.observedDate).toISOString()
         : null,
       evidence: obs ? toEvidenceRef(obs.evidenceSource) : null,
+      ...specExtras(flat),
     });
   }
 
@@ -729,4 +761,263 @@ export const getBrandDetail = cache(async (slug: string): Promise<BrandDetail | 
       latestChecked: maxDate(summaries.flatMap((s) => s.checkedDates)),
     },
   };
+});
+
+// ── ดัชนีนำทางแบบเบา (แบรนด์ + รุ่นในแต่ละแบรนด์) — ป้อน navbar switcher + mobile drawer ──
+// เลือกเฉพาะ field ที่ nav ใช้ (ไม่ลาก tree ราคา/สเปก) · cache() = ทุก layout ในรีเควสต์เดียวจ่าย DB ครั้งเดียว
+export type NavNameplate = { slug: string; name: string; lifecycleStatus: string };
+export type NavBrand = { slug: string; name: string; nameplates: NavNameplate[] };
+
+export const getNavIndex = cache(async (): Promise<NavBrand[]> => {
+  const brands = await prisma.brand.findMany({
+    orderBy: { name: "asc" },
+    select: {
+      slug: true,
+      name: true,
+      marketPresences: {
+        select: {
+          nameplates: {
+            orderBy: { name: "asc" },
+            select: { slug: true, name: true, lifecycleStatus: true },
+          },
+        },
+      },
+    },
+  });
+  return brands.map((b) => ({
+    slug: b.slug,
+    name: b.name,
+    // แบรนด์เดียวอาจมีหลาย presence (ตลาด/ช่วงเวลา) — รวมรุ่นให้ตรงกับที่ getBrandDetail แสดง
+    nameplates: b.marketPresences.flatMap((p) => p.nameplates),
+  }));
+});
+
+// ── ต้นไม้ตัวตนรถ (คงชั้น Generation→Derivative→Phase→Trim→Variant) สำหรับหน้าย่อย §7.4–7.5 ──
+// ต่างจาก flattenVariants ที่ยุบชั้น — อันนี้เก็บโครงเพื่อทำหน้าเจน/ตัวถัง/รุ่นย่อยแยก · reuse helper เดิม
+// ประวัติราคา (append-only observation) — โชว์ทุกแถวในหน้า SKU ไม่ทับอดีต
+export type PriceHistoryRow = {
+  amount: number | null;
+  observedDate: string;
+  effectiveFrom: string | null;
+  evidence: EvidenceRef;
+};
+export type TreeVariant = VariantRow & { skuKey: string; priceHistory: PriceHistoryRow[] };
+export type TreeTrim = {
+  key: string;
+  name: string;
+  standardName: string | null;
+  marketingLine: string | null;
+  rideHeightClass: string | null;
+  variants: TreeVariant[];
+  priceMin: number | null;
+  priceMax: number | null;
+};
+export type TreeDerivative = {
+  key: string;
+  bodyType: string;
+  name: string | null;
+  cabType: string | null;
+  doors: number | null;
+  wheelbaseMm: number | null;
+  phaseType: string | null;
+  phaseName: string | null;
+  changeSummary: string | null;
+  trims: TreeTrim[];
+  priceMin: number | null;
+  priceMax: number | null;
+  variantCount: number;
+};
+export type TreeGeneration = {
+  key: string;
+  code: string | null;
+  name: string | null;
+  launchYear: number | null;
+  platformName: string | null;
+  chassisType: string | null;
+  ecoCarPhase: string | null;
+  summary: string | null;
+  derivatives: TreeDerivative[];
+  priceMin: number | null;
+  priceMax: number | null;
+  variantCount: number;
+};
+export type NameplateTree = {
+  slug: string;
+  name: string;
+  brand: string;
+  brandSlug: string;
+  segment: string | null;
+  lifecycleStatus: string;
+  summary: string | null;
+  generations: TreeGeneration[];
+};
+
+function priceRangeOf(prices: (number | null)[]): { min: number | null; max: number | null } {
+  const p = prices.filter((x): x is number => x != null);
+  return { min: p.length ? Math.min(...p) : null, max: p.length ? Math.max(...p) : null };
+}
+
+export const getNameplateTree = cache(async (slug: string): Promise<NameplateTree | null> => {
+  const nameplate = await prisma.nameplate.findUnique({ where: { slug }, include: nameplateInclude });
+  if (!nameplate) return null;
+
+  const generations: TreeGeneration[] = nameplate.generations.map((generation, gi) => {
+    // ตัวถังของเจนนี้ · คีย์ dedupe ต่อเจน
+    const derivKeys = dedupeKeys(generation.derivatives, (d, i) => derivativeKey(d, i));
+    // คีย์ SKU dedupe ระดับทั้งเจน (ชื่อ trim ซ้ำข้ามตัวถังได้) — ต้อง filter เหมือนตอน map จริงเป๊ะ ให้ index ตรงกัน
+    const genFlat = generation.derivatives.flatMap((derivative) => {
+      const phase = derivative.phases.find((p) => p.effectiveTo == null) ?? derivative.phases[0] ?? null;
+      return (phase?.trims ?? [])
+        .filter((t) => t.effectiveTo == null)
+        .flatMap((trim) =>
+          trim.variantRevisions.filter((v) => v.effectiveTo == null).map((variant) => ({ variant, trim })),
+        );
+    });
+    const skuKeyByVariantId = new Map<string, string>();
+    for (const [fv, key] of dedupeKeys(genFlat, (fv, i) => variantKey(fv.variant, fv.trim, i))) {
+      skuKeyByVariantId.set(fv.variant.id, key);
+    }
+    const derivatives: TreeDerivative[] = generation.derivatives.map((derivative) => {
+      const phase = derivative.phases.find((p) => p.effectiveTo == null) ?? derivative.phases[0] ?? null;
+      const rawTrims = (phase?.trims ?? []).filter((t) => t.effectiveTo == null);
+      const trimKeys = dedupeKeys(rawTrims, (t, i) => trimKey(t, i));
+      const trims: TreeTrim[] = rawTrims.map((trim) => {
+        const variants: TreeVariant[] = trim.variantRevisions
+          .filter((v) => v.effectiveTo == null)
+          .map((variant) => {
+            const flat: FlatVariant = { variant, trim, derivative };
+            const obs = latestPrice(flat);
+            const described = describePowertrain(flat);
+            return {
+              id: variant.id,
+              name: variant.name ?? trim.name,
+              trimName: trim.name,
+              powertrainType: variant.powertrainType,
+              powertrainText: powertrainLabel(variant.powertrainType, variant.engine?.fuelType),
+              engineText: described.engineText,
+              powerText: described.powerText,
+              transmissionText: described.transmissionText,
+              drivetrain: variant.drivetrain?.type ?? null,
+              seatCount: variant.seatCountStatus === "known" ? variant.seatCount : null,
+              price: obs?.amount != null ? Number(obs.amount) : null,
+              priceAsOf: obs ? (obs.effectiveFrom ?? obs.observedDate).toISOString() : null,
+              evidence: obs ? toEvidenceRef(obs.evidenceSource) : null,
+              ...specExtras(flat),
+              skuKey: skuKeyByVariantId.get(variant.id) ?? variant.id,
+              priceHistory: variant.officialPriceObservations.map((o) => ({
+                amount: o.amount != null ? Number(o.amount) : null,
+                observedDate: o.observedDate.toISOString(),
+                effectiveFrom: o.effectiveFrom?.toISOString() ?? null,
+                evidence: toEvidenceRef(o.evidenceSource),
+              })),
+            };
+          });
+        const range = priceRangeOf(variants.map((v) => v.price));
+        return {
+          key: trimKeys.get(trim)!,
+          name: trim.name,
+          standardName: trim.standardName,
+          marketingLine: trim.marketingLine,
+          rideHeightClass: trim.rideHeightClass,
+          variants,
+          priceMin: range.min,
+          priceMax: range.max,
+        };
+      });
+      const allPrices = trims.flatMap((t) => t.variants.map((v) => v.price));
+      const range = priceRangeOf(allPrices);
+      return {
+        key: derivKeys.get(derivative)!,
+        bodyType: derivative.bodyType,
+        name: derivative.name,
+        cabType: derivative.cabType,
+        doors: derivative.doors,
+        wheelbaseMm: derivative.wheelbaseMm,
+        phaseType: phase?.phaseType ?? null,
+        phaseName: phase?.name ?? null,
+        changeSummary: phase?.changeSummary ?? null,
+        trims,
+        priceMin: range.min,
+        priceMax: range.max,
+        variantCount: trims.reduce((n, t) => n + t.variants.length, 0),
+      };
+    });
+    const range = priceRangeOf(derivatives.flatMap((d) => [d.priceMin, d.priceMax]));
+    return {
+      key: generationKey(generation, gi),
+      code: generation.code,
+      name: generation.name,
+      launchYear: generation.launchYear,
+      platformName: generation.platformName,
+      chassisType: generation.chassisType,
+      ecoCarPhase: generation.ecoCarPhase,
+      summary: generation.summary,
+      derivatives,
+      priceMin: range.min,
+      priceMax: range.max,
+      variantCount: derivatives.reduce((n, d) => n + d.variantCount, 0),
+    };
+  });
+
+  return {
+    slug: nameplate.slug,
+    name: nameplate.name,
+    brand: nameplate.marketPresence.brand.name,
+    brandSlug: nameplate.marketPresence.brand.slug,
+    segment: nameplate.segment,
+    lifecycleStatus: nameplate.lifecycleStatus,
+    summary: nameplate.summary,
+    generations,
+  };
+});
+
+// selector (pure · หน้าเรียก getNameplateTree แล้วหา node ตามคีย์)
+export function selectGeneration(tree: NameplateTree, genKey: string): TreeGeneration | null {
+  return tree.generations.find((g) => g.key === genKey) ?? null;
+}
+export function selectDerivative(gen: TreeGeneration, derivKey: string): TreeDerivative | null {
+  return gen.derivatives.find((d) => d.key === derivKey) ?? null;
+}
+export function selectTrim(deriv: TreeDerivative, tKey: string): TreeTrim | null {
+  return deriv.trims.find((t) => t.key === tKey) ?? null;
+}
+// หา SKU (variant) ตามคีย์ในเจนปัจจุบัน — คืน context ทั้งสาย ไว้ทำ breadcrumb/สลับรุ่นพี่น้อง
+export function selectVariant(
+  tree: NameplateTree,
+  skuKey: string,
+): { variant: TreeVariant; trim: TreeTrim; derivative: TreeDerivative; generation: TreeGeneration } | null {
+  const gen = tree.generations[0];
+  if (!gen) return null;
+  for (const derivative of gen.derivatives) {
+    for (const trim of derivative.trims) {
+      const variant = trim.variants.find((v) => v.skuKey === skuKey);
+      if (variant) return { variant, trim, derivative, generation: gen };
+    }
+  }
+  return null;
+}
+
+// ── ไทม์ไลน์ระดับแบรนด์ — รวม change event ของทุก nameplate ในแบรนด์ (§7.2) ──
+export type BrandChangeRow = ChangeEventRow & { nameplateSlug: string; nameplateName: string };
+
+export const getBrandTimeline = cache(async (slug: string): Promise<BrandChangeRow[]> => {
+  const brand = await prisma.brand.findUnique({ where: { slug }, select: { id: true } });
+  if (!brand) return [];
+  const events = await prisma.changeEvent.findMany({
+    where: { nameplate: { marketPresence: { brandId: brand.id } } },
+    orderBy: [{ effectiveDate: "desc" }, { createdAt: "desc" }],
+    include: { evidenceSource: true, nameplate: { select: { slug: true, name: true } } },
+  });
+  return events.map((event) => ({
+    id: event.id,
+    changeType: event.changeType,
+    title: event.title,
+    summary: event.summary,
+    beforeValue: event.beforeValue,
+    afterValue: event.afterValue,
+    effectiveDate: event.effectiveDate?.toISOString() ?? null,
+    evidence: toEvidenceRef(event.evidenceSource),
+    nameplateSlug: event.nameplate?.slug ?? "",
+    nameplateName: event.nameplate?.name ?? "",
+  }));
 });

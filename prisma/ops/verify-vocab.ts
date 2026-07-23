@@ -14,7 +14,7 @@ async function main() {
   ok(linkTypes.every((t) => /^[A-Z_]+$/.test(t.entityType)), `EvidenceLink.entityType เป็น enum ทั้งหมด: ${JSON.stringify(linkTypes.map((t) => `${t.entityType}:${t._count}`))}`);
   const mediaCount = await prisma.evidenceSource.count({ where: { sourceType: "MEDIA" } });
   const editorialCount = await prisma.evidenceSource.count({ where: { sourceType: "EDITORIAL" } });
-  ok(mediaCount === 11, `MEDIA source = 11 (9 reclassify + 2 ปีเปิดตัว Champ/Revo · จริง: ${mediaCount})`);
+  ok(mediaCount === 15, `MEDIA source = 15 (9 reclassify + 2 ปีเปิดตัว Champ/Revo + 4 phase7 Tesla/Benz · จริง: ${mediaCount})`);
   ok(editorialCount === 1, `EDITORIAL เหลือเฉพาะทีมข้อมูลจริง = 1 (จริง: ${editorialCount})`);
 
   // Phase 1 — engine canonical (นับแบบไม่ hardcode: ทุกตัวต้อง known + ตัวที่ระบุ VN Turbo ต้องเป็น TURBO)
@@ -84,7 +84,7 @@ async function main() {
   // evidenceSourceId เป็น NOT NULL ใน schema — นับราคา = variant เสมอ (ทุก variant มีราคา)
   const priceCount = await prisma.officialPriceObservation.count();
   const variantCount = await prisma.variantRevision.count();
-  ok(priceCount === 62 && variantCount === 62, `ราคา 62 = variant 62 (จริง: ${priceCount}/${variantCount})`);
+  ok(priceCount === 85 && variantCount === 85, `ราคา 85 = variant 85 (62 Toyota + 23 phase7 Tesla/Benz · จริง: ${priceCount}/${variantCount})`);
   // Phase 5 — Hilux Champ/Revo (2026-07-20)
   const standardRide = await prisma.trim.count({ where: { rideHeightClass: "STANDARD", rideHeightStatus: "known" } });
   ok(standardRide === 14, `กระบะตัวเตี้ย STANDARD known = 14 trims (Champ 5 + Revo 9 · จริง: ${standardRide})`);
