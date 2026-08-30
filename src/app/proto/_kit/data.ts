@@ -20,6 +20,8 @@ export type ProtoNameplate = {
   variantCount: number;
   /** รูปรถทางการ (มีเฉพาะ Toyota — Tesla/Benz ยังไม่มีสิทธิ์ใช้ภาพ) */
   image: string | null;
+  /** ราคาป้ายของ "ทุกรุ่นย่อย" เรียงจากน้อยไปมาก — หัวใจของเว็บ: เราเก็บทุกเกรดแยกกัน ไม่ยุบเป็นราคาเดียว */
+  variantPrices: number[];
   checkedDate: string;
   summary: string;
 };
@@ -39,6 +41,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 1491000,
     variantCount: 18,
     image: "/cars/hilux-travo.webp",
+    variantPrices: [767000, 789000, 819000, 839000, 859000, 895000, 909000, 945000, 949000, 984000, 999000, 1029000, 1090000, 1102000, 1176000, 1292000, 1366000, 1491000],
     checkedDate: "2026-07-19",
     summary:
       "กระบะไลน์บนตัวใหม่ของตระกูล Hilux เปิดตัวครั้งแรกในโลกที่กรุงเทพฯ พ.ย. 2025 — ครบ 3 ตัวถัง Standard/Smart/Double Cab และมีรุ่นไฟฟ้า Travo-e",
@@ -57,6 +60,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 1969000,
     variantCount: 10,
     image: "/cars/fortuner.webp",
+    variantPrices: [1239000, 1400000, 1439000, 1530000, 1600000, 1643000, 1713000, 1835000, 1904000, 1969000],
     checkedDate: "2026-07-19",
     summary:
       "PPV 7 ที่นั่งบนพื้นฐานโครงสร้าง Hilux · ไลน์อัปไทยแบ่ง 3 ไลน์: Leader / Legender / GR Sport รวม 10 รุ่นย่อย",
@@ -75,6 +79,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 779000,
     variantCount: 7,
     image: "/cars/yaris-ativ.webp",
+    variantPrices: [569000, 599000, 679000, 709000, 709000, 729000, 779000],
     checkedDate: "2026-07-19",
     summary:
       "อีโคเซดาน 5 ที่นั่ง ขับเคลื่อนล้อหน้า · ไลน์อัปปัจจุบัน (MY 01/2026) แบ่ง 3 ไลน์: รุ่นหลัก / Nightshade / GR Sport",
@@ -93,6 +98,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 1129000,
     variantCount: 4,
     image: "/cars/corolla-altis.webp",
+    variantPrices: [909000, 949000, 1009000, 1129000],
     checkedDate: "2026-07-19",
     summary:
       "ซีดาน C-segment · ไลน์อัปปัจจุบันแยก 2 ไลน์: Corolla Altis (1.8G / HEV Smart / HEV Premium) และ Altis GR Sport",
@@ -111,6 +117,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 1649000,
     variantCount: 2,
     image: "/cars/bz4x.webp",
+    variantPrices: [1529000, 1649000],
     checkedDate: "2026-07-19",
     summary:
       "SUV ไฟฟ้าล้วน 5 ที่นั่ง — รถนั่ง BEV รุ่นเดียวในไลน์อัป Toyota ไทยปัจจุบัน · โฉม Minorchange (พ.ย. 2025) นำเข้า CBU จากญี่ปุ่น",
@@ -129,6 +136,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 2099000,
     variantCount: 4,
     image: null,
+    variantPrices: [1149000, 1439000, 1599000, 2099000],
     checkedDate: "2026-07-22",
     summary: "ซีดานไฟฟ้า — ราคาจากที่สื่อยานยนต์ไทยรายงานตรงกันหลายสำนัก (tesla.com บล็อกการดึงข้อมูล)",
   },
@@ -146,6 +154,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 1999000,
     variantCount: 3,
     image: null,
+    variantPrices: [1719000, 1849000, 1999000],
     checkedDate: "2026-07-22",
     summary: "SUV ไฟฟ้า โฉม Juniper · มีรุ่นฐานล้อยาว 6 ที่นั่ง (Model Y L)",
   },
@@ -163,6 +172,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 3290000,
     variantCount: 5,
     image: null,
+    variantPrices: [2690000, 2800000, 2880000, 3190000, 3290000],
     checkedDate: "2026-07-22",
     summary: "ซีดานหรู W206 ประกอบไทย · ราคาจาก price list ทางการ",
   },
@@ -180,6 +190,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 4080000,
     variantCount: 3,
     image: null,
+    variantPrices: [3650000, 3930000, 4080000],
     checkedDate: "2026-07-22",
     summary: "ซีดานผู้บริหาร W214 ประกอบไทย",
   },
@@ -197,6 +208,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 4340000,
     variantCount: 5,
     image: null,
+    variantPrices: [3490000, 3550000, 3720000, 4180000, 4340000],
     checkedDate: "2026-07-22",
     summary: "SUV X254 · มีทั้งตัวถัง SUV และ Coupé",
   },
@@ -214,6 +226,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 7580000,
     variantCount: 2,
     image: null,
+    variantPrices: [7050000, 7580000],
     checkedDate: "2026-07-22",
     summary: "เรือธง W223 ฐานล้อยาว",
   },
@@ -231,6 +244,7 @@ export const NAMEPLATES: ProtoNameplate[] = [
     priceMax: 7200000,
     variantCount: 1,
     image: null,
+    variantPrices: [7200000],
     checkedDate: "2026-07-22",
     summary: "ซีดานไฟฟ้าเรือธง V297 · ในลิสต์ราคาทางการล่าสุดเหลือรุ่นเดียว",
   },
