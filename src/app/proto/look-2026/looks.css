@@ -1,0 +1,223 @@
+/* ── ชุดหน้าตา (look) ของหน้าลอง /proto/look-2026 ───────────────────────────
+   จงใจแยกไฟล์ ไม่แตะ globals.css ของจริง — หน้าลองต้อง "ฉีก" ได้โดยไม่กระทบเว็บ
+   ทุก look ยึดสี CI น้ำเงิน แต่คนละอุณหภูมิ/คนละบุคลิก
+   ใช้แบบ: <div class="look look-meta"> … </div>  (ตัวแปรทั้งหมด scope อยู่ในนั้น) */
+
+.look {
+  min-height: 100vh;
+  background: var(--lk-bg);
+  color: var(--lk-text);
+}
+
+/* ── D · META — มืด สายสถิติ (ฟีล dotabuff / op.gg) ────────────────────── */
+.look-meta {
+  --lk-bg: #070b16;
+  --lk-panel: #0f1526;
+  --lk-panel-2: #141c33;
+  --lk-line: #1e2942;
+  --lk-text: #e3eaf9;
+  --lk-muted: #93a1c0;
+  --lk-faint: #6b7a9c;
+  --lk-accent: #4d8bff;
+  --lk-accent-soft: rgba(77, 139, 255, 0.14);
+  --lk-cyan: #29d3ee;
+  --lk-good: #3ad07f;
+  --lk-warn: #ffb020;
+  --lk-danger: #ff5f6d;
+}
+
+/* ── E · PIT — มืดน้ำเงินอมม่วง การ์ดแบบคู่มือเกม (ฟีล prydwen) ────────── */
+.look-pit {
+  --lk-bg: #0d1030;
+  --lk-panel: #171b47;
+  --lk-panel-2: #1f2559;
+  --lk-line: #2c3370;
+  --lk-text: #eceefb;
+  --lk-muted: #a6abd8;
+  --lk-faint: #7a80b4;
+  --lk-accent: #6d8bff;
+  --lk-accent-soft: rgba(109, 139, 255, 0.16);
+  --lk-cyan: #46e0d0;
+  --lk-good: #4ade80;
+  --lk-warn: #fbbf24;
+  --lk-danger: #fb7185;
+}
+
+/* ── F · BLUEPRINT — กระดาษแบบแปลนสีน้ำเงิน (สว่าง แต่ไม่ใช่ขาวเปล่า) ──── */
+.look-blueprint {
+  --lk-bg: #eef3fc;
+  --lk-panel: #ffffff;
+  --lk-panel-2: #e3ebf8;
+  --lk-line: #b9caea;
+  --lk-text: #0a2350;
+  --lk-muted: #40598f;
+  --lk-faint: #6b83b5;
+  --lk-accent: #1345c4;
+  --lk-accent-soft: rgba(19, 69, 196, 0.1);
+  --lk-cyan: #0f7fa8;
+  --lk-good: #0f7a4d;
+  --lk-warn: #a45c00;
+  --lk-danger: #b3261e;
+}
+
+/* พื้นกระดาษแบบแปลน — เส้นตารางจางๆ ทั่วหน้า (เอกลักษณ์ของ look นี้) */
+.look-blueprint {
+  background-image:
+    linear-gradient(rgba(19, 69, 196, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(19, 69, 196, 0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ── ชิ้นส่วนร่วม (ทุก look ใช้คลาสเดียวกัน แต่หน้าตาต่างตามตัวแปร) ────── */
+.lk-bar {
+  background: var(--lk-panel);
+  border-bottom: 1px solid var(--lk-line);
+}
+.lk-panel {
+  background: var(--lk-panel);
+  border: 1px solid var(--lk-line);
+}
+.lk-line {
+  border-color: var(--lk-line);
+}
+.lk-muted {
+  color: var(--lk-muted);
+}
+.lk-faint {
+  color: var(--lk-faint);
+}
+.lk-accent {
+  color: var(--lk-accent);
+}
+.lk-accent-bg {
+  background: var(--lk-accent);
+  color: #fff;
+}
+.lk-soft-bg {
+  background: var(--lk-accent-soft);
+}
+.lk-good {
+  color: var(--lk-good);
+}
+.lk-warn {
+  color: var(--lk-warn);
+}
+.lk-input {
+  background: var(--lk-panel-2);
+  border: 1px solid var(--lk-line);
+  color: var(--lk-text);
+}
+.lk-input::placeholder {
+  color: var(--lk-faint);
+}
+
+/* ตารางสถิติ — แถวเตี้ย เส้นบาง ตัวเลขชิดขวา (แพตเทิร์นเว็บสถิติ) */
+.lk-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.lk-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--lk-panel-2);
+  color: var(--lk-faint);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--lk-line);
+  white-space: nowrap;
+}
+.lk-table tbody tr {
+  border-bottom: 1px solid var(--lk-line);
+}
+.lk-table tbody tr:hover {
+  background: var(--lk-accent-soft);
+}
+.lk-table td {
+  padding: 9px 12px;
+  vertical-align: middle;
+}
+
+/* แท่งเทียบค่า (ราคา/กำลัง) — ให้ "อ่านด้วยตา" ได้ก่อนอ่านตัวเลข */
+.lk-meter {
+  position: relative;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--lk-panel-2);
+  overflow: hidden;
+}
+.lk-meter > span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--lk-accent), var(--lk-cyan));
+}
+
+/* ป้ายมุมตัด — ใช้ใน META/PIT ให้รู้สึก "เกม/เครื่องมือ" ไม่ใช่การ์ดมนๆ */
+.lk-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--lk-accent-soft);
+  color: var(--lk-accent);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+
+/* กรอบมุมตัดของ BLUEPRINT — เหมือนกรอบในแบบแปลน */
+.lk-cut {
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+
+/* หัวข้อแบบ drafting — เลขกำกับ + เส้นลากยาว */
+.lk-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.lk-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--lk-line);
+}
+.lk-head .idx {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--lk-accent);
+  border: 1px solid var(--lk-accent);
+  padding: 1px 6px;
+}
+
+/* แถวสเปกแบบ spec sheet (จุดไข่ปลาเชื่อมชื่อกับค่า) */
+.lk-spec {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px dashed var(--lk-line);
+  font-size: 14px;
+}
+.lk-spec dt {
+  color: var(--lk-faint);
+  white-space: nowrap;
+}
+.lk-spec .dots {
+  flex: 1;
+  border-bottom: 1px dotted var(--lk-line);
+  transform: translateY(-4px);
+}
+.lk-spec dd {
+  font-weight: 600;
+  white-space: nowrap;
+}

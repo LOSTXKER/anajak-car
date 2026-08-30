@@ -13,6 +13,13 @@ export type ProtoEntry = {
 
 export const PROTOS: ProtoEntry[] = [
   {
+    slug: "look-2026",
+    title: "หน้าตาใหม่ทั้งเว็บ — เลือกลุค",
+    question: "CARMETA ควรมีหน้าตาแบบไหน สำหรับคนที่มาศึกษาข้อมูลรถก่อนตัดสินใจซื้อ",
+    date: "2026-08-30",
+    status: "รอเคาะ",
+  },
+  {
     slug: "redesign-2026",
     title: "รื้อ UX/UI ทั้งเว็บ — เลือกทิศ",
     question: "คนเข้าเว็บ CARMETA ควรเดินยังไงถึงได้คำตอบเร็วที่สุด และหน้าตาแบบไหนที่ใช้ง่ายจริง",
