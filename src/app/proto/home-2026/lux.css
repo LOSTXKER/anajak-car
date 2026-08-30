@@ -79,12 +79,13 @@
 }
 
 .lx-tape {
-  border-bottom: 1px solid var(--hair);
-  background: var(--bg-2);
+  border-bottom: 1px solid var(--hair-2);
 }
 .lx-tape-in {
   display: flex;
-  align-items: stretch;
+  align-items: baseline;
+  gap: 34px;
+  padding-block: 16px 15px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -93,27 +94,37 @@
 }
 .lx-tape-item {
   flex: none;
-  padding: 12px 26px 12px 0;
-  margin-right: 26px;
-  border-right: 1px solid var(--hair);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
   white-space: nowrap;
 }
-.lx-tape-item:last-child {
-  border-right: 0;
-}
 .lx-tape-k {
-  display: block;
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--ink-3);
 }
+.lx-live {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+  padding-left: 20px;
+  font-size: 12px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.lx-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.14);
+}
 .lx-tape-v {
-  display: block;
-  margin-top: 3px;
   font-size: 15px;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 /* ── Hero: พาดหัว + ช่องค้นหา + โลโก้แบรนด์เป็นทางลัด ─────────────── */
@@ -192,26 +203,24 @@
 
 /* แถวโลโก้แบรนด์ = ทางลัดเข้าหน้าแบรนด์ (ของที่เบสสั่งให้อยู่ใน hero) */
 .lx-marks {
-  margin-top: 44px;
+  margin-top: 52px;
+  padding-bottom: 8px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid var(--hair);
-  border-bottom: 1px solid var(--hair);
+  gap: 14px;
 }
 .lx-mark {
-  padding: 22px 24px 20px;
-  border-right: 1px solid var(--hair);
+  padding: 20px 22px 22px;
+  border-radius: 14px;
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  transition: background 0.2s ease;
-}
-.lx-mark:last-child {
-  border-right: 0;
+  gap: 14px;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 .lx-mark:hover {
-  background: rgba(47, 86, 201, 0.045);
+  background: rgba(47, 86, 201, 0.05);
+  transform: translateY(-1px);
 }
 .lx-mark-top {
   display: flex;
@@ -438,17 +447,14 @@
 
 /* บล็อกข้อสังเกตจากข้อมูล (แทนที่จะเป็นรูปรถ) */
 .lx-facts {
-  margin-top: 30px;
+  margin-top: 46px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border: 1px solid var(--hair);
+  gap: 40px;
 }
 .lx-fact {
-  padding: 22px 24px 24px;
-  border-right: 1px solid var(--hair);
-}
-.lx-fact:last-child {
-  border-right: 0;
+  padding-top: 18px;
+  border-top: 2px solid var(--ink);
 }
 .lx-fact em {
   display: block;
@@ -537,15 +543,13 @@
   .lx-marks,
   .lx-facts {
     grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
   }
-  .lx-mark,
-  .lx-fact {
-    border-right: 0;
-    border-bottom: 1px solid var(--hair);
+  .lx-facts {
+    gap: 28px;
   }
-  .lx-mark:last-child,
-  .lx-fact:last-child {
-    border-bottom: 0;
+  .lx-mark {
+    padding: 16px 14px 18px;
   }
 }
 @media (max-width: 700px) {

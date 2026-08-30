@@ -93,18 +93,22 @@ export default function LuxHomePage() {
       <div className="lx-tape">
         <div className="lx-shell lx-tape-in">
           {[
-            { k: "รุ่นในระบบ", v: `${TOTALS.nameplates}` },
+            { k: "รุ่น", v: `${TOTALS.nameplates}` },
             { k: "เกรดที่ซื้อได้จริง", v: `${TOTALS.variants}` },
-            { k: "ถูกสุดในฐาน", v: formatTHB(MIN) },
-            { k: "แพงสุดในฐาน", v: formatTHB(MAX) },
+            { k: "ถูกสุด", v: formatTHB(MIN) },
+            { k: "แพงสุด", v: formatTHB(MAX) },
             { k: "ค่ากลาง", v: formatTHB(MEDIAN) },
-            { k: "ตรวจล่าสุด", v: formatDateTH(TOTALS.latestChecked) ?? "—" },
           ].map((t) => (
             <span key={t.k} className="lx-tape-item">
               <span className="lx-tape-k">{t.k}</span>
               <span className="lx-tape-v tnum">{t.v}</span>
             </span>
           ))}
+          {/* วันที่ตรวจเป็นสถานะของข้อมูล ไม่ใช่ค่าสถิติ — แยกไปท้ายแถวพร้อมจุดสถานะ */}
+          <span className="lx-live">
+            <i aria-hidden />
+            ข้อมูล ณ <span className="tnum">{formatDateTH(TOTALS.latestChecked)}</span>
+          </span>
         </div>
       </div>
 
