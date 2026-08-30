@@ -1,26 +1,79 @@
 /*
-  THESIS: หน้าแรกที่ให้ความรู้สึกเหมือนเว็บผู้ผลิตรถระดับบน แต่พิสูจน์ความจริงของ CARMETA ไปพร้อมกัน —
-    ภาพรถเป็นพระเอก ช่องไฟกว้าง ตัวอักษรคม · ปฏิเสธการอัดตารางตั้งแต่บรรทัดแรก (รอบก่อนแห้งเกินไป)
-  OWN-WORLD: ขาว–เทาอ่อน หมึกเกือบดำ น้ำเงิน CI ใช้เท่าที่จำเป็น · เส้น 1px · ไม่มีการ์ดลอย ไม่มีเงาหนา ไม่มีไล่สีบนตัวอักษร
-  STORY: เปิดมาเจอพาดหัวใหญ่ที่พิมพ์วนได้กับช่องค้นหาใหญ่ (สองอย่างที่เบสอยากเก็บ) แล้วภาพรถพาสายตาลงไปที่แบรนด์ → รุ่นเด่น → ตารางทั้งฐาน
-  FIRST VIEWPORT: พาดหัว 82px กลางหน้า · ช่องค้นหาใหญ่ใต้พาดหัว · บรรทัดพิสูจน์ (12 รุ่น · 64 รุ่นย่อย · วันที่ตรวจ) · ภาพรถเต็มเวทีใต้ลงไป
-  FORM: โครงเดิมของเว็บ (hero + ค้นหา + แบรนด์ + ตาราง) ยกระดับด้วยภาษาเว็บรถหรู — ไม่ใช่โลกภาพที่ยืมมาสวม
+  THESIS: หน้าแรกของ CARMETA ทำงานเหมือน "กระดานราคา" ของเว็บข้อมูลตลาด — ราคาและการกระจายของเกรดคือภาพ
+    ไม่ใช่รูปรถ (เราไม่ได้ขายรถ) · ปฏิเสธหน้าเปิดแบบเว็บผู้ผลิตที่ให้ภาพรถกินครึ่งจอ
+  OWN-WORLD: ขาว–เทาอ่อน หมึกเกือบดำ น้ำเงิน CI + ฟ้าเป็นสีของกราฟเท่านั้น · เส้น 1px · ตัวเลขทุกตัวเป็น mono เรียงหลัก
+  STORY: เปิดมาเจอพาดหัวพิมพ์วน + ช่องค้นหา + โลโก้แบรนด์เป็นทางลัด → แผนภูมิว่าทั้งตลาดในฐานกระจายราคาอย่างไร → กระดานราคารายรุ่นพร้อมกราฟกระจายเกรดในแถว
+  FIRST VIEWPORT: แถบสรุปตลาดบนสุด · พาดหัว 74px · ช่องค้นหาใหญ่ · แถวโลโก้ 3 แบรนด์พร้อมช่วงราคาเป็นแถบเทียบกัน
+  FORM: กราฟทุกอันมาจากราคาจริง 64 รายการ — ไม่มีเส้นกราฟตามเวลา เพราะราคาส่วนใหญ่เพิ่งตรวจครั้งเดียว จะวาดก็เป็นการโกหก
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 */
-import Image from "next/image";
-
 import { HeroHeadline } from "@/components/hero-headline";
 import { formatDateTH, formatTHB } from "@/lib/format";
 
 import "../lux.css";
 import { BRANDS, NAMEPLATES, TOTALS, UPCOMING_BRANDS, brandStats } from "../../_kit/data";
 
-const FEATURED = ["hilux-travo", "bz4x", "fortuner"];
+/* ── ตัวเลขสรุปที่คำนวณจากราคาจริงทั้ง 64 รายการ ────────────────── */
+const ALL_PRICES = NAMEPLATES.flatMap((n) => n.variantPrices).sort((a, b) => a - b);
+const MIN = ALL_PRICES[0];
+const MAX = ALL_PRICES[ALL_PRICES.length - 1];
+const MEDIAN = ALL_PRICES[Math.floor(ALL_PRICES.length / 2)];
+
+/* ช่วงราคาของแผนภูมิ — แบ่งเป็นชั้นที่คนซื้อรถใช้คิดจริง (ไม่ใช่แบ่งเท่าๆ กันแบบเครื่องจักร) */
+const BUCKETS: { label: string; min: number; max: number }[] = [
+  { label: "ไม่เกิน 8 แสน", min: 0, max: 800_000 },
+  { label: "8 แสน–1 ล้าน", min: 800_000, max: 1_000_000 },
+  { label: "1–1.5 ล้าน", min: 1_000_000, max: 1_500_000 },
+  { label: "1.5–2 ล้าน", min: 1_500_000, max: 2_000_000 },
+  { label: "2–3 ล้าน", min: 2_000_000, max: 3_000_000 },
+  { label: "3–4 ล้าน", min: 3_000_000, max: 4_000_000 },
+  { label: "4 ล้านขึ้นไป", min: 4_000_000, max: Infinity },
+];
+const HIST = BUCKETS.map((b) => ({
+  ...b,
+  n: ALL_PRICES.filter((p) => p >= b.min && p < b.max).length,
+}));
+const HIST_MAX = Math.max(...HIST.map((h) => h.n));
+
+/* ข้อสังเกตจากข้อมูล — คำนวณสด ไม่มีเลขพิมพ์มือ */
+const widest = NAMEPLATES.reduce((a, b) =>
+  b.variantPrices[b.variantPrices.length - 1] - b.variantPrices[0] >
+  a.variantPrices[a.variantPrices.length - 1] - a.variantPrices[0]
+    ? b
+    : a,
+);
+const widestGap = widest.variantPrices[widest.variantPrices.length - 1] - widest.variantPrices[0];
+/** ขั้นบันไดที่ห่างที่สุดในรุ่นเดียวกัน — "จ่ายเพิ่มก้อนใหญ่สุดเพื่อขึ้นหนึ่งเกรด" */
+const biggestStep = NAMEPLATES.flatMap((n) =>
+  n.variantPrices.slice(1).map((p, i) => ({ n, gap: p - n.variantPrices[i], from: n.variantPrices[i], to: p })),
+).reduce((a, b) => (b.gap > a.gap ? b : a));
+const mostGrades = NAMEPLATES.reduce((a, b) => (b.variantCount > a.variantCount ? b : a));
+
+function pct(v: number) {
+  return ((v - MIN) / (MAX - MIN)) * 100;
+}
+
+/** กราฟย่อในแถว: ขีดหนึ่งขีด = หนึ่งเกรด วางตามราคาจริงบนแกนของทั้งตลาด */
+function GradeSpread({ prices }: { prices: number[] }) {
+  const lo = prices[0];
+  const hi = prices[prices.length - 1];
+  return (
+    <span className="lx-spark" aria-hidden>
+      <span className="lx-spark-axis" />
+      <span className="lx-spark-span" style={{ left: `${pct(lo)}%`, width: `${Math.max(pct(hi) - pct(lo), 0.6)}%` }} />
+      {prices.map((p, i) => (
+        <span
+          key={`${p}-${i}`}
+          className={`lx-spark-tick${p === lo || p === hi ? " edge" : ""}`}
+          style={{ left: `${pct(p)}%` }}
+        />
+      ))}
+    </span>
+  );
+}
 
 export default function LuxHomePage() {
-  const featured = FEATURED.map((s) => NAMEPLATES.find((n) => n.slug === s)!);
-  const hero = featured[0];
-  const table = [...NAMEPLATES].sort((a, b) => (a.priceMin ?? 0) - (b.priceMin ?? 0));
+  const board = [...NAMEPLATES].sort((a, b) => a.variantPrices[0] - b.variantPrices[0]);
 
   return (
     <div className="lx">
@@ -29,244 +82,227 @@ export default function LuxHomePage() {
           <span className="lx-word">CARMETA</span>
           <nav className="lx-menu" aria-label="เมนูหลัก">
             <a href="#brands">แบรนด์</a>
-            <a href="#models">รุ่นรถ</a>
-            <a href="#database">ฐานข้อมูล</a>
+            <a href="#market">ภาพรวมราคา</a>
+            <a href="#board">กระดานราคา</a>
           </nav>
-          <span className="lx-top-cta">ข้อมูล ณ {formatDateTH(TOTALS.latestChecked)}</span>
+          <span className="lx-top-right">ข้อมูล ณ {formatDateTH(TOTALS.latestChecked)}</span>
         </div>
       </header>
 
-      <main>
-        {/* Hero — พาดหัวพิมพ์วนของเดิม + ช่องค้นหาใหญ่ + ภาพรถเป็นพระเอก */}
-        <section className="lx-hero">
-          <div className="lx-shell lx-hero-in">
-            <div className="lx-rise">
-              <HeroHeadline />
-            </div>
-            <p className="lx-hero-sub lx-rise lx-rise-2">
-              ฐานข้อมูลรถยนต์ในไทยที่แยกลึกถึงรุ่นย่อยที่ซื้อได้จริง — ราคาป้ายทางการทุกเกรด
-              พร้อมหน้าต้นทางและวันที่ตรวจกำกับทุกตัวเลข
-            </p>
-
-            {/* หน้าลองยังไม่ต่อระบบค้นหาจริง — ใช้ form ธรรมดา (server component ส่ง event handler ไม่ได้) */}
-            <form className="lx-search lx-rise lx-rise-2" role="search" action="/proto/home-2026/lux">
-              <svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="var(--ink-3)" strokeWidth="1.5" aria-hidden>
-                <circle cx="9" cy="9" r="5.6" />
-                <path d="m13.4 13.4 3.6 3.6" strokeLinecap="round" />
-              </svg>
-              <input aria-label="ค้นหารุ่นรถหรือเกรด" placeholder="ค้นหารุ่นรถหรือเกรด เช่น Hilux Travo, Overland Plus" />
-              <button type="submit">ค้นหา</button>
-            </form>
-
-            <p className="lx-proof lx-rise lx-rise-3">
-              <span>
-                <b>{TOTALS.nameplates}</b> รุ่น
-              </span>
-              <span>
-                <b>{TOTALS.variants}</b> รุ่นย่อยที่ซื้อได้จริง
-              </span>
-              <span>
-                <b>{TOTALS.brands}</b> แบรนด์
-              </span>
-              <span>ราคาป้ายทางการ ไม่ใช่ราคาซื้อขายจริง</span>
-            </p>
-          </div>
-
-          <div className="lx-stage lx-rise lx-rise-3">
-            <Image
-              src={hero.image!}
-              alt={`${hero.brand} ${hero.name}`}
-              width={1000}
-              height={560}
-              priority
-              sizes="(max-width: 1000px) 100vw, 1000px"
-            />
-            <span className="lx-stage-cap">
-              {hero.brand} {hero.name} · {hero.variantCount} รุ่นย่อย · เริ่ม {formatTHB(hero.priceMin!)}
+      {/* แถบสรุป — อ่านสถานะของฐานข้อมูลได้ในบรรทัดเดียว แบบแถบดัชนีตลาด */}
+      <div className="lx-tape">
+        <div className="lx-shell lx-tape-in">
+          {[
+            { k: "รุ่นในระบบ", v: `${TOTALS.nameplates}` },
+            { k: "เกรดที่ซื้อได้จริง", v: `${TOTALS.variants}` },
+            { k: "ถูกสุดในฐาน", v: formatTHB(MIN) },
+            { k: "แพงสุดในฐาน", v: formatTHB(MAX) },
+            { k: "ค่ากลาง", v: formatTHB(MEDIAN) },
+            { k: "ตรวจล่าสุด", v: formatDateTH(TOTALS.latestChecked) ?? "—" },
+          ].map((t) => (
+            <span key={t.k} className="lx-tape-item">
+              <span className="lx-tape-k">{t.k}</span>
+              <span className="lx-tape-v tnum">{t.v}</span>
             </span>
-          </div>
-        </section>
+          ))}
+        </div>
+      </div>
 
-        {/* แบรนด์ = ทางเข้าหลัก */}
-        <section id="brands" className="lx-sec">
+      <main>
+        {/* Hero — พาดหัวพิมพ์วน + ช่องค้นหา + โลโก้แบรนด์เป็นทางลัด */}
+        <section className="lx-hero">
           <div className="lx-shell">
-            <div className="lx-sec-head">
-              <h2>เลือกจากแบรนด์</h2>
-              <span className="lx-sec-note">
-                เปิดแบรนด์เมื่อเก็บราคาครบทุกเกรดแล้วเท่านั้น — อีก {UPCOMING_BRANDS.length} แบรนด์กำลังทยอยเก็บ
-              </span>
+            <div className="lx-hero-in">
+              <div className="lx-rise">
+                <HeroHeadline />
+              </div>
+              <p className="lx-hero-sub lx-rise lx-rise-2">
+                กระดานราคารถยนต์ในไทย ลึกถึงเกรดที่ซื้อได้จริงทุกคัน — ทุกตัวเลขผูกหน้าต้นทางของผู้ผลิต
+                พร้อมวันที่ตรวจ
+              </p>
+
+              {/* หน้าลองยังไม่ต่อระบบค้นหาจริง — server component ส่ง event handler ไม่ได้ */}
+              <form className="lx-search lx-rise lx-rise-2" role="search" action="/proto/home-2026/lux">
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="var(--ink-3)" strokeWidth="1.5" aria-hidden>
+                  <circle cx="9" cy="9" r="5.6" />
+                  <path d="m13.4 13.4 3.6 3.6" strokeLinecap="round" />
+                </svg>
+                <input aria-label="ค้นหารุ่นรถหรือเกรด" placeholder="ค้นหารุ่นรถหรือเกรด เช่น Hilux Travo, Overland Plus" />
+                <button type="submit">ค้นหา</button>
+              </form>
             </div>
 
-            <div className="lx-brands">
+            <nav id="brands" className="lx-marks lx-rise lx-rise-3" aria-label="ทางลัดไปหน้าแบรนด์">
               {BRANDS.map((b) => {
                 const st = brandStats(b.slug);
                 return (
-                  <a key={b.slug} href="#" className="lx-brand">
-                    <span className="lx-brand-logo">
+                  <a key={b.slug} href="#" className="lx-mark">
+                    <span className="lx-mark-top">
                       {b.logo ? (
                         // eslint-disable-next-line @next/next/no-img-element -- โลโก้ SVG local ที่ next/image ไม่ optimize
                         <img src={b.logo} alt={b.name} />
                       ) : (
-                        <span>{b.name}</span>
+                        <span className="wm">{b.name}</span>
                       )}
-                    </span>
-                    <span className="lx-brand-count">
-                      {st.nameplates} รุ่น · {st.variants} รุ่นย่อย
-                    </span>
-                    <span className="lx-brand-price">
-                      <em>ช่วงราคาป้าย</em>
-                      <span className="tnum">
-                        {formatTHB(st.priceMin!)} – {formatTHB(st.priceMax!)}
+                      <span className="lx-mark-count tnum">
+                        {st.nameplates} รุ่น · {st.variants} เกรด
                       </span>
                     </span>
-                    <span className="lx-brand-go">ดูรุ่นทั้งหมด →</span>
+                    <span className="lx-mark-range tnum">
+                      <b>{formatTHB(st.priceMin!)}</b> – {formatTHB(st.priceMax!)}
+                    </span>
+                    <span className="lx-mark-bar">
+                      <i
+                        style={{
+                          left: `${pct(st.priceMin!)}%`,
+                          width: `${Math.max(pct(st.priceMax!) - pct(st.priceMin!), 1.5)}%`,
+                        }}
+                      />
+                    </span>
                   </a>
                 );
               })}
+            </nav>
+          </div>
+        </section>
+
+        {/* แผนภูมิภาพรวมราคา — แทนที่รูปรถเป็นภาพหลักของหน้า */}
+        <section id="market" className="lx-sec">
+          <div className="lx-shell">
+            <div className="lx-sec-head">
+              <h2>เกรดทั้ง {TOTALS.variants} คันในฐานข้อมูล กระจายอยู่ช่วงราคาไหน</h2>
+              <span className="lx-sec-note">นับจากราคาป้ายทางการรายเกรด · ไม่ใช่ราคาซื้อขายจริง</span>
+            </div>
+
+            <div className="lx-hist">
+              {HIST.map((h, i) => (
+                <span key={h.label} className="lx-hist-col">
+                  <span className="lx-hist-n tnum">{h.n}</span>
+                  <span
+                    className="lx-hist-bar"
+                    style={{
+                      height: `${Math.max((h.n / HIST_MAX) * 100, 1.5)}%`,
+                      animationDelay: `${i * 60}ms`,
+                    }}
+                  />
+                </span>
+              ))}
+            </div>
+            <div className="lx-hist-x">
+              {HIST.map((h) => (
+                <span key={h.label}>{h.label}</span>
+              ))}
+            </div>
+
+            <div className="lx-facts">
+              <div className="lx-fact">
+                <em>ช่วงราคากว้างสุดในรุ่นเดียว</em>
+                <b className="tnum">{formatTHB(widestGap)}</b>
+                <span>
+                  {widest.brand} {widest.name} — จาก {formatTHB(widest.variantPrices[0])} ถึง{" "}
+                  {formatTHB(widest.variantPrices[widest.variantPrices.length - 1])} ใน{" "}
+                  {widest.variantCount} เกรด
+                </span>
+              </div>
+              <div className="lx-fact">
+                <em>ขั้นบันไดที่แพงสุด</em>
+                <b className="tnum">{formatTHB(biggestStep.gap)}</b>
+                <span>
+                  {biggestStep.n.brand} {biggestStep.n.name} — ขยับจาก{" "}
+                  {formatTHB(biggestStep.from)} ไป {formatTHB(biggestStep.to)} คือการข้ามเกรดที่ต้องจ่ายเพิ่มก้อนใหญ่ที่สุดในฐาน
+                </span>
+              </div>
+              <div className="lx-fact">
+                <em>รุ่นที่มีเกรดให้เลือกมากสุด</em>
+                <b className="tnum">{mostGrades.variantCount} เกรด</b>
+                <span>
+                  {mostGrades.brand} {mostGrades.name} — เกรดที่ซื้อได้จริงมากที่สุดในฐานข้อมูลตอนนี้
+                </span>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* รุ่นเด่น — ภาพใหญ่สลับซ้ายขวา ไม่ใช่การ์ดขนาดเท่ากัน */}
-        <section id="models" className="lx-sec" style={{ paddingBottom: 40 }}>
+        {/* กระดานราคา */}
+        <section id="board" className="lx-sec">
           <div className="lx-shell">
             <div className="lx-sec-head">
-              <h2>ดูความต่างของแต่ละเกรด</h2>
-              <span className="lx-sec-note">ตัวเลขทุกตัวมาจากตารางราคาทางการของผู้ผลิต</span>
+              <h2>กระดานราคารายรุ่น</h2>
+              <span className="lx-sec-note">เรียงตามราคาเริ่มต้น · แต่ละขีดในกราฟคือหนึ่งเกรดที่ซื้อได้จริง</span>
             </div>
 
-            {featured.map((n, i) => {
-              const st = n.variantPrices;
-              const gap = st[st.length - 1] - st[0];
-              return (
-                <article key={n.slug} className={`lx-feature${i % 2 === 1 ? " flip" : ""}`}>
-                  <div className="lx-feature-media">
-                    <Image
-                      src={n.image!}
-                      alt={`${n.brand} ${n.name}`}
-                      width={620}
-                      height={350}
-                      sizes="(max-width: 900px) 100vw, 620px"
-                    />
-                  </div>
-                  <div>
-                    <p className="lx-kind">
-                      {n.brand} · {n.segmentLabel}
-                    </p>
-                    <h3>{n.name}</h3>
-                    <p>{n.summary}</p>
-                    <div className="lx-spread">
-                      <div>
-                        <em>เริ่มต้น</em>
-                        <b className="tnum">{formatTHB(st[0])}</b>
-                      </div>
-                      <div>
-                        <em>สูงสุด</em>
-                        <b className="tnum">{formatTHB(st[st.length - 1])}</b>
-                      </div>
-                      <div>
-                        <em>ต่างกัน</em>
-                        <b className="tnum">{formatTHB(gap)}</b>
-                      </div>
-                      <div>
-                        <em>เกรดที่ซื้อได้</em>
-                        <b className="tnum">{n.variantCount}</b>
-                      </div>
-                    </div>
-                    <p className="lx-feature-src">
-                      ตรวจล่าสุด {formatDateTH(n.checkedDate)} ·{" "}
-                      <a href="https://www.toyota.co.th/" target="_blank" rel="noopener noreferrer">
-                        หน้าราคาทางการของผู้ผลิต
-                      </a>
-                    </p>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ตารางทั้งฐาน */}
-        <section id="database" className="lx-sec" style={{ borderBottom: 0 }}>
-          <div className="lx-shell">
-            <div className="lx-sec-head">
-              <h2>ทุกรุ่นในฐานข้อมูล</h2>
-              <span className="lx-sec-note">เรียงตามราคาเริ่มต้น · ตรวจล่าสุด {formatDateTH(TOTALS.latestChecked)}</span>
-            </div>
-
-            <table className="lx-table">
+            <table className="lx-board">
               <thead>
                 <tr>
                   <th>รุ่น</th>
-                  <th className="lx-hide-sm">เกรดที่ซื้อได้</th>
-                  <th className="lx-hide-sm">ขุมพลัง</th>
-                  <th className="lx-num">ราคาเริ่มต้น</th>
-                  <th className="lx-num lx-hide-sm">ราคาสูงสุด</th>
+                  <th className="lx-hide-sm">เกรด</th>
+                  <th className="lx-hide-sm">การกระจายราคาของเกรด</th>
+                  <th className="r">เริ่มต้น</th>
+                  <th className="r lx-hide-sm">สูงสุด</th>
+                  <th className="r lx-hide-sm">ส่วนต่าง</th>
+                  <th className="r lx-hide-sm">ตรวจเมื่อ</th>
                 </tr>
               </thead>
               <tbody>
-                {table.map((n) => (
-                  <tr key={n.slug}>
-                    <td>
-                      <a className="lx-row-model" href="#">
-                        {n.image ? (
-                          <Image src={n.image} alt="" width={84} height={48} />
-                        ) : (
-                          <span className="ph" aria-hidden>
-                            ยังไม่มีรูป
+                {board.map((n) => {
+                  const lo = n.variantPrices[0];
+                  const hi = n.variantPrices[n.variantPrices.length - 1];
+                  return (
+                    <tr key={n.slug}>
+                      <td>
+                        <a href="#">
+                          <span className="lx-b-name">{n.name}</span>
+                          <span className="lx-b-brand">
+                            {n.brand} · {n.segmentLabel} · {n.powertrains.join(" / ")}
                           </span>
-                        )}
-                        <span>
-                          <span className="lx-row-name">{n.name}</span>
-                          <span className="lx-row-brand">
-                            {n.brand} · {n.segmentLabel}
-                          </span>
+                        </a>
+                      </td>
+                      <td className="lx-hide-sm">
+                        <span className="lx-b-grade">
+                          <b className="tnum">{n.variantCount}</b> เกรด
                         </span>
-                      </a>
-                    </td>
-                    <td className="lx-hide-sm">
-                      <span className="lx-dots" aria-hidden>
-                        {n.variantPrices.slice(0, 10).map((p, i) => (
-                          <i key={`${p}-${i}`} />
-                        ))}
-                      </span>
-                      <span className="lx-row-brand" style={{ marginTop: 6 }}>
-                        {n.variantCount} เกรด
-                      </span>
-                    </td>
-                    <td className="lx-hide-sm" style={{ fontSize: 14, color: "var(--ink-2)" }}>
-                      {n.powertrains.join(" · ")}
-                    </td>
-                    <td className="lx-num">
-                      <b className="tnum">{formatTHB(n.variantPrices[0])}</b>
-                      <span>ตรวจ {formatDateTH(n.checkedDate)}</span>
-                    </td>
-                    <td className="lx-num lx-hide-sm">
-                      <b className="tnum" style={{ fontWeight: 500, color: "var(--ink-2)" }}>
-                        {n.variantPrices.length > 1
-                          ? formatTHB(n.variantPrices[n.variantPrices.length - 1])
-                          : "—"}
-                      </b>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="lx-hide-sm">
+                        <GradeSpread prices={n.variantPrices} />
+                      </td>
+                      <td className="r tnum" style={{ fontWeight: 600 }}>
+                        {formatTHB(lo)}
+                      </td>
+                      <td className="r tnum lx-hide-sm" style={{ color: "var(--ink-2)" }}>
+                        {hi > lo ? formatTHB(hi) : "—"}
+                      </td>
+                      <td className="r tnum lx-hide-sm" style={{ color: "var(--ink-2)" }}>
+                        {hi > lo ? formatTHB(hi - lo) : "—"}
+                      </td>
+                      <td className="r tnum lx-hide-sm" style={{ color: "var(--ink-3)", fontSize: 12.5 }}>
+                        {formatDateTH(n.checkedDate)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
 
+            <p className="lx-note-row">
+              กราฟในคอลัมน์ “การกระจายราคาของเกรด” วางบนแกนเดียวกันทั้งตาราง ({formatTHB(MIN)} –{" "}
+              {formatTHB(MAX)}) — ขีดเข้มคือเกรดถูกสุดกับแพงสุดของรุ่นนั้น ขีดจางคือเกรดระหว่างกลาง
+            </p>
+
             <div className="lx-foot">
               <div>
-                <h4>ราคาบนหน้านี้คือราคาอะไร</h4>
+                <h4>ราคาบนกระดานนี้คือราคาอะไร</h4>
                 <p>
                   ราคาป้ายทางการที่ผู้ผลิตประกาศ ไม่ใช่ราคาซื้อขายจริง ไม่รวมส่วนลดหรือโปรโมชัน ·
-                  ทุกตัวเลขผูกหน้าต้นทางและวันที่ตรวจ และเก็บประวัติแบบไม่เขียนทับเมื่อมีการปรับราคา
+                  ทุกตัวเลขผูกหน้าต้นทางและวันที่ตรวจ และเก็บแบบไม่เขียนทับเมื่อมีการปรับราคาในอนาคต
                 </p>
               </div>
               <div>
-                <h4>สิ่งที่ยังไม่มี</h4>
+                <h4>ทำไมยังไม่มีกราฟราคาย้อนหลัง</h4>
                 <p>
+                  เพราะราคาส่วนใหญ่เพิ่งตรวจครั้งแรก ยังไม่มีการเปลี่ยนแปลงให้พล็อตเป็นเส้นเวลา —
+                  เราจึงแสดงการกระจายของเกรดแทน และจะเพิ่มกราฟย้อนหลังเมื่อมีข้อมูลจริงพอ ·
                   อีก {UPCOMING_BRANDS.length} แบรนด์ ({UPCOMING_BRANDS.join(" · ")}) ยังไม่เปิด
-                  เพราะเก็บราคาให้ครบทุกเกรดยังไม่เสร็จ · ราคามือสองและประวัติการปรับราคายังไม่มีในระบบ ·
-                  รูปรถมีเฉพาะแบรนด์ที่ได้สิทธิ์ใช้ภาพแล้ว ที่เหลือเว้นไว้ตามจริง
+                  เพราะเก็บราคาให้ครบทุกเกรดไม่เสร็จ
                 </p>
               </div>
             </div>
