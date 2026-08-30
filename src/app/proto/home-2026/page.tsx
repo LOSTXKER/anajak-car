@@ -4,30 +4,33 @@
 import { useProtoVariant } from "../_kit/use-proto-variant";
 
 const VIEWS = [
-  { value: "new", label: "หน้าแรกแบบใหม่" },
+  { value: "lux", label: "แบบพรีเมียม (ใหม่ล่าสุด)" },
   { value: "current", label: "หน้าแรกวันนี้" },
+  { value: "data", label: "แบบข้อมูลจัด (รอบก่อน)" },
 ] as const;
 type View = (typeof VIEWS)[number]["value"];
 const VALUES = VIEWS.map((v) => v.value);
 
 const SRC: Record<View, string> = {
-  new: "/proto/home-2026/view",
+  lux: "/proto/home-2026/lux",
   current: "/proto/redesign-2026/view?v=current&s=home",
+  data: "/proto/home-2026/view",
 };
 
 export default function HomeComparePage() {
-  const [view, setView] = useProtoVariant<View>("v", VALUES, "new");
+  const [view, setView] = useProtoVariant<View>("v", VALUES, "lux");
   const src = SRC[view];
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6">
       <div className="mx-auto max-w-[1360px]">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          หน้าแรกที่พิสูจน์สองอย่าง: เราแยกรถถึงรุ่นย่อยจริง และทุกราคามีที่มา
+          หน้าแรกแบบพรีเมียม — เก็บพาดหัวพิมพ์วนกับช่องค้นหาใหญ่ไว้ แล้วยกภาพรถขึ้นเป็นพระเอก
         </h1>
         <p className="mt-2 max-w-4xl text-[15px] leading-7 text-muted">
-          รอบนี้ไม่ยืมหน้าตาจากที่ไหน — หน้าเกิดจากข้อมูลที่เรามีจริง: ราคาป้ายของรุ่นย่อยครบทั้ง 64 รายการ
-          วางบนแกนราคาเส้นเดียวกันทั้งหน้า · แบรนด์เป็นหัวข้อของแต่ละกลุ่ม กดเข้าได้ตรงจากหน้าแรก
+          เบสบอกว่าของเดิมยังดีกว่าเพราะพาดหัวพิมพ์วนกับช่องค้นหาใหญ่หายไป และอยากได้ความรู้สึก
+          “เว็บรถหรู” — รอบนี้จึงเก็บสองอย่างนั้นไว้ครบ แล้วยกระดับด้วยภาพรถขนาดใหญ่ ช่องไฟกว้าง
+          และตัวอักษรคม โดยข้อมูล/หลักฐานยังอยู่ครบทุกจุด
         </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -81,12 +84,15 @@ export default function HomeComparePage() {
 
         <section className="mt-8 grid gap-6 lg:grid-cols-2">
           <div className="border-l-2 border-accent pl-4">
-            <h2 className="text-lg font-bold">อะไรเปลี่ยนไปจากเดิม</h2>
+            <h2 className="text-lg font-bold">แบบพรีเมียม — อะไรเปลี่ยนไป</h2>
             <ul className="mt-2 space-y-2 text-sm leading-7 text-muted">
               <li>
-                • <strong className="text-foreground">ความลึกกลายเป็นภาพ</strong> — แต่ละรุ่นไม่ได้มีแค่
-                “ราคาเริ่มต้น” แต่มีจุดครบทุกรุ่นย่อยวางบนแกนราคาเดียวกัน เห็นทันทีว่า Hilux Travo มี 18
-                เกรดกระจายเกือบเท่าตัว ส่วน bZ4X มีสองเกรดชิดกัน — ข้อมูลระดับนี้เว็บรถอื่นไม่มี
+                • <strong className="text-foreground">เก็บของเดิมที่เบสชอบไว้ครบ</strong> — พาดหัวใหญ่ที่พิมพ์วนได้
+                (คอมโพเนนต์ตัวเดียวกับเว็บจริง) และช่องค้นหาใหญ่กลางหน้า ยังอยู่ตำแหน่งเดิม แค่ทำให้เนี้ยบขึ้น
+              </li>
+              <li>
+                • <strong className="text-foreground">ภาพรถเป็นพระเอก</strong> — ภาพเต็มเวทีใต้ช่องค้นหา
+                และรุ่นเด่นวางภาพใหญ่สลับซ้ายขวาแบบเว็บผู้ผลิต ไม่ใช่การ์ดขนาดเท่ากันเรียงกริด
               </li>
               <li>
                 • <strong className="text-foreground">หลักฐานอยู่ในสายตาเสมอ</strong> — วันที่ตรวจอยู่บนหัวแบรนด์

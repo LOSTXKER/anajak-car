@@ -1,0 +1,551 @@
+/* หน้าแรกแบบพรีเมียม — ภาษาเดียวกับเว็บผู้ผลิตรถระดับบน (ภาพนำ ช่องไฟกว้าง ตัวอักษรคม สีน้อย)
+   ของเดิมที่เก็บไว้ตามที่เบสสั่ง: พาดหัวใหญ่พิมพ์วนได้ + ช่องค้นหาใหญ่กลางหน้า
+   ของที่เพิ่ม: ภาพรถเป็นพระเอก · จังหวะหายใจระหว่างส่วน · หลักฐาน (วันตรวจ/ที่มา) ที่ไม่ทำลายความเรียบ */
+
+.lx {
+  --bg: #ffffff;
+  --bg-2: #f6f6f4;
+  --ink: #0e1116;
+  --ink-2: #464c58;
+  --ink-3: #6d7383;
+  --hair: #e6e6e2;
+  --blue: #2f56c9;
+  --blue-deep: #1b3a94;
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.lx ::selection {
+  background: rgba(47, 86, 201, 0.12);
+}
+.lx :focus-visible {
+  outline: 1.5px solid var(--blue);
+  outline-offset: 4px;
+}
+.lx a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.lx-shell {
+  margin: 0 auto;
+  max-width: 1240px;
+  padding: 0 32px;
+}
+@media (max-width: 700px) {
+  .lx-shell {
+    padding: 0 20px;
+  }
+}
+
+/* ── หัวเว็บ: บางมาก ตัวอักษรกระจายห่าง ─────────────────────────── */
+.lx-top {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid var(--hair);
+}
+.lx-top-in {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: 64px;
+}
+.lx-word {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+}
+.lx-menu {
+  display: flex;
+  gap: 26px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.lx-menu a:hover {
+  color: var(--ink);
+}
+.lx-top-cta {
+  margin-left: auto;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+
+/* ── Hero: ภาพรถเป็นพระเอก พาดหัวใหญ่ ช่องค้นหาใหญ่ ─────────────── */
+.lx-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 120%, rgba(47, 86, 201, 0.07), transparent 62%),
+    linear-gradient(180deg, #ffffff 0%, var(--bg-2) 100%);
+  border-bottom: 1px solid var(--hair);
+}
+.lx-hero-in {
+  padding: 76px 0 0;
+  text-align: center;
+}
+.lx-hero h1 {
+  margin: 0 auto;
+  max-width: 16ch;
+  font-size: clamp(40px, 6.4vw, 82px);
+  line-height: 1.02;
+  letter-spacing: -0.038em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.lx-hero-sub {
+  margin: 20px auto 0;
+  max-width: 54ch;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.lx-proof {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+.lx-proof b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ช่องค้นหาใหญ่ — ของเดิมที่เบสอยากเก็บไว้ ทำให้เนี้ยบขึ้น */
+.lx-search {
+  margin: 30px auto 0;
+  max-width: 620px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 62px;
+  padding: 0 8px 0 24px;
+  background: #fff;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  box-shadow: 0 18px 48px -30px rgba(14, 17, 22, 0.5);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.lx-search:hover,
+.lx-search:focus-within {
+  border-color: #cfd2d8;
+  box-shadow: 0 26px 60px -32px rgba(14, 17, 22, 0.55);
+}
+.lx-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+}
+.lx-search input::placeholder {
+  color: var(--ink-3);
+}
+.lx-search button {
+  height: 46px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.lx-search button:hover {
+  background: var(--blue-deep);
+}
+
+/* ภาพรถ: ใหญ่ กลางเวที มีเงาใต้ท้องรถ */
+.lx-stage {
+  position: relative;
+  margin: 26px auto -1px;
+  max-width: 1000px;
+  padding: 0 20px;
+}
+.lx-stage img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.lx-stage::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 12px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(14, 17, 22, 0.22), transparent 78%);
+  filter: blur(2px);
+  z-index: -1;
+}
+.lx-stage-cap {
+  position: absolute;
+  right: 24px;
+  bottom: 18px;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  text-align: right;
+}
+
+/* หนึ่งช่วงเวลาที่ตั้งใจ: ภาพและพาดหัวลอยขึ้นตอนเปิดหน้า */
+@media (prefers-reduced-motion: no-preference) {
+  .lx-rise {
+    animation: lx-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .lx-rise-2 {
+    animation-delay: 0.1s;
+  }
+  .lx-rise-3 {
+    animation-delay: 0.2s;
+  }
+}
+@keyframes lx-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── ส่วนแบรนด์: โลโก้ใหญ่ ช่องไฟกว้าง ไม่ใช่การ์ด ───────────────── */
+.lx-sec {
+  padding: 86px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.lx-sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.lx-sec-head h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.025em;
+  font-weight: 600;
+}
+.lx-sec-note {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.lx-brands {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--hair);
+  border-block: 1px solid var(--hair);
+}
+.lx-brand {
+  background: #fff;
+  padding: 34px 28px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: background 0.25s ease;
+}
+.lx-brand:hover {
+  background: var(--bg-2);
+}
+.lx-brand-logo {
+  height: 34px;
+  display: flex;
+  align-items: center;
+}
+.lx-brand-logo img {
+  height: 26px;
+  width: auto;
+  max-width: 128px;
+  object-fit: contain;
+}
+.lx-brand-logo span {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.lx-brand-count {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.lx-brand-price {
+  margin-top: auto;
+  font-size: 15px;
+}
+.lx-brand-price em {
+  display: block;
+  font-style: normal;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+.lx-brand-go {
+  font-size: 13px;
+  color: var(--blue);
+}
+
+/* ── รุ่นเด่น: ภาพใหญ่สลับจังหวะ ไม่ใช่กริดการ์ดขนาดเท่ากัน ──────── */
+.lx-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 56px;
+  padding: 64px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.lx-feature:last-of-type {
+  border-bottom: 0;
+}
+.lx-feature.flip .lx-feature-media {
+  order: 2;
+}
+.lx-feature-media {
+  position: relative;
+  background: linear-gradient(180deg, #fff, var(--bg-2));
+  border-radius: 2px;
+  padding: 26px 20px;
+}
+.lx-feature-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.lx-feature h3 {
+  font-size: clamp(26px, 3.4vw, 40px);
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.lx-feature .lx-kind {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+.lx-feature p {
+  margin-top: 14px;
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+.lx-spread {
+  margin-top: 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.lx-spread div em {
+  display: block;
+  font-style: normal;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 5px;
+}
+.lx-spread div b {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.lx-feature-src {
+  margin-top: 22px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.lx-feature-src a {
+  border-bottom: 1px solid var(--hair);
+}
+.lx-feature-src a:hover {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+}
+
+/* ── ตารางฐานข้อมูล: เนี้ยบ เส้นบาง ตัวเลขเรียงหลัก ───────────────── */
+.lx-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+.lx-table th {
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+  text-align: left;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--hair);
+  white-space: nowrap;
+}
+.lx-table td {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--hair);
+  vertical-align: middle;
+}
+.lx-table tbody tr {
+  transition: background 0.2s ease;
+}
+.lx-table tbody tr:hover {
+  background: var(--bg-2);
+}
+.lx-row-model {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.lx-row-model img {
+  width: 84px;
+  height: 48px;
+  object-fit: contain;
+  flex: none;
+}
+.lx-row-model .ph {
+  width: 84px;
+  height: 48px;
+  flex: none;
+  border: 1px solid var(--hair);
+  border-radius: 2px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  color: var(--ink-3);
+}
+.lx-row-name {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.lx-row-brand {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+.lx-num {
+  text-align: right;
+  white-space: nowrap;
+}
+.lx-num b {
+  font-size: 16px;
+  font-weight: 600;
+}
+.lx-num span {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.lx-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.lx-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--blue);
+  display: block;
+}
+
+/* ── ท้ายหน้า ───────────────────────────────────────────────────── */
+.lx-foot {
+  padding: 60px 0 84px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+.lx-foot h4 {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.lx-foot p {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--ink-2);
+  max-width: 60ch;
+}
+
+@media (max-width: 900px) {
+  .lx-feature {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .lx-feature.flip .lx-feature-media {
+    order: 0;
+  }
+  .lx-brands {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .lx-menu,
+  .lx-top-cta {
+    display: none;
+  }
+  /* คำบรรยายภาพวางทับตัวรถบนจอแคบ — ย้ายลงมาอยู่ใต้ภาพแทน */
+  .lx-stage-cap {
+    position: static;
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+  }
+  .lx-hero-in {
+    padding-top: 48px;
+  }
+  .lx-search {
+    height: 56px;
+    padding-left: 18px;
+  }
+  .lx-search button {
+    height: 42px;
+    padding: 0 18px;
+  }
+  .lx-sec {
+    padding: 56px 0;
+  }
+  .lx-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lx-table thead {
+    display: none;
+  }
+  .lx-table td {
+    padding: 14px 0;
+  }
+  .lx-hide-sm {
+    display: none;
+  }
+}
