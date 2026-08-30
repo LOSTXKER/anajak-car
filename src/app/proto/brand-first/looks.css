@@ -1,0 +1,152 @@
+/* ── ลุคสว่างของหน้าลอง /proto/brand-first ──────────────────────────────────
+   ต่อยอดตัวแปร --lk-* ชุดเดียวกับ /proto/look-2026 (ไฟล์นั้นถูก import คู่กันในหน้า view)
+   รอบนี้พื้นสว่างทุกลุคตามที่เบสสั่ง · สีน้ำเงิน CI (#2f56c9) ยังเป็นแกน */
+
+/* ── G · ANALYTICS — dashboard เทียบข้อมูล (ฟีล artificialanalysis / arena) ── */
+.look-analytics {
+  --lk-bg: #ffffff;
+  --lk-panel: #ffffff;
+  --lk-panel-2: #f4f7fc;
+  --lk-line: #e2e8f4;
+  --lk-text: #0d1526;
+  --lk-muted: #47536b;
+  --lk-faint: #77839b;
+  --lk-accent: #2f56c9; /* Royal เดิมของ CARMETA */
+  --lk-accent-soft: rgba(47, 86, 201, 0.09);
+  --lk-cyan: #0ac3fb;
+  --lk-violet: #7b5cff;
+  --lk-good: #12965a;
+  --lk-warn: #a05a00;
+  --lk-danger: #c93030;
+}
+
+/* แถบสีอ่อนหลังหัวเว็บ — ให้ dashboard ไม่ลอยบนขาวเปล่า */
+.look-analytics .an-hero {
+  background:
+    radial-gradient(120% 160% at 88% -20%, rgba(10, 195, 251, 0.14), transparent 60%),
+    radial-gradient(90% 140% at 0% 0%, rgba(47, 86, 201, 0.1), transparent 55%);
+}
+
+/* การ์ดแบรนด์ (ทางเข้าหลักของหน้าแรก) */
+.an-brand {
+  border: 1px solid var(--lk-line);
+  border-radius: 16px;
+  background: var(--lk-panel);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.an-brand:hover {
+  border-color: var(--lk-accent);
+  box-shadow: 0 10px 30px -18px rgba(13, 21, 38, 0.45);
+  transform: translateY(-1px);
+}
+
+/* กราฟแท่งแนวนอน — แถวละรุ่น (แบบ leaderboard ของ artificialanalysis) */
+.an-bars {
+  display: grid;
+  gap: 6px;
+}
+.an-bar-row {
+  display: grid;
+  /* มือถือ: ชื่อ/ราคาแคบลง ไม่งั้นแท่งเหลือไม่กี่พิกเซลและป้ายแกนทับกัน */
+  grid-template-columns: minmax(72px, 96px) minmax(0, 1fr) 72px;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+@media (min-width: 640px) {
+  .an-bar-row {
+    grid-template-columns: minmax(96px, 148px) minmax(0, 1fr) 96px;
+    gap: 10px;
+    font-size: 13px;
+  }
+}
+.an-bar-track {
+  position: relative;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--lk-panel-2);
+  overflow: hidden;
+}
+.an-bar-fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--lk-accent), var(--lk-cyan));
+}
+/* เส้นกริดแนวตั้งของกราฟ (อ่านค่าได้โดยไม่ต้องมีตัวเลขทุกแท่ง) */
+.an-grid {
+  position: relative;
+}
+.an-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--lk-line) 0 1px,
+    transparent 1px 25%
+  );
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* แผนภาพจุด ราคา×กำลัง — แกนจริง ไม่ใช่ภาพประกอบ */
+.an-scatter {
+  position: relative;
+  height: 260px;
+  border-left: 1px solid var(--lk-line);
+  border-bottom: 1px solid var(--lk-line);
+  background-image:
+    linear-gradient(var(--lk-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--lk-line) 1px, transparent 1px);
+  background-size: 25% 25%;
+  background-position: left bottom;
+}
+.an-dot {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: 999px;
+  border: 2px solid var(--lk-panel);
+  box-shadow: 0 0 0 1px rgba(13, 21, 38, 0.12);
+}
+
+/* ป้ายค่าตัวเลขในตาราง leaderboard */
+.an-rank {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 6px;
+  background: var(--lk-panel-2);
+  color: var(--lk-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.an-rank.top {
+  background: var(--lk-accent);
+  color: #fff;
+}
+
+/* ชิปกรองแบบ dashboard */
+.an-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--lk-line);
+  background: var(--lk-panel);
+  color: var(--lk-muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.an-chip.on {
+  background: var(--lk-accent);
+  border-color: var(--lk-accent);
+  color: #fff;
+  font-weight: 600;
+}

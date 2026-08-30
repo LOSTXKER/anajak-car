@@ -236,13 +236,77 @@ export const NAMEPLATES: ProtoNameplate[] = [
   },
 ];
 
-export type ProtoBrand = { slug: string; name: string; nameplateCount: number; logo: string | null };
+export type ProtoBrand = {
+  slug: string;
+  name: string;
+  nameplateCount: number;
+  logo: string | null;
+  /** ข้อมูลแบรนด์จากตาราง Brand/MarketPresence จริง — ค่าที่ยังไม่มีหลักฐาน = null (แสดงว่า "ไม่มีข้อมูล") */
+  officialName: string | null;
+  parentCompany: string | null;
+  countryOrigin: string;
+  /** ปีที่เริ่มดำเนินงานในไทย */
+  operationYear: number | null;
+  distributorName: string | null;
+  channel: string | null;
+  checkedDate: string;
+};
 
 export const BRANDS: ProtoBrand[] = [
-  { slug: "toyota", name: "Toyota", nameplateCount: 5, logo: "/logos/toyota.svg" },
-  { slug: "tesla", name: "Tesla", nameplateCount: 2, logo: null },
-  { slug: "mercedes-benz", name: "Mercedes-Benz", nameplateCount: 5, logo: null },
+  {
+    slug: "toyota",
+    name: "Toyota",
+    nameplateCount: 5,
+    logo: "/logos/toyota.svg",
+    officialName: "บริษัท โตโยต้า มอเตอร์ ประเทศไทย จำกัด",
+    parentCompany: "Toyota Motor Corporation",
+    countryOrigin: "ญี่ปุ่น",
+    operationYear: 1962,
+    distributorName: "Toyota Motor Thailand Co., Ltd.",
+    channel: "เครือข่ายผู้แทนจำหน่ายทางการ 152 ราย · โชว์รูม 447 แห่งทั่วประเทศ",
+    checkedDate: "2026-07-19",
+  },
+  {
+    slug: "tesla",
+    name: "Tesla",
+    nameplateCount: 2,
+    logo: null,
+    officialName: "Tesla, Inc.",
+    parentCompany: null,
+    countryOrigin: "สหรัฐอเมริกา",
+    operationYear: null,
+    distributorName: null,
+    channel: null,
+    checkedDate: "2026-07-22",
+  },
+  {
+    slug: "mercedes-benz",
+    name: "Mercedes-Benz",
+    nameplateCount: 5,
+    logo: null,
+    officialName: "Mercedes-Benz",
+    parentCompany: "Mercedes-Benz Group AG",
+    countryOrigin: "เยอรมนี",
+    operationYear: null,
+    distributorName: null,
+    channel: null,
+    checkedDate: "2026-07-22",
+  },
 ];
+
+/** สรุปตัวเลขต่อแบรนด์ — คำนวณจากรายการรุ่นจริง ไม่พิมพ์มือ */
+export function brandStats(slug: string) {
+  const list = NAMEPLATES.filter((n) => n.brandSlug === slug);
+  const mins = list.map((n) => n.priceMin).filter((p): p is number => p != null);
+  const maxs = list.map((n) => n.priceMax).filter((p): p is number => p != null);
+  return {
+    nameplates: list.length,
+    variants: list.reduce((n, r) => n + r.variantCount, 0),
+    priceMin: mins.length ? Math.min(...mins) : null,
+    priceMax: maxs.length ? Math.max(...maxs) : null,
+    powertrains: [...new Set(list.flatMap((n) => n.powertrains))],
+  };
+}
 
 /** แบรนด์ที่วางแผนเก็บข้อมูลถัดไป — ยังไม่เปิดหน้า (ตรงกับ brand-shortcuts.tsx ของจริง) */
 export const UPCOMING_BRANDS = ["Honda", "Isuzu", "BYD", "Mitsubishi", "Nissan", "MG", "Mazda", "Ford"];
