@@ -1,0 +1,854 @@
+/* หน้าแรก CARMETA — ภาษาแบบที่ Apple ใช้กับ "หน้าสเปก/หน้าเทียบรุ่น" ไม่ใช่หน้าโฆษณาโล่งๆ
+   หลักที่ยืมมาจริง: ระดับตัวอักษรห่างกันชัด · เส้นผมบางแทนกล่อง · แถบพื้นเทา #f5f5f7 สลับขาว
+   ปุ่มแคปซูล · ตารางเทียบเป็นพระเอก · เชิงอรรถมีเลขกำกับท้ายหน้า (ที่ของหลักฐาน CARMETA)
+   สิ่งที่ไม่ยืม: ความว่าง — Apple หน้า tech specs แน่นมาก หน้านี้ก็ต้องแน่น */
+
+.ap {
+  --w: #ffffff;
+  --g: #f5f5f7;
+  --g-2: #fafafc;
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --ink-3: #757579; /* เทาอ่อนสุดที่ยังผ่าน AA บนพื้นขาว (4.59:1) */
+  --hair: #d2d2d7;
+  --hair-soft: #e8e8ed;
+  --blue: #2f56c9;
+  --blue-soft: rgba(47, 86, 201, 0.08);
+
+  min-height: 100vh;
+  background: var(--w);
+  color: var(--ink);
+  letter-spacing: -0.003em;
+}
+
+/* บนพื้นเทา #f5f5f7 เทาอ่อนตัวเดิมเหลือ 4.21:1 — เข้มขึ้นอีกขั้นเฉพาะในพื้นเทา ให้ผ่าน AA ทุกที่ */
+.ap-band.grey,
+.ap-strip-wrap,
+.ap-foot,
+.ap-search,
+.ap-band:not(.grey) .ap-card {
+  --ink-3: #6f6f73;
+}
+
+.ap ::selection {
+  background: var(--blue-soft);
+}
+.ap :focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.ap a {
+  color: inherit;
+  text-decoration: none;
+}
+.ap .tnum {
+  letter-spacing: 0;
+}
+.ap-link {
+  color: var(--blue);
+}
+.ap-link:hover {
+  text-decoration: underline;
+}
+
+.ap-shell {
+  margin: 0 auto;
+  max-width: 1040px;
+  padding: 0 24px;
+}
+.ap-shell-wide {
+  margin: 0 auto;
+  max-width: 1240px;
+  padding: 0 24px;
+}
+@media (max-width: 700px) {
+  .ap-shell,
+  .ap-shell-wide {
+    padding: 0 18px;
+  }
+}
+
+/* ── แถบเมนูบนสุด: เตี้ย โปร่ง เบลอหลัง ตัวอักษรเล็ก (แพตเทิร์นเมนูของ apple.com) ── */
+.ap-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--hair-soft);
+}
+.ap-nav-in {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  height: 48px;
+  font-size: 12px;
+  color: var(--ink);
+}
+.ap-nav-word {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+.ap-nav-in a:not(.ap-nav-word):hover {
+  color: var(--ink-2);
+}
+.ap-nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+@media (max-width: 780px) {
+  .ap-nav-mid {
+    display: none;
+  }
+}
+
+/* ── หัวหน้า ─────────────────────────────────────────────────── */
+.ap-hero {
+  padding: 72px 0 0;
+  text-align: center;
+}
+/* พาดหัวใช้คอมโพเนนต์ตัวจริงของเว็บ (พิมพ์วนได้) — ที่นี่แค่ขยายสเกลกับบีบช่องไฟแบบหน้าเปิดตัวสินค้า */
+.ap-hero h1 {
+  margin: 0 auto;
+  max-width: 16ch;
+  font-size: clamp(40px, 6.6vw, 76px);
+  line-height: 1.04;
+  font-weight: 600;
+  letter-spacing: -0.028em;
+}
+.ap-hero-sub {
+  margin: 18px auto 0;
+  max-width: 46ch;
+  font-size: clamp(17px, 1.7vw, 21px);
+  line-height: 1.42;
+  color: var(--ink-2);
+}
+
+/* ช่องค้นหาแบบแคปซูล พื้นเทา ไม่มีเส้นขอบ */
+.ap-search {
+  margin: 30px auto 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(620px, 100%);
+  height: 54px;
+  padding: 0 8px 0 20px;
+  border-radius: 999px;
+  background: var(--g);
+  transition: box-shadow 0.18s ease;
+}
+.ap-search:focus-within {
+  box-shadow: 0 0 0 4px rgba(47, 86, 201, 0.16);
+}
+.ap-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+}
+.ap-search input::placeholder {
+  color: var(--ink-3);
+}
+.ap-search button {
+  height: 38px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--blue);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.ap-search button:hover {
+  opacity: 0.88;
+}
+
+.ap-hero-meta {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.ap-hero-meta b {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+/* แถวโลโก้แบรนด์ = ทางลัดเข้าหน้าแบรนด์ (อยู่ใน hero ตามที่สั่งไว้รอบก่อน) */
+.ap-pills {
+  margin: 24px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.ap-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 40px;
+  padding: 0 18px 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  font-size: 14px;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.ap-pill:hover {
+  background: var(--g);
+  border-color: var(--hair);
+}
+.ap-pill img {
+  height: 18px;
+  width: auto;
+}
+.ap-pill .wm {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.ap-pill span.n {
+  color: var(--ink-3);
+  font-size: 12.5px;
+}
+
+/* ── วัตถุหลักของหน้าแรก: ราคาทุกเกรดในฐาน วางบนแกนเดียว ───────── */
+.ap-strip-wrap {
+  margin: 56px 0 0;
+  padding: 34px 30px 26px;
+  border-radius: 22px;
+  background: var(--g);
+  text-align: left;
+}
+.ap-strip-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  margin-bottom: 30px;
+}
+.ap-strip-head h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.ap-strip-head span {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.ap-strip {
+  position: relative;
+  height: 104px;
+}
+.ap-strip-axis {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 70px;
+  height: 1px;
+  background: var(--hair);
+}
+/* คำกำกับสองบรรทัดอยู่แถวบน (สูงราว 34px) — ขีดเริ่มที่ 50px เพื่อไม่ให้ตัวหนังสือทับขีด */
+.ap-tick {
+  position: absolute;
+  top: 50px;
+  width: 1.5px;
+  height: 20px;
+  margin-left: -0.75px;
+  border-radius: 1px;
+  background: rgba(29, 29, 31, 0.55);
+}
+.ap-tick.edge {
+  top: 42px;
+  height: 28px;
+  background: var(--ink);
+  width: 2px;
+}
+.ap-tick.mid {
+  top: 44px;
+  height: 26px;
+  background: var(--blue);
+  width: 2px;
+}
+.ap-axis-label {
+  position: absolute;
+  top: 78px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.ap-axis-label:first-of-type {
+  transform: none;
+}
+.ap-note {
+  position: absolute;
+  top: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.ap-note b {
+  display: block;
+  color: var(--ink);
+  font-weight: 500;
+}
+.ap-note.right {
+  right: 0;
+  text-align: right;
+}
+.ap-note.center {
+  color: var(--blue);
+}
+.ap-strip-foot {
+  margin: 26px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+@media (max-width: 700px) {
+  .ap-strip-wrap {
+    padding: 24px 18px 20px;
+  }
+  .ap-note.center {
+    display: none;
+  }
+  .ap-note,
+  .ap-note.right {
+    font-size: 11px;
+  }
+}
+
+/* ── แถบพื้นเทาสลับขาว ────────────────────────────────────────── */
+.ap-band {
+  padding: 96px 0;
+}
+.ap-band.grey {
+  background: var(--g);
+}
+@media (max-width: 700px) {
+  .ap-band {
+    padding: 64px 0;
+  }
+}
+
+.ap-head {
+  max-width: 34ch;
+}
+.ap-head h2 {
+  margin: 0;
+  font-size: clamp(30px, 3.8vw, 48px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+}
+.ap-head p {
+  margin: 14px 0 0;
+  font-size: 17px;
+  line-height: 1.48;
+  color: var(--ink-2);
+  max-width: 52ch;
+}
+.ap-head.center {
+  margin: 0 auto;
+  text-align: center;
+  max-width: 40ch;
+}
+.ap-head.center p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── ชั้นวางแบรนด์ (เลื่อนแนวนอนแบบชั้นวางสินค้า) ────────────────── */
+.ap-shelf {
+  margin-top: 44px;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+}
+.ap-shelf::-webkit-scrollbar {
+  height: 6px;
+}
+.ap-shelf::-webkit-scrollbar-thumb {
+  background: var(--hair);
+  border-radius: 3px;
+}
+.ap-card {
+  scroll-snap-align: start;
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 24px 22px;
+  border-radius: 18px;
+  background: var(--w);
+  transition: transform 0.2s ease;
+}
+.ap-band:not(.grey) .ap-card {
+  background: var(--g);
+}
+.ap-card:hover {
+  transform: translateY(-3px);
+}
+/* โลโก้ (หรือ wordmark ของแบรนด์ที่ยังไม่มีสิทธิ์ใช้โลโก้) = หัวการ์ด ไม่พูดชื่อซ้ำอีกบรรทัด */
+.ap-card-logo {
+  height: 44px;
+  display: flex;
+  align-items: center;
+}
+.ap-card-logo img {
+  height: 34px;
+  width: auto;
+  max-width: 100%;
+}
+.ap-card-logo .wm {
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+.ap-card-sub {
+  margin: 20px 0 0;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.ap-card-price {
+  margin: 18px 0 0;
+  font-size: 15px;
+}
+.ap-card-price b {
+  font-weight: 600;
+}
+.ap-card-price em {
+  font-style: normal;
+  color: var(--ink-3);
+}
+.ap-card-bar {
+  position: relative;
+  height: 3px;
+  margin: 12px 0 0;
+  border-radius: 2px;
+  background: var(--hair);
+}
+.ap-card-bar i {
+  position: absolute;
+  top: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--blue);
+}
+.ap-card-scale {
+  margin: 7px 0 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.ap-card-go {
+  margin: 18px 0 0;
+  font-size: 14px;
+  color: var(--blue);
+}
+.ap-card.ghost {
+  flex: 0 0 172px;
+  background: transparent;
+  border: 1px dashed var(--hair);
+  justify-content: center;
+  align-items: flex-start;
+  cursor: default;
+}
+.ap-card.ghost:hover {
+  transform: none;
+}
+.ap-card.ghost strong {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.ap-card.ghost span {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+/* ── ตัวเลขใหญ่หนึ่งตัวต่อหนึ่งเรื่อง ───────────────────────────── */
+.ap-figure {
+  margin: 0 auto;
+  text-align: center;
+}
+.ap-figure b {
+  display: block;
+  font-size: clamp(52px, 9vw, 108px);
+  line-height: 1;
+  font-weight: 600;
+  /* ฟอนต์ mono มีสัญลักษณ์ ฿ ล้ำขวา — เผื่อช่องไฟบวกไม่ให้ทับตัวเลขตัวแรก */
+  letter-spacing: 0.012em;
+}
+.ap-figure em {
+  display: block;
+  margin: 16px auto 0;
+  max-width: 44ch;
+  font-style: normal;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* ── บันไดราคา 18 เกรดของรุ่นเดียว ─────────────────────────────── */
+.ap-ladder {
+  margin: 52px 0 0;
+  border-top: 1px solid var(--hair);
+}
+.ap-ladder-head,
+.ap-rung {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.3fr) minmax(160px, 2fr) 116px 104px repeat(3, 74px);
+  align-items: center;
+  gap: 14px;
+  padding: 11px 4px;
+  border-bottom: 1px solid var(--hair-soft);
+}
+.ap-ladder-head {
+  padding: 10px 4px;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--hair);
+}
+.ap-ladder-head .r,
+.ap-rung .r {
+  text-align: right;
+}
+.ap-ladder-head .c,
+.ap-rung .c {
+  text-align: center;
+}
+.ap-group {
+  padding: 22px 4px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  border-bottom: 1px solid var(--hair-soft);
+}
+.ap-group span {
+  font-weight: 400;
+  color: var(--ink-3);
+}
+.ap-rung:hover {
+  background: var(--g-2);
+}
+.ap-rung-name {
+  font-size: 14px;
+}
+.ap-rung-name span {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.ap-rung-name span .nb {
+  display: inline;
+  white-space: nowrap;
+}
+.ap-rail {
+  position: relative;
+  height: 16px;
+}
+.ap-rail::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7.5px;
+  height: 1px;
+  background: var(--hair-soft);
+}
+.ap-rail i {
+  position: absolute;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+.ap-rung .price {
+  font-size: 14.5px;
+  font-weight: 600;
+  text-align: right;
+}
+.ap-rung .delta {
+  font-size: 13px;
+  color: var(--ink-3);
+  text-align: right;
+}
+.ap-yes {
+  color: var(--ink);
+}
+/* ขีดกลาง = "ยืนยันว่าไม่มี" ซึ่งเป็นข้อมูลจริง ต้องอ่านออก ไม่ใช่จางจนหาย */
+.ap-no {
+  color: var(--ink-2);
+}
+.ap-unk {
+  color: var(--ink-3);
+  font-size: 11.5px;
+}
+@media (max-width: 900px) {
+  .ap-ladder-head,
+  .ap-rung {
+    grid-template-columns: minmax(140px, 1.4fr) 1fr 108px 92px;
+  }
+  .ap-adas {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .ap-ladder-head,
+  .ap-rung {
+    grid-template-columns: 1fr 104px 88px;
+  }
+  .ap-rail {
+    display: none;
+  }
+}
+
+.ap-side {
+  margin: 30px 0 0;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  border-top: 1px solid var(--hair);
+  padding-top: 24px;
+}
+.ap-side h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+.ap-side b {
+  display: block;
+  margin: 6px 0 4px;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.ap-side p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* ── ตารางเทียบทั้งฐาน ─────────────────────────────────────────── */
+.ap-table-wrap {
+  margin: 44px 0 0;
+  overflow-x: auto;
+}
+.ap-table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.ap-table th {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  background: var(--g);
+  border-bottom: 1px solid var(--hair);
+  white-space: nowrap;
+}
+.ap-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--hair-soft);
+  vertical-align: middle;
+}
+.ap-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.7);
+}
+.ap-table .r {
+  text-align: right;
+}
+.ap-t-name {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.008em;
+}
+a.ap-t-name:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ap-t-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+.ap-t-pt {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.ap-t-pt i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.ap-t-pt + .ap-t-pt {
+  margin-left: 12px;
+}
+.ap-spread {
+  position: relative;
+  display: block;
+  height: 16px;
+  min-width: 150px;
+}
+.ap-spread::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7.5px;
+  height: 1px;
+  background: var(--hair);
+}
+.ap-spread b {
+  position: absolute;
+  top: 6.5px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(47, 86, 201, 0.34);
+}
+.ap-spread i {
+  position: absolute;
+  top: 4px;
+  width: 2px;
+  height: 9px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--blue);
+}
+.ap-sup {
+  font-size: 10px;
+  vertical-align: super;
+  color: var(--ink-3);
+  margin-left: 2px;
+}
+
+/* ── เชิงอรรถ (ที่อยู่ของหลักฐาน) ─────────────────────────────── */
+.ap-notes {
+  padding: 40px 0 56px;
+  border-top: 1px solid var(--hair);
+}
+.ap-notes ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: fn;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.ap-notes li {
+  counter-increment: fn;
+  position: relative;
+  padding-left: 20px;
+  font-size: 12px;
+  line-height: 1.58;
+  color: var(--ink-3);
+}
+.ap-notes li::before {
+  content: counter(fn) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.ap-notes li strong {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+/* ── ท้ายเว็บ ─────────────────────────────────────────────────── */
+.ap-foot {
+  background: var(--g);
+  padding: 36px 0 44px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.ap-foot-cols {
+  display: grid;
+  gap: 26px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--hair);
+}
+.ap-foot h5 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ap-foot ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 7px;
+}
+.ap-foot a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+.ap-foot-legal {
+  padding-top: 20px;
+  line-height: 1.6;
+}
+
+/* ── การเคลื่อนไหวตอนเปิดหน้า (เคารพ reduced-motion) ───────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .ap-rise {
+    opacity: 0;
+    animation: ap-rise 0.66s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+  .ap-rise-2 {
+    animation-delay: 0.09s;
+  }
+  .ap-rise-3 {
+    animation-delay: 0.18s;
+  }
+  .ap-rise-4 {
+    animation-delay: 0.27s;
+  }
+  @keyframes ap-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
