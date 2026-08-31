@@ -39,6 +39,12 @@ export const เก็บเมื่อ = listingsFile._meta.เก็บเม
 export const modelSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 export const genSlug = (name: string) => (name.split(' ')[0] || name).toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
+// ---- ชื่อให้คนอ่าน ----
+// ข้อมูลดิบเป็นตัวใหญ่ล้วน ("C-CLASS", "C220d AVANTGARDE") ซึ่งอ่านยากและไม่เข้ากับหน้าตาแบบ Notion
+// แปลงเฉพาะคำที่ยาว 4 ตัวอักษรขึ้นไปและเป็นตัวใหญ่ล้วน — ตัวย่อ (AMG, CDI, GT) และรหัส (W206, 4MATIC) คงไว้
+const คำสวย = (w: string) => (/^[A-Z]{4,}$/.test(w) ? w[0] + w.slice(1).toLowerCase() : w)
+export const ชื่อสวย = (s: string | null) => (s ? s.split(/([ \-])/).map(คำสวย).join('') : '')
+
 // ---- เครื่องคิดเลขพื้นฐาน ----
 export const median = (xs: number[]) => {
   const s = [...xs].sort((a, b) => a - b)
